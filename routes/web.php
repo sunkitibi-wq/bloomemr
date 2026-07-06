@@ -1,0 +1,99 @@
+<?php
+
+use App\Livewire\Assessments\ScoredAssessment;
+use App\Livewire\Billing\BillingManager;
+use App\Livewire\Dashboard;
+use App\Livewire\Documents\DocumentUpload;
+use App\Livewire\SystemAdmin\PracticeManager;
+use App\Livewire\Encounters\EncounterForm;
+use App\Livewire\Encounters\EncounterNote;
+use App\Livewire\InventoryManager;
+use App\Livewire\Patients\PatientDetail;
+use App\Livewire\Patients\PatientForm;
+use App\Livewire\Patients\PatientList;
+use App\Livewire\Pharmacy\PharmacyPortal;
+use App\Livewire\PopulationHealth;
+use App\Livewire\PracticeAnalytics;
+use App\Livewire\Portal\PatientPortalDashboard;
+use App\Livewire\Portal\PortalAppointments;
+use App\Livewire\Portal\PortalBilling;
+use App\Livewire\Portal\PortalForms;
+use App\Livewire\Portal\PortalMessages;
+use App\Livewire\Portal\PortalRefills;
+use App\Livewire\Portal\PortalTelehealth;
+use App\Livewire\Portal\PortalCareCoordination;
+use App\Livewire\Portal\PortalRadiology;
+use App\Livewire\Scheduling\AppointmentList;
+use App\Models\SmartPhrase;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+Route::view('/', 'welcome')->name('home');
+
+Route::middleware(['auth:web', 'verified'])->group(function () {
+    Route::livewire('dashboard', Dashboard::class)->name('dashboard');
+    Route::livewire('scheduling', AppointmentList::class)->name('scheduling');
+    Route::livewire('billing', BillingManager::class)->name('billing');
+    Route::livewire('pharmacy-portal', PharmacyPortal::class)->name('pharmacy.portal');
+    Route::livewire('inventory', InventoryManager::class)->name('inventory');
+    Route::livewire('population-health', PopulationHealth::class)->name('population-health');
+    Route::livewire('analytics', PracticeAnalytics::class)->name('analytics');
+
+    // System Admin (is_system_admin = true users only)
+    Route::livewire('system/practices', PracticeManager::class)
+        ->middleware('can:system_admin')
+        ->name('system.practices');
+
+    Route::prefix('patients')->name('patients.')->group(function () {
+        Route::livewire('/', PatientList::class)->name('index');
+        Route::livewire('create', PatientForm::class)->name('create');
+        Route::livewire('{patient}', PatientDetail::class)->name('show');
+        Route::livewire('{patient}/edit', PatientForm::class)->name('edit');
+        Route::livewire('{patient}/assessment/create', ScoredAssessment::class)->name('assessment.create');
+    });
+
+    Route::prefix('patients/{patient}/encounters')->name('encounters.')->group(function () {
+        Route::livewire('create', EncounterForm::class)->name('create');
+        Route::livewire('{encounter}/edit', EncounterForm::class)->name('edit');
+    });
+
+    Route::prefix('encounters')->name('encounters.')->group(function () {
+        Route::livewire('{encounter}/note', EncounterNote::class)->name('note');
+    });
+
+    Route::prefix('patients/{patient}/documents')->name('documents.')->group(function () {
+        Route::livewire('upload', DocumentUpload::class)->name('upload');
+    });
+
+    Route::get('api/smart-phrases', function (Request $request) {
+        $q = $request->query('q');
+        if (empty($q)) {
+            return response()->json([]);
+        }
+
+        $phrases = SmartPhrase::query()
+            ->where('trigger', 'like', $q.'%')
+            ->where(function ($query) {
+                $query->where('is_global', true)
+                    ->orWhere('owner_id', auth()->id());
+            })
+            ->limit(10)
+            ->get(['id', 'trigger', 'expansion', 'category']);
+
+        return response()->json($phrases);
+    })->name('api.smart-phrases');
+});
+
+Route::middleware(['auth:portal,web', 'verified'])->group(function () {
+    Route::livewire('portal', PatientPortalDashboard::class)->name('portal.dashboard');
+    Route::livewire('portal/appointments', PortalAppointments::class)->name('portal.appointments');
+    Route::livewire('portal/billing', PortalBilling::class)->name('portal.billing');
+    Route::livewire('portal/messages', PortalMessages::class)->name('portal.messages');
+    Route::livewire('portal/refills', PortalRefills::class)->name('portal.refills');
+    Route::livewire('portal/telehealth', PortalTelehealth::class)->name('portal.telehealth');
+    Route::livewire('portal/forms', PortalForms::class)->name('portal.forms');
+    Route::livewire('portal/care-coordination', PortalCareCoordination::class)->name('portal.care-coordination');
+    Route::livewire('portal/radiology', PortalRadiology::class)->name('portal.radiology');
+});
+
+require __DIR__.'/settings.php';

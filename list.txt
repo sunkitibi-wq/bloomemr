@@ -1,0 +1,18 @@
+Patient Management
+Provider Management
+Appointment Scheduling
+Electronic Medical Records (EMR)
+e-Prescribing (DoseSpot/Surescripts)
+Laboratory Management
+Radiology Management
+Pharmacy Management
+Billing & Revenue Cycle
+Insurance Claims
+Telemedicine
+Patient Portal (MyChart equivalent)
+CRM & Patient Engagement
+Inventory & Asset Management
+Population Health
+Reporting & Analytics
+AI Assistant for Clinical Documentation
+Interoperability (FHIR/HL7 APIs)

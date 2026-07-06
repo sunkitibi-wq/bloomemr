@@ -1,0 +1,97 @@
+# Implementation Plan - Epic-like EHR System Modules
+
+We will implement the requested Epic-like features in a modular, phased manner. Because the scope is extremely large (encompassing full EHR, Billing/Revenue Cycle, MyChart Patient Portal, Specialty Modules, Operations, CRM, and AI), we propose a structured roadmap and ask for your prioritization on the initial focus area.
+
+---
+
+## User Review Required
+
+> [!IMPORTANT]
+> Because this is a massive system, we recommend building and verifying one core module at a time. We propose starting with the **Patient Experience / Patient Portal (MyChart Equivalent)** as the next active module, as we already have a skeletal `portal` directory in the project.
+
+---
+
+## Open Questions
+
+> [!IMPORTANT]
+> Please review these questions and provide your feedback or selection:
+> 1. **Initial Module Focus**: Do you agree with starting with the **Patient Portal (MyChart)** expansion (Secure Messaging, Refill Requests, Telehealth mock)? Or would you prefer to start with **Revenue Cycle & Billing** (claims, payment processing) or **AI-Assisted Charting**?
+> 2. **AI Integration**: For the AI Assistant / Ambient clinical documentation, should we set up a real LLM API client (e.g., OpenAI or Anthropic/Claude) or mock the response locally for tests/demo?
+> 3. **Payment Processing**: For Portal Bill Payment, should we integrate a real package/SDK (like Stripe/Cashier) or implement a simulated gateway for testing purposes?
+
+---
+
+## Proposed Roadmap
+
+Below is the proposed phased roadmap to build out these features:
+
+### Phase 1: Patient Experience & Portal (MyChart)
+Expand the `/portal` dashboard with:
+- **Secure Messaging**: Threaded messages between patients/guardians and clinical providers (new `messages` table, Livewire chat UI).
+- **Refill Requests**: Patient-initiated requests for existing active medications (new `refill_requests` table, provider review dashboard).
+- **Telehealth Video Room**: Integration of a mock or Daily.co iframe telehealth session.
+- **Bill Payment**: Integration of a simulated credit card payment screen for unpaid invoices.
+
+### Phase 2: Revenue Cycle & Billing
+Build comprehensive billing workflows on the provider dashboard:
+- **Insurance Verification**: Mock eligibility verification API endpoint.
+- **Claims Management**: Create a `claims` table tracking CMS-1500 status (Draft, Submitted, Accepted, Rejected).
+- **Payment Processing**: Log payment records, refunds, and adjustments.
+
+### Phase 3: Specialty Modules & Operations
+Add specialized charting/tracking tools:
+- **Emergency (ASAP)**: Bed management board, patient triage status (Red, Yellow, Green).
+- **Surgery (OpTime)**: Operating Room schedules and checklist logs.
+- **Staff Scheduling**: Shift calendar for clinical staff.
+
+### Phase 4: AI & Interoperability
+- **AI Ambient Documentation**: Livewire component capturing audio or text transcript and using an LLM to generate SOAP note drafts.
+- **FHIR API Endpoint**: Exporting Patient resources in FHIR JSON format.
+
+---
+
+## Proposed Changes (Phase 1: Patient Portal / MyChart Focus)
+
+If we proceed with **Phase 1 (Patient Portal)** first, we propose the following changes:
+
+### Database Layer
+
+#### [NEW] [create_secure_messages_table.php](file:///c:/Users/User/Herd/bloom/database/migrations/2026_07_04_000000_create_secure_messages_table.php)
+- Create a `secure_messages` table to store patient-provider communications.
+- Fields: `id`, `sender_id` (foreign key to `users`), `recipient_id` (foreign key to `users`), `patient_id` (patient context), `subject`, `body`, `read_at`, `created_at`.
+
+#### [NEW] [create_refill_requests_table.php](file:///c:/Users/User/Herd/bloom/database/migrations/2026_07_04_000001_create_refill_requests_table.php)
+- Create a `refill_requests` table.
+- Fields: `id`, `patient_id`, `medication_id`, `requested_by` (portal user), `status` (pending, approved, denied), `notes`, `created_at`.
+
+---
+
+### EMR Application Layer
+
+#### [NEW] [SecureMessage.php](file:///c:/Users/User/Herd/bloom/app/Models/SecureMessage.php)
+- Eloquent model representing a secure message thread.
+
+#### [NEW] [RefillRequest.php](file:///c:/Users/User/Herd/bloom/app/Models/RefillRequest.php)
+- Eloquent model representing a refill request.
+
+#### [NEW] [PortalMessages.php](file:///c:/Users/User/Herd/bloom/app/Livewire/Portal/PortalMessages.php)
+- Livewire component inside `/portal/messages` allowing patients/guardians to read and reply to threads.
+
+#### [NEW] [PortalRefills.php](file:///c:/Users/User/Herd/bloom/app/Livewire/Portal/PortalRefills.php)
+- Livewire component inside `/portal/refills` allowing patients to view active medications and request refills.
+
+#### [NEW] [PortalTelehealth.php](file:///c:/Users/User/Herd/bloom/app/Livewire/Portal/PortalTelehealth.php)
+- Livewire component representing the telehealth video session interface.
+
+---
+
+## Verification Plan
+
+### Automated Tests
+- Create `PortalSecureMessagingTest.php` to verify sending/receiving messages.
+- Create `PortalRefillsTest.php` to verify refill request submission and provider approval action.
+- Run `php artisan test` to ensure all existing and new tests pass.
+
+### Manual Verification
+- Log in as a guardian user to verify MyChart navigation, messaging flow, and refill request workflow.
+- Log in as a clinician user to view received messages and refill requests.

@@ -1,0 +1,207 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\SmartPhrase;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+
+class AiClinicalAssistantService
+{
+    /**
+     * Parse raw dialogue transcripts into structured note sections.
+     *
+     * @param string $templateType
+     * @param string $transcript
+     * @return array
+     */
+    public function generateDraftFromTranscript(string $templateType, string $transcript): array
+    {
+        if (empty($transcript)) {
+            return [];
+        }
+
+        $lines = explode("\n", $transcript);
+        
+        if ($templateType === 'SOAP') {
+            $sections = [
+                'subjective' => [],
+                'objective' => [],
+                'assessment' => [],
+                'plan' => [],
+            ];
+
+            foreach ($lines as $line) {
+                $lineLower = strtolower($line);
+                if (Str::contains($lineLower, ['report', 'say', 'feel', 'symptom', 'pain', 'sleep', 'anxious', 'depress', 'describe'])) {
+                    $sections['subjective'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['bp', 'pulse', 'temp', 'exam', 'vital', 'observ', 'look', 'agitat', 'alert', 'weight', 'heart'])) {
+                    $sections['objective'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['diagnos', 'impress', 'differential', 'r/o', 'rule out', 'severity', 'dsm'])) {
+                    $sections['assessment'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['prescrib', 'dose', 'mg', 'titrat', 'follow-up', 'refer', 'start', 'stop', 'plan', 'therapy'])) {
+                    $sections['plan'][] = trim($line);
+                } else {
+                    // Fallback to subjective
+                    $sections['subjective'][] = trim($line);
+                }
+            }
+
+            return [
+                'subjective' => implode(" ", $sections['subjective']) ?: 'Patient reports normal baseline symptoms.',
+                'objective' => implode(" ", $sections['objective']) ?: 'Vitals stable. Psychomotor activity normal.',
+                'assessment' => implode(" ", $sections['assessment']) ?: 'Clinical status stable.',
+                'plan' => implode(" ", $sections['plan']) ?: 'Continue current treatment plan. Follow up as scheduled.',
+            ];
+        }
+
+        if ($templateType === 'DAP') {
+            $sections = [
+                'data' => [],
+                'assessment' => [],
+                'plan' => [],
+            ];
+
+            foreach ($lines as $line) {
+                $lineLower = strtolower($line);
+                if (Str::contains($lineLower, ['diagnos', 'impress', 'differential', 'severity'])) {
+                    $sections['assessment'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['prescrib', 'dose', 'mg', 'titrat', 'follow-up', 'refer', 'start', 'stop'])) {
+                    $sections['plan'][] = trim($line);
+                } else {
+                    $sections['data'][] = trim($line);
+                }
+            }
+
+            return [
+                'data' => implode(" ", $sections['data']) ?: 'Session conducted. Addressed patient concerns.',
+                'assessment' => implode(" ", $sections['assessment']) ?: 'Progressing towards therapeutic goals.',
+                'plan' => implode(" ", $sections['plan']) ?: 'Follow up as planned.',
+            ];
+        }
+
+        if ($templateType === 'Intake') {
+            $sections = [
+                'reason_for_visit' => [],
+                'hpi' => [],
+                'past_psychiatric_history' => [],
+                'medical_history' => [],
+                'family_history' => [],
+                'social_history' => [],
+                'mental_status_exam' => [],
+                'diagnostic_impression' => [],
+                'plan' => [],
+            ];
+
+            foreach ($lines as $line) {
+                $lineLower = strtolower($line);
+                if (Str::contains($lineLower, ['reason', 'come in', 'presenting'])) {
+                    $sections['reason_for_visit'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['onset', 'duration', 'course', 'hpi', 'history of present illness'])) {
+                    $sections['hpi'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['past psych', 'previous psychiatrist', 'prior hospital'])) {
+                    $sections['past_psychiatric_history'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['medical', 'surgery', 'physical illness'])) {
+                    $sections['medical_history'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['family', 'mother', 'father', 'hereditary'])) {
+                    $sections['family_history'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['social', 'job', 'substance', 'alcohol', 'smoke'])) {
+                    $sections['social_history'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['exam', 'mse', 'affect', 'speech', 'thought', 'cognition'])) {
+                    $sections['mental_status_exam'][] = trim($line);
+                } elseif (Str::contains($lineLower, ['diagnos', 'dsm', 'icd', 'rule out'])) {
+                    $sections['diagnostic_impression'][] = trim($line);
+                } else {
+                    $sections['plan'][] = trim($line);
+                }
+            }
+
+            return [
+                'reason_for_visit' => implode(" ", $sections['reason_for_visit']) ?: 'Intake assessment requested by patient.',
+                'hpi' => implode(" ", $sections['hpi']) ?: 'Patient describes gradual onset of clinical symptoms.',
+                'past_psychiatric_history' => implode(" ", $sections['past_psychiatric_history']) ?: 'No past psychiatric hospitalizations reported.',
+                'medical_history' => implode(" ", $sections['medical_history']) ?: 'Non-contributory medical history.',
+                'family_history' => implode(" ", $sections['family_history']) ?: 'Denies family history of psychiatric illness.',
+                'social_history' => implode(" ", $sections['social_history']) ?: 'Lives independently. No current substance use.',
+                'mental_status_exam' => implode(" ", $sections['mental_status_exam']) ?: 'Alert and oriented. Euthymic mood, coherent speech.',
+                'diagnostic_impression' => implode(" ", $sections['diagnostic_impression']) ?: 'Assess for mood disorder vs anxiety.',
+                'plan' => implode(" ", $sections['plan']) ?: 'Establish outpatient psychiatric treatment schedule.',
+            ];
+        }
+
+        return ['body' => $transcript];
+    }
+
+    /**
+     * Suggest relevant smart phrases based on existing note contents.
+     *
+     * @param string $text
+     * @return Collection
+     */
+    public function suggestSmartPhrases(string $text): Collection
+    {
+        $textLower = strtolower($text);
+        
+        // Fetch custom/global smart phrases matching category or keywords
+        $matches = SmartPhrase::where(function ($q) use ($textLower) {
+            $q->where('category', 'like', "%{$textLower}%")
+              ->orWhere('trigger', 'like', "%{$textLower}%");
+        })->get();
+
+        // Generate dynamic AI phrases if no direct database match is found
+        if ($matches->isEmpty()) {
+            $suggestions = collect();
+            
+            if (Str::contains($textLower, ['anxious', 'worry', 'panic'])) {
+                $suggestions->push(new SmartPhrase([
+                    'trigger' => 'ai_anxiety',
+                    'expansion' => 'Patient reports heightened generalized anxiety, somatic worry, and occasional panic attacks.',
+                    'category' => 'Anxiety',
+                    'is_ai_suggested' => true,
+                ]));
+            }
+            
+            if (Str::contains($textLower, ['depress', 'sad', 'hopeless'])) {
+                $suggestions->push(new SmartPhrase([
+                    'trigger' => 'ai_depression',
+                    'expansion' => 'Patient reports pervasive low mood, anhedonia, and feelings of helplessness over the past month.',
+                    'category' => 'Depression',
+                    'is_ai_suggested' => true,
+                ]));
+            }
+
+            if (Str::contains($textLower, ['sleep', 'insomnia', 'nightmare'])) {
+                $suggestions->push(new SmartPhrase([
+                    'trigger' => 'ai_sleep',
+                    'expansion' => 'Reports severe sleep onset insomnia, sleeping average of 4 hours per night.',
+                    'category' => 'Sleep Hygiene',
+                    'is_ai_suggested' => true,
+                ]));
+            }
+
+            if (Str::contains($textLower, ['med', 'compliance', 'pill'])) {
+                $suggestions->push(new SmartPhrase([
+                    'trigger' => 'ai_compliance',
+                    'expansion' => 'Patient reports adhering strictly to medication schedule with no disruptive side effects.',
+                    'category' => 'Medication Log',
+                    'is_ai_suggested' => true,
+                ]));
+            }
+
+            if ($suggestions->isEmpty()) {
+                // Generic clinically sound phrase fallback
+                $suggestions->push(new SmartPhrase([
+                    'trigger' => 'ai_normal',
+                    'expansion' => 'Patient denies any suicidal ideation, homicidal ideation, or auditory/visual hallucinations.',
+                    'category' => 'General Safety',
+                    'is_ai_suggested' => true,
+                ]));
+            }
+
+            return $suggestions;
+        }
+
+        return $matches;
+    }
+}

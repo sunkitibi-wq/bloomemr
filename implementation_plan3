@@ -1,0 +1,92 @@
+# Digital Intake & Consent Forms with E-Signatures
+
+This plan introduces a versioned intake/consent form management engine. Staff can assign forms to patients, and families can complete and e-sign them from the Patient Portal. Signed records are captured with timestamp, IP address, and electronic signature, and are viewable in the patient's chart.
+
+---
+
+## Proposed Changes
+
+### Database & Models
+
+#### [NEW] [create_patient_forms_table.php](file:///c:/Users/User/Herd/bloom/database/migrations/2026_07_05_150000_create_patient_forms_table.php)
+Create tables for tracking templates and filled instances:
+1. `form_templates`: `id`, `title`, `description`, `type` (consent, intake), `fields` (JSON schema), `version`, `is_active`.
+2. `patient_forms`: `id`, `patient_id`, `practice_id`, `template_id`, `status` (pending, completed), `form_data` (JSON), `signature_name`, `signature_ip`, `signed_at`, `created_at`, `updated_at`.
+
+#### [NEW] `app/Models/FormTemplate.php`
+- Model definition with type casts for `fields` (array).
+
+#### [NEW] `app/Models/PatientForm.php`
+- Relationships: `patient()`, `template()`.
+- Type casts: `form_data` (array), `signed_at` (datetime).
+
+---
+
+### Seeder
+
+#### [NEW] `database/seeders/FormTemplateSeeder.php`
+Seed default templates:
+1. **Consent for Treatment** (General clinical consent)
+2. **Telehealth Consent** (Compliance with NYS Article 29-G)
+3. **HIPAA Privacy Practices Notice** (Acknowledgement form)
+
+---
+
+### Clinical Portal (Provider/Staff UI)
+
+#### [MODIFY] [Patient.php](file:///c:/Users/User/Herd/bloom/app/Models/Patient.php)
+- Add `patientForms()` relationship: `HasMany<PatientForm>`.
+
+#### [MODIFY] [PatientDetail.php](file:///c:/Users/User/Herd/bloom/app/Livewire/Patients/PatientDetail.php)
+- Add state to manage a "Forms" tab.
+- Add action `assignForm($templateId)` to create a pending `PatientForm` record.
+- Add action `viewCompletedForm($formId)` to open details modal.
+
+#### [MODIFY] [patient-detail.blade.php](file:///c:/Users/User/Herd/bloom/resources/views/livewire/patients/patient-detail.blade.php)
+- Add "Forms" to the secondary tab navigation (alongside Encounters, Meds, Labs, Documents).
+- List assigned and signed forms.
+- Provide dropdown/buttons to assign new templates.
+- Add a modal to view completed questionnaire responses & e-signature audit data.
+
+---
+
+### Patient Portal (Family UI)
+
+#### [NEW] `app/Livewire/Portal/PortalForms.php`
+Livewire component for families:
+- Fetch and display pending and completed forms for the patient.
+- Handle loading a selected form's fields.
+- Validate input fields dynamically.
+- Capture input data, signature name, client IP, and transition form status to `completed`.
+
+#### [NEW] `resources/views/livewire/portal/portal-forms.blade.php`
+- Renders list of forms (e.g. pending ones highlighted in amber, completed in green).
+- Standard form editor supporting text, checkbox, and yes/no fields.
+- E-signature confirmation box with IP and timestamp indicator.
+
+#### [MODIFY] [web.php](file:///c:/Users/User/Herd/bloom/routes/web.php)
+- Register `Route::livewire('portal/forms', PortalForms::class)->name('portal.forms')` under the portal auth middleware group.
+
+#### [MODIFY] Patient Portal Views (Sidebar & Header Nav)
+- Add "Forms" navigation link across the portal pages:
+  - `resources/views/livewire/portal/portal-telehealth.blade.php`
+  - `resources/views/livewire/portal/patient-portal-dashboard.blade.php`
+  - etc.
+
+---
+
+## Verification Plan
+
+### Automated Tests
+Create a new feature test `tests/Feature/PortalFormsTest.php`:
+- Verify clinicians can assign a form template to a patient.
+- Verify portal users can see pending forms.
+- Verify portal users can fill out, sign, and submit a form (saving responses, IP, name, and timestamp).
+- Verify clinicians can view the submitted form responses.
+
+### Manual Verification
+- Log in as provider, open a patient chart, and navigate to "Forms".
+- Assign the "Telehealth Consent" template.
+- Log in as portal user, navigate to "Forms", select the pending consent.
+- Complete the form and sign it.
+- Log back in as provider, verify it shows under "Completed" with the timestamp, signature name, and IP address.
