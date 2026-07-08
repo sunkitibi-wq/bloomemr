@@ -4,7 +4,6 @@ use App\Livewire\Billing\BillingManager;
 use App\Livewire\Patients\PatientDetail;
 use App\Livewire\Portal\PortalBilling;
 use App\Models\ClaimSubmission;
-use App\Models\EligibilityCheck;
 use App\Models\Invoice;
 use App\Models\Patient;
 use App\Models\Payment;
@@ -12,12 +11,11 @@ use App\Models\Practice;
 use App\Models\User;
 use App\Services\ClearinghouseService;
 use App\Services\EligibilityService;
-use App\Services\StripePaymentService;
 use Livewire\Livewire;
 
 beforeEach(function () {
     $this->practice = Practice::create(['name' => 'Bloom clinic', 'slug' => 'bloom-clinic']);
-    
+
     // Attending
     $this->provider = User::factory()->create([
         'practice_id' => $this->practice->id,
@@ -45,7 +43,7 @@ beforeEach(function () {
 
 test('insurance eligibility service simulates coverage check correctly', function () {
     $service = app(EligibilityService::class);
-    
+
     // Case 1: Has insurance
     $check = $service->checkEligibility($this->patient);
     expect($check->status)->toBe('eligible');
@@ -92,7 +90,7 @@ test('clearinghouse service generates valid ANSI ASC X12 837P format and submits
         'status' => 'pending',
         'due_date' => now()->addDays(30),
         'cpt_codes' => [
-            ['code' => '90834', 'description' => 'Psychotherapy 45m', 'fee' => 150.00]
+            ['code' => '90834', 'description' => 'Psychotherapy 45m', 'fee' => 150.00],
         ],
     ]);
 
@@ -110,7 +108,7 @@ test('clearinghouse service generates valid ANSI ASC X12 837P format and submits
     expect($submission->edi_response)->toContain('AK5*A');
 
     expect($invoice->fresh()->insurance_claim_status)->toBe('submitted');
-    expect($invoice->fresh()->claim_reference)->toBe('CLM-' . str_pad($invoice->id, 5, '0', STR_PAD_LEFT));
+    expect($invoice->fresh()->claim_reference)->toBe('CLM-'.str_pad($invoice->id, 5, '0', STR_PAD_LEFT));
 });
 
 test('clinician can submit claim and view EDI segments inside billing dashboard', function () {
@@ -121,7 +119,7 @@ test('clinician can submit claim and view EDI segments inside billing dashboard'
         'status' => 'pending',
         'due_date' => now()->addDays(30),
         'cpt_codes' => [
-            ['code' => '90834', 'description' => 'Psychotherapy 45m', 'fee' => 110.00]
+            ['code' => '90834', 'description' => 'Psychotherapy 45m', 'fee' => 110.00],
         ],
     ]);
 
@@ -144,7 +142,7 @@ test('patient portal payment calls StripePaymentService and creates database log
         'status' => 'pending',
         'due_date' => now()->addDays(30),
         'cpt_codes' => [
-            ['code' => '90791', 'description' => 'Psychiatric Eval', 'fee' => 200.00]
+            ['code' => '90791', 'description' => 'Psychiatric Eval', 'fee' => 200.00],
         ],
     ]);
 
@@ -158,7 +156,7 @@ test('patient portal payment calls StripePaymentService and creates database log
         ->assertHasNoErrors();
 
     expect($invoice->fresh()->status)->toBe('paid');
-    
+
     $payment = Payment::where('invoice_id', $invoice->id)->first();
     expect($payment)->not->toBeNull();
     expect((float) $payment->amount)->toBe(200.00);

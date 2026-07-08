@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Patients\PatientTelehealth;
+use App\Livewire\Portal\PortalTelehealth;
 use App\Models\Patient;
 use App\Models\Practice;
 use App\Models\User;
@@ -95,7 +96,7 @@ test('guardian can join call with Daily.co API key configured via portal', funct
     ]);
 
     Livewire::actingAs($guardian, 'portal')
-        ->test(App\Livewire\Portal\PortalTelehealth::class)
+        ->test(PortalTelehealth::class)
         ->assertOk()
         ->call('joinCall')
         ->assertSet('isCallActive', true)

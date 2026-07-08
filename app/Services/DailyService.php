@@ -19,7 +19,6 @@ class DailyService
     /**
      * Get or create a private Daily.co room for a patient consultation.
      *
-     * @param string $roomName
      * @return array<string, mixed>|null
      */
     public function getOrCreateRoom(string $roomName): ?array
@@ -63,11 +62,6 @@ class DailyService
 
     /**
      * Generate an access/meeting token for a private Daily.co room.
-     *
-     * @param string $roomName
-     * @param string $userName
-     * @param bool $isOwner
-     * @return string|null
      */
     public function createMeetingToken(string $roomName, string $userName, bool $isOwner = false): ?string
     {

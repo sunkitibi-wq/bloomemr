@@ -4,10 +4,12 @@ namespace App\Livewire\Patients;
 
 use App\Actions\LogAudit;
 use App\Models\Document;
+use App\Models\EligibilityCheck;
 use App\Models\Encounter;
 use App\Models\FormTemplate;
 use App\Models\Patient;
 use App\Models\PatientForm;
+use App\Services\EligibilityService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +25,7 @@ class PatientDetail extends Component
 
     public string $activeTab = 'encounters';
 
-    public ?\App\Models\EligibilityCheck $latestEligibilityCheck = null;
+    public ?EligibilityCheck $latestEligibilityCheck = null;
 
     /** @var array<int, array<string, mixed>> */
     public array $templatesList = [];
@@ -65,7 +67,7 @@ class PatientDetail extends Component
             'radiologyOrders.report' => fn ($q) => $q->latest(),
         ]);
 
-        $this->latestEligibilityCheck = \App\Models\EligibilityCheck::where('patient_id', $patient->id)->latest()->first();
+        $this->latestEligibilityCheck = EligibilityCheck::where('patient_id', $patient->id)->latest()->first();
 
         $this->templatesList = FormTemplate::where('is_active', true)->get()->toArray();
         $this->templateFields = [[
@@ -106,6 +108,30 @@ class PatientDetail extends Component
 
         Flux::toast(variant: 'success', text: 'Patient record deleted.');
         $this->redirect(route('patients.index'), navigate: true);
+    }
+
+    public function releaseEncounterToPortal(Encounter $encounter): void
+    {
+        Gate::authorize('update', $encounter);
+
+        if ($encounter->status !== 'signed') {
+            Flux::toast(variant: 'warning', text: __('Only signed encounters can be released to the portal.'));
+
+            return;
+        }
+
+        $encounter->update(['released_to_portal_at' => now()]);
+
+        app(LogAudit::class)(
+            user: Auth::user(),
+            action: 'release_to_portal',
+            entityType: 'encounter',
+            entityId: $encounter->id,
+            patientId: $this->patient->id,
+        );
+
+        Flux::toast(variant: 'success', text: __('Visit summary released to patient portal.'));
+        $this->patient->load(['encounters' => fn ($q) => $q->latest()->limit(10)]);
     }
 
     public function deleteEncounter(Encounter $encounter): void
@@ -289,7 +315,7 @@ class PatientDetail extends Component
 
     public function checkInsuranceEligibility(): void
     {
-        $service = app(\App\Services\EligibilityService::class);
+        $service = app(EligibilityService::class);
         $this->latestEligibilityCheck = $service->checkEligibility($this->patient);
 
         Flux::toast(

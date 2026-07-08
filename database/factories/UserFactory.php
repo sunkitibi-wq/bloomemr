@@ -35,7 +35,7 @@ class UserFactory extends Factory
                 'radiologist',
                 'guardian',
                 'insurance_officer',
-                'public_health_officer'
+                'public_health_officer',
             ]),
             'npi_number' => fake()->optional()->numerify('1########'),
             'phone' => fake()->optional()->phoneNumber(),

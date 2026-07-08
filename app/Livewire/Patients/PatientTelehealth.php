@@ -32,7 +32,7 @@ class PatientTelehealth extends Component
     public function joinCall(): void
     {
         $roomName = "bloom-telehealth-patient-{$this->patient->id}";
-        
+
         $daily = app(DailyService::class);
         $room = $daily->getOrCreateRoom($roomName);
 

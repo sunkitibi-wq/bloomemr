@@ -11,9 +11,6 @@ class PopulationHealthService
 {
     /**
      * Re-evaluate and populate registries and cohorts based on clinical criteria.
-     *
-     * @param int $practiceId
-     * @return void
      */
     public function refreshCohorts(int $practiceId): void
     {
@@ -30,8 +27,8 @@ class PopulationHealthService
             ->where(function ($q) {
                 $q->whereHas('encounters.clinicalNotes', function ($sq) {
                     $sq->where('body', 'like', '%ADHD%')
-                       ->orWhere('body', 'like', '%stimulant%')
-                       ->orWhere('body', 'like', '%Buspar%');
+                        ->orWhere('body', 'like', '%stimulant%')
+                        ->orWhere('body', 'like', '%Buspar%');
                 })->orWhere('problem_list', 'like', '%ADHD%');
             })->get();
 
@@ -90,13 +87,11 @@ class PopulationHealthService
 
     /**
      * Manually close an open care gap for a patient.
-     *
-     * @param CareGap $gap
-     * @return CareGap
      */
     public function resolveCareGap(CareGap $gap): CareGap
     {
         $gap->update(['status' => 'closed']);
+
         return $gap;
     }
 }

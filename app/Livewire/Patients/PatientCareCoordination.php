@@ -14,14 +14,20 @@ class PatientCareCoordination extends Component
 
     // Form inputs
     public string $recipientName = '';
+
     public string $recipientAddress = '';
+
     public string $subject = '';
+
     public string $scope = 'CCD';
+
     public ?int $consentFormId = null;
+
     public ?string $expiresAt = null;
 
     // UI state
     public ?array $selectedMessagePayload = null;
+
     public bool $showPayloadModal = false;
 
     protected array $rules = [
@@ -36,7 +42,7 @@ class PatientCareCoordination extends Component
     public function mount(Patient $patient): void
     {
         $this->patient = $patient;
-        $this->subject = 'Clinical Summary (CCD) for ' . $patient->full_name;
+        $this->subject = 'Clinical Summary (CCD) for '.$patient->full_name;
     }
 
     public function getSignedConsentsProperty()
@@ -78,11 +84,11 @@ class PatientCareCoordination extends Component
             $this->recipientAddress = '';
             $this->consentFormId = null;
             $this->expiresAt = null;
-            $this->subject = 'Clinical Summary (CCD) for ' . $this->patient->full_name;
+            $this->subject = 'Clinical Summary (CCD) for '.$this->patient->full_name;
 
             session()->flash('message', 'Clinical record shared successfully via Direct Messaging.');
         } catch (\Exception $e) {
-            session()->flash('error', 'Failed to share clinical record: ' . $e->getMessage());
+            session()->flash('error', 'Failed to share clinical record: '.$e->getMessage());
         }
     }
 

@@ -2,6 +2,7 @@
 
 use App\Livewire\Encounters\EncounterNote;
 use App\Models\Encounter;
+use App\Models\Patient;
 use App\Models\Practice;
 use App\Models\User;
 use Livewire\Livewire;
@@ -15,7 +16,7 @@ beforeEach(function () {
     ]);
     $this->provider->assignRole('attending');
 
-    $this->patient = \App\Models\Patient::factory()->create([
+    $this->patient = Patient::factory()->create([
         'practice_id' => $this->practice->id,
         'first_name' => 'John',
         'last_name' => 'Doe',

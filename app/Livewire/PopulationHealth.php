@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\CareGap;
-use App\Models\Patient;
 use App\Models\PatientCohort;
 use App\Services\PopulationHealthService;
 use Illuminate\Contracts\View\View;
@@ -16,6 +15,7 @@ use Livewire\Component;
 class PopulationHealth extends Component
 {
     public string $activeTab = 'cohorts';
+
     public string $gapStatusFilter = 'open';
 
     #[Computed]

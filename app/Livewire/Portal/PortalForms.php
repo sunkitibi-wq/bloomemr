@@ -88,9 +88,9 @@ class PortalForms extends Component
                     $rule[] = 'string';
                 }
 
-                $rules['responses.' . $field['name']] = implode('|', $rule);
-                $messages['responses.' . $field['name'] . '.accepted'] = __('You must accept: :label', ['label' => $field['label']]);
-                $messages['responses.' . $field['name'] . '.required'] = __('Field is required: :label', ['label' => $field['label']]);
+                $rules['responses.'.$field['name']] = implode('|', $rule);
+                $messages['responses.'.$field['name'].'.accepted'] = __('You must accept: :label', ['label' => $field['label']]);
+                $messages['responses.'.$field['name'].'.required'] = __('Field is required: :label', ['label' => $field['label']]);
             }
         }
 

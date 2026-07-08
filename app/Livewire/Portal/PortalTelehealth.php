@@ -42,7 +42,7 @@ class PortalTelehealth extends Component
         }
 
         $roomName = "bloom-telehealth-patient-{$this->patient->id}";
-        
+
         $daily = app(DailyService::class);
         $room = $daily->getOrCreateRoom($roomName);
 

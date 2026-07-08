@@ -4,17 +4,12 @@ namespace App\Services;
 
 use App\Models\SmartPhrase;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class AiClinicalAssistantService
 {
     /**
      * Parse raw dialogue transcripts into structured note sections.
-     *
-     * @param string $templateType
-     * @param string $transcript
-     * @return array
      */
     public function generateDraftFromTranscript(string $templateType, string $transcript): array
     {
@@ -23,7 +18,7 @@ class AiClinicalAssistantService
         }
 
         $lines = explode("\n", $transcript);
-        
+
         if ($templateType === 'SOAP') {
             $sections = [
                 'subjective' => [],
@@ -49,10 +44,10 @@ class AiClinicalAssistantService
             }
 
             return [
-                'subjective' => implode(" ", $sections['subjective']) ?: 'Patient reports normal baseline symptoms.',
-                'objective' => implode(" ", $sections['objective']) ?: 'Vitals stable. Psychomotor activity normal.',
-                'assessment' => implode(" ", $sections['assessment']) ?: 'Clinical status stable.',
-                'plan' => implode(" ", $sections['plan']) ?: 'Continue current treatment plan. Follow up as scheduled.',
+                'subjective' => implode(' ', $sections['subjective']) ?: 'Patient reports normal baseline symptoms.',
+                'objective' => implode(' ', $sections['objective']) ?: 'Vitals stable. Psychomotor activity normal.',
+                'assessment' => implode(' ', $sections['assessment']) ?: 'Clinical status stable.',
+                'plan' => implode(' ', $sections['plan']) ?: 'Continue current treatment plan. Follow up as scheduled.',
             ];
         }
 
@@ -75,9 +70,9 @@ class AiClinicalAssistantService
             }
 
             return [
-                'data' => implode(" ", $sections['data']) ?: 'Session conducted. Addressed patient concerns.',
-                'assessment' => implode(" ", $sections['assessment']) ?: 'Progressing towards therapeutic goals.',
-                'plan' => implode(" ", $sections['plan']) ?: 'Follow up as planned.',
+                'data' => implode(' ', $sections['data']) ?: 'Session conducted. Addressed patient concerns.',
+                'assessment' => implode(' ', $sections['assessment']) ?: 'Progressing towards therapeutic goals.',
+                'plan' => implode(' ', $sections['plan']) ?: 'Follow up as planned.',
             ];
         }
 
@@ -118,15 +113,15 @@ class AiClinicalAssistantService
             }
 
             return [
-                'reason_for_visit' => implode(" ", $sections['reason_for_visit']) ?: 'Intake assessment requested by patient.',
-                'hpi' => implode(" ", $sections['hpi']) ?: 'Patient describes gradual onset of clinical symptoms.',
-                'past_psychiatric_history' => implode(" ", $sections['past_psychiatric_history']) ?: 'No past psychiatric hospitalizations reported.',
-                'medical_history' => implode(" ", $sections['medical_history']) ?: 'Non-contributory medical history.',
-                'family_history' => implode(" ", $sections['family_history']) ?: 'Denies family history of psychiatric illness.',
-                'social_history' => implode(" ", $sections['social_history']) ?: 'Lives independently. No current substance use.',
-                'mental_status_exam' => implode(" ", $sections['mental_status_exam']) ?: 'Alert and oriented. Euthymic mood, coherent speech.',
-                'diagnostic_impression' => implode(" ", $sections['diagnostic_impression']) ?: 'Assess for mood disorder vs anxiety.',
-                'plan' => implode(" ", $sections['plan']) ?: 'Establish outpatient psychiatric treatment schedule.',
+                'reason_for_visit' => implode(' ', $sections['reason_for_visit']) ?: 'Intake assessment requested by patient.',
+                'hpi' => implode(' ', $sections['hpi']) ?: 'Patient describes gradual onset of clinical symptoms.',
+                'past_psychiatric_history' => implode(' ', $sections['past_psychiatric_history']) ?: 'No past psychiatric hospitalizations reported.',
+                'medical_history' => implode(' ', $sections['medical_history']) ?: 'Non-contributory medical history.',
+                'family_history' => implode(' ', $sections['family_history']) ?: 'Denies family history of psychiatric illness.',
+                'social_history' => implode(' ', $sections['social_history']) ?: 'Lives independently. No current substance use.',
+                'mental_status_exam' => implode(' ', $sections['mental_status_exam']) ?: 'Alert and oriented. Euthymic mood, coherent speech.',
+                'diagnostic_impression' => implode(' ', $sections['diagnostic_impression']) ?: 'Assess for mood disorder vs anxiety.',
+                'plan' => implode(' ', $sections['plan']) ?: 'Establish outpatient psychiatric treatment schedule.',
             ];
         }
 
@@ -135,24 +130,21 @@ class AiClinicalAssistantService
 
     /**
      * Suggest relevant smart phrases based on existing note contents.
-     *
-     * @param string $text
-     * @return Collection
      */
     public function suggestSmartPhrases(string $text): Collection
     {
         $textLower = strtolower($text);
-        
+
         // Fetch custom/global smart phrases matching category or keywords
         $matches = SmartPhrase::where(function ($q) use ($textLower) {
             $q->where('category', 'like', "%{$textLower}%")
-              ->orWhere('trigger', 'like', "%{$textLower}%");
+                ->orWhere('trigger', 'like', "%{$textLower}%");
         })->get();
 
         // Generate dynamic AI phrases if no direct database match is found
         if ($matches->isEmpty()) {
             $suggestions = collect();
-            
+
             if (Str::contains($textLower, ['anxious', 'worry', 'panic'])) {
                 $suggestions->push(new SmartPhrase([
                     'trigger' => 'ai_anxiety',
@@ -161,7 +153,7 @@ class AiClinicalAssistantService
                     'is_ai_suggested' => true,
                 ]));
             }
-            
+
             if (Str::contains($textLower, ['depress', 'sad', 'hopeless'])) {
                 $suggestions->push(new SmartPhrase([
                     'trigger' => 'ai_depression',

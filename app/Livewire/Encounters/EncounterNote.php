@@ -5,6 +5,7 @@ namespace App\Livewire\Encounters;
 use App\Actions\LogAudit;
 use App\Models\ClinicalNote;
 use App\Models\Encounter;
+use App\Services\AiClinicalAssistantService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -265,24 +266,24 @@ class EncounterNote extends Component
 
         // Populate a highly realistic clinical dialogue based on active template
         if ($this->template_type === 'SOAP') {
-            $this->ambientTranscript = "Clinician: Hello Timmy, how are you feeling today?\n" .
-                "Patient: I am sleeping poorly, sleeping only about 4 or 5 hours a night. Feeling very anxious about my new job.\n" .
-                "Clinician: Okay, I notice you are showing some mild psychomotor agitation. Let's look at your vitals. BP is 120/80, pulse is 72.\n" .
-                "Patient: Yes, my heart feels like it races sometimes.\n" .
-                "Clinician: I will diagnose you with generalized anxiety disorder and moderate sleep onset insomnia.\n" .
+            $this->ambientTranscript = "Clinician: Hello Timmy, how are you feeling today?\n".
+                "Patient: I am sleeping poorly, sleeping only about 4 or 5 hours a night. Feeling very anxious about my new job.\n".
+                "Clinician: Okay, I notice you are showing some mild psychomotor agitation. Let's look at your vitals. BP is 120/80, pulse is 72.\n".
+                "Patient: Yes, my heart feels like it races sometimes.\n".
+                "Clinician: I will diagnose you with generalized anxiety disorder and moderate sleep onset insomnia.\n".
                 "Clinician: Let's titrate your dosage of Buspar to 10mg twice daily and follow up in two weeks.";
         } elseif ($this->template_type === 'DAP') {
-            $this->ambientTranscript = "Patient reports sleeping poorly and racing heart symptoms.\n" .
-                "Attending noticed mild psychomotor agitation on exam. Vitals are BP 120/80 and pulse 72.\n" .
-                "Impression is generalized anxiety disorder and moderate sleep onset insomnia.\n" .
-                "Plan is to titrate Buspar to 10mg twice daily. Follow up in two weeks.";
+            $this->ambientTranscript = "Patient reports sleeping poorly and racing heart symptoms.\n".
+                "Attending noticed mild psychomotor agitation on exam. Vitals are BP 120/80 and pulse 72.\n".
+                "Impression is generalized anxiety disorder and moderate sleep onset insomnia.\n".
+                'Plan is to titrate Buspar to 10mg twice daily. Follow up in two weeks.';
         } else {
-            $this->ambientTranscript = "Reason for visit: presenting with sleep onset insomnia.\n" .
-                "HPI: patient describes gradual onset of clinical symptoms of anxiety.\n" .
-                "Past psych: denies prior psychiatric hospitalizations.\n" .
-                "MSE: alert and oriented, shows psychomotor agitation, anxious affect.\n" .
-                "Diagnostic impression: assess for generalized anxiety disorder vs panic disorder.\n" .
-                "Plan: titrate Buspar, follow up in two weeks.";
+            $this->ambientTranscript = "Reason for visit: presenting with sleep onset insomnia.\n".
+                "HPI: patient describes gradual onset of clinical symptoms of anxiety.\n".
+                "Past psych: denies prior psychiatric hospitalizations.\n".
+                "MSE: alert and oriented, shows psychomotor agitation, anxious affect.\n".
+                "Diagnostic impression: assess for generalized anxiety disorder vs panic disorder.\n".
+                'Plan: titrate Buspar, follow up in two weeks.';
         }
 
         Flux::toast(variant: 'success', text: __('Dictation finished. Ambient dialogue transcribed.'));
@@ -291,10 +292,10 @@ class EncounterNote extends Component
     public function generateAiDraft(): void
     {
         $this->isProcessingAi = true;
-        
-        $service = app(\App\Services\AiClinicalAssistantService::class);
+
+        $service = app(AiClinicalAssistantService::class);
         $this->aiDraft = $service->generateDraftFromTranscript($this->template_type, $this->ambientTranscript);
-        
+
         $this->isProcessingAi = false;
         Flux::toast(variant: 'success', text: __('Ambient note drafted successfully. Review below.'));
     }
@@ -303,6 +304,7 @@ class EncounterNote extends Component
     {
         if (empty($this->aiDraft)) {
             Flux::toast(variant: 'danger', text: __('No AI draft available.'));
+
             return;
         }
 
@@ -321,10 +323,11 @@ class EncounterNote extends Component
         $text = $this->sections[$sectionKey] ?? '';
         if (empty($text)) {
             Flux::toast(variant: 'warning', text: __('Section is empty. Add details first.'));
+
             return;
         }
 
-        $service = app(\App\Services\AiClinicalAssistantService::class);
+        $service = app(AiClinicalAssistantService::class);
         $this->aiSuggestions[$sectionKey] = $service->suggestSmartPhrases($text)->toArray();
         Flux::toast(variant: 'success', text: __('AI smart phrase recommendations retrieved.'));
     }
@@ -333,13 +336,13 @@ class EncounterNote extends Component
     {
         if (array_key_exists($sectionKey, $this->sections)) {
             $current = trim($this->sections[$sectionKey]);
-            $this->sections[$sectionKey] = $current ? $current . ' ' . $expansion : $expansion;
-            
+            $this->sections[$sectionKey] = $current ? $current.' '.$expansion : $expansion;
+
             // Remove from suggestions list
             if (isset($this->aiSuggestions[$sectionKey])) {
                 $this->aiSuggestions[$sectionKey] = array_filter(
                     $this->aiSuggestions[$sectionKey],
-                    fn($item) => $item['expansion'] !== $expansion
+                    fn ($item) => $item['expansion'] !== $expansion
                 );
             }
             Flux::toast(variant: 'success', text: __('Smart phrase appended.'));

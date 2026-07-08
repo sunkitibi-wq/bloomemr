@@ -19,17 +19,23 @@ class PatientRadiology extends Component
 
     // Order Form
     public string $procedureName = '';
+
     public string $clinicalIndication = '';
 
     // Report Form / Modal State
     public bool $showReportModal = false;
+
     public ?RadiologyOrder $selectedOrder = null;
+
     public string $findings = '';
+
     public string $impression = '';
+
     public $scanFile = null;
 
     // View Report Modal
     public bool $showViewModal = false;
+
     public ?RadiologyReport $selectedReport = null;
 
     public function mount(Patient $patient): void
@@ -73,7 +79,7 @@ class PatientRadiology extends Component
 
         $path = null;
         if ($this->scanFile) {
-            $path = $this->scanFile->store('radiology/' . $this->patient->id, 'public');
+            $path = $this->scanFile->store('radiology/'.$this->patient->id, 'public');
         }
 
         $service = app(RadiologyService::class);

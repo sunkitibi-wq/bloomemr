@@ -1,17 +1,19 @@
 <?php
 
+use App\Livewire\Settings\RolesAndPermissions;
+use App\Models\Practice;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Database\Seeders\RoleAndPermissionSeeder;
 
 beforeEach(function () {
     // Seed standard roles & permissions
     $this->seed(RoleAndPermissionSeeder::class);
-    
+
     // Create a practice
-    \App\Models\Practice::create(['name' => 'Bloom Clinic', 'slug' => 'bloom-clinic']);
+    Practice::create(['name' => 'Bloom Clinic', 'slug' => 'bloom-clinic']);
 });
 
 test('roles and permissions page is not accessible by non-super-admins', function () {
@@ -43,7 +45,7 @@ test('super admin can create a new role and assign permissions', function () {
     ]);
 
     Livewire::actingAs($superAdmin)
-        ->test(\App\Livewire\Settings\RolesAndPermissions::class)
+        ->test(RolesAndPermissions::class)
         ->set('roleName', 'new_custom_role')
         ->set('rolePermissions', ['view_patients', 'create_patients'])
         ->call('saveRole')
@@ -62,7 +64,7 @@ test('super admin cannot delete a role with assigned users', function () {
     ]);
 
     $role = Role::findByName('attending');
-    
+
     // Assign a user to the role
     $user = User::factory()->create([
         'role' => 'attending',
@@ -70,7 +72,7 @@ test('super admin cannot delete a role with assigned users', function () {
     ]);
 
     Livewire::actingAs($superAdmin)
-        ->test(\App\Livewire\Settings\RolesAndPermissions::class)
+        ->test(RolesAndPermissions::class)
         ->call('deleteRole', $role->id);
 
     // Role should still exist
@@ -86,7 +88,7 @@ test('super admin can delete an empty role', function () {
     $role = Role::create(['name' => 'empty_role']);
 
     Livewire::actingAs($superAdmin)
-        ->test(\App\Livewire\Settings\RolesAndPermissions::class)
+        ->test(RolesAndPermissions::class)
         ->call('deleteRole', $role->id);
 
     expect(Role::where('name', 'empty_role')->first())->toBeNull();
@@ -99,7 +101,7 @@ test('super admin can create a new permission', function () {
     ]);
 
     Livewire::actingAs($superAdmin)
-        ->test(\App\Livewire\Settings\RolesAndPermissions::class)
+        ->test(RolesAndPermissions::class)
         ->set('newPermissionName', 'custom_permission')
         ->call('createPermission')
         ->assertHasNoErrors();
@@ -116,7 +118,7 @@ test('super admin cannot delete a permission assigned to roles', function () {
     $permission = Permission::findByName('view_patients');
 
     Livewire::actingAs($superAdmin)
-        ->test(\App\Livewire\Settings\RolesAndPermissions::class)
+        ->test(RolesAndPermissions::class)
         ->call('deletePermission', $permission->id);
 
     expect(Permission::findById($permission->id))->not->toBeNull();
@@ -131,7 +133,7 @@ test('super admin can delete an unassigned permission', function () {
     $permission = Permission::create(['name' => 'unassigned_perm']);
 
     Livewire::actingAs($superAdmin)
-        ->test(\App\Livewire\Settings\RolesAndPermissions::class)
+        ->test(RolesAndPermissions::class)
         ->call('deletePermission', $permission->id);
 
     expect(Permission::where('name', 'unassigned_perm')->first())->toBeNull();

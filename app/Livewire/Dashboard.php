@@ -159,6 +159,18 @@ class Dashboard extends Component
             ->count();
     }
 
+    #[Computed]
+    public function unreadNotificationCount(): int
+    {
+        return Auth::user()->unreadNotifications()->count();
+    }
+
+    #[Computed]
+    public function unreadNotifications()
+    {
+        return Auth::user()->unreadNotifications()->latest()->limit(10)->get();
+    }
+
     public function render(): View
     {
         return view('livewire.dashboard');

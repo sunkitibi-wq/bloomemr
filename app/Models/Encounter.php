@@ -28,6 +28,7 @@ class Encounter extends Model
         'chief_complaint',
         'assessment',
         'plan',
+        'released_to_portal_at',
     ];
 
     protected function casts(): array
@@ -35,6 +36,7 @@ class Encounter extends Model
         return [
             'encounter_date' => 'datetime',
             'signed_at' => 'datetime',
+            'released_to_portal_at' => 'datetime',
         ];
     }
 

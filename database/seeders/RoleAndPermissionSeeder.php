@@ -46,7 +46,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view_lab_orders',
             'manage_lab_orders',
             'enter_lab_results',
-            
+
             'view_imaging_requests',
             'manage_imaging_requests',
             'enter_imaging_reports',

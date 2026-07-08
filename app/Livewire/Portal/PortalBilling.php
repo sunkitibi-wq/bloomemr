@@ -4,6 +4,7 @@ namespace App\Livewire\Portal;
 
 use App\Models\Invoice;
 use App\Models\Patient;
+use App\Services\StripePaymentService;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -74,7 +75,7 @@ class PortalBilling extends Component
         ]);
 
         if ($this->invoiceToPay && $this->invoiceToPay->status !== 'paid') {
-            $service = app(\App\Services\StripePaymentService::class);
+            $service = app(StripePaymentService::class);
             $service->processCardPayment($this->invoiceToPay, $this->cardNumber);
 
             session()->flash('message', __('Payment processed successfully via Stripe (Simulated).'));

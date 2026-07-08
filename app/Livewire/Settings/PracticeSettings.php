@@ -6,7 +6,6 @@ use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -14,7 +13,9 @@ use Livewire\Component;
 class PracticeSettings extends Component
 {
     public string $practiceName = '';
+
     public string $timezone = 'America/New_York';
+
     public string $locale = 'en';
 
     public function mount(): void

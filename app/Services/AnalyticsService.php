@@ -8,17 +8,11 @@ use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class AnalyticsService
 {
     /**
      * Clinician encounter utilisation for the given month/year.
-     *
-     * @param int $practiceId
-     * @param int $month
-     * @param int $year
-     * @return Collection
      */
     public function clinicianUtilization(int $practiceId, int $month, int $year): Collection
     {
@@ -27,7 +21,7 @@ class AnalyticsService
             ->withCount([
                 'encounters as encounter_count' => function ($q) use ($month, $year) {
                     $q->whereMonth('encounter_date', $month)
-                      ->whereYear('encounter_date', $year);
+                        ->whereYear('encounter_date', $year);
                 },
             ])
             ->orderByDesc('encounter_count')
@@ -37,7 +31,6 @@ class AnalyticsService
     /**
      * Patient demographic breakdown for the practice.
      *
-     * @param int $practiceId
      * @return array<string, mixed>
      */
     public function demographicBreakdown(int $practiceId): array
@@ -85,9 +78,6 @@ class AnalyticsService
 
     /**
      * Monthly encounter volume for the last 6 months.
-     *
-     * @param int $practiceId
-     * @return Collection
      */
     public function monthlyEncounterTrend(int $practiceId): Collection
     {
@@ -111,7 +101,6 @@ class AnalyticsService
     /**
      * Revenue summary for the practice (monthly and overall).
      *
-     * @param int $practiceId
      * @return array<string, mixed>
      */
     public function revenueSummary(int $practiceId): array

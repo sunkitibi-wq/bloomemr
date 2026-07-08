@@ -1,6 +1,6 @@
 <?php
 
-use App\Livewire\Patients\PatientList;
+use App\Actions\Fortify\CreateNewUser;
 use App\Livewire\SystemAdmin\PracticeManager;
 use App\Models\Patient;
 use App\Models\Practice;
@@ -172,7 +172,7 @@ test('system admin can toggle practice active status', function () {
 test('CreateNewUser creates a new practice when practice_name is provided', function () {
     $initialPracticeCount = Practice::count();
 
-    $action = new \App\Actions\Fortify\CreateNewUser;
+    $action = new CreateNewUser;
     $user = $action->create([
         'name' => 'Dr. New Clinician',
         'email' => 'newclinic@test.com',
@@ -190,7 +190,7 @@ test('CreateNewUser creates a new practice when practice_name is provided', func
 test('slug is generated from practice name and is unique', function () {
     Practice::create(['name' => 'Duplicate Clinic', 'slug' => 'duplicate-clinic']);
 
-    $action = new \App\Actions\Fortify\CreateNewUser;
+    $action = new CreateNewUser;
     $user = $action->create([
         'name' => 'Dr. Another',
         'email' => 'another@test.com',

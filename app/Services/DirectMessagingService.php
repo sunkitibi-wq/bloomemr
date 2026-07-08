@@ -6,14 +6,12 @@ use App\Models\DirectMessage;
 use App\Models\Patient;
 use App\Models\PatientForm;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class DirectMessagingService
 {
     /**
      * Generate a standards-compliant FHIR R4 Composition resource (CCD) for a patient.
      *
-     * @param Patient $patient
      * @return array<string, mixed>
      */
     public function generateFhirComposition(Patient $patient): array
@@ -25,46 +23,46 @@ class DirectMessagingService
         $recentEncounters = $patient->encounters->sortByDesc('encounter_date')->take(5);
 
         // Build active medications narrative/entries
-        $medsText = "<ul>";
+        $medsText = '<ul>';
         foreach ($activeMeds as $med) {
             $medsText .= "<li><strong>{$med->name}</strong> - Dose: {$med->dose}, Freq: {$med->frequency}</li>";
         }
-        $medsText .= "</ul>";
+        $medsText .= '</ul>';
         if ($activeMeds->isEmpty()) {
-            $medsText = "<p>No active medications documented.</p>";
+            $medsText = '<p>No active medications documented.</p>';
         }
 
         // Build lab observations narrative/entries
-        $labsText = "<ul>";
+        $labsText = '<ul>';
         foreach ($recentLabs as $lab) {
             $data = is_array($lab->result_data) ? $lab->result_data : [];
             foreach ($data as $obs) {
-                $flag = !empty($obs['flag']) ? " [{$obs['flag']}]" : '';
+                $flag = ! empty($obs['flag']) ? " [{$obs['flag']}]" : '';
                 $labsText .= "<li><strong>{$obs['name']}</strong>: {$obs['value']} {$obs['unit']} (Ref: {$obs['range']}){$flag}</li>";
             }
         }
-        $labsText .= "</ul>";
+        $labsText .= '</ul>';
         if ($recentLabs->isEmpty()) {
-            $labsText = "<p>No recent lab results documented.</p>";
+            $labsText = '<p>No recent lab results documented.</p>';
         }
 
         // Build encounters/problems narrative/entries
-        $encountersText = "<ul>";
+        $encountersText = '<ul>';
         foreach ($recentEncounters as $enc) {
             $noteText = '';
             foreach ($enc->clinicalNotes as $note) {
-                $noteText .= " " . substr(strip_tags($note->body), 0, 150) . "...";
+                $noteText .= ' '.substr(strip_tags($note->body), 0, 150).'...';
             }
-            $encountersText .= "<li><strong>" . $enc->encounter_date->format('Y-m-d') . "</strong> (" . ucfirst($enc->type) . "):{$noteText}</li>";
+            $encountersText .= '<li><strong>'.$enc->encounter_date->format('Y-m-d').'</strong> ('.ucfirst($enc->type)."):{$noteText}</li>";
         }
-        $encountersText .= "</ul>";
+        $encountersText .= '</ul>';
         if ($recentEncounters->isEmpty()) {
-            $encountersText = "<p>No recent clinical encounters documented.</p>";
+            $encountersText = '<p>No recent clinical encounters documented.</p>';
         }
 
         return [
             'resourceType' => 'Composition',
-            'id' => 'bloom-ccd-' . $patient->id . '-' . rand(1000, 9999),
+            'id' => 'bloom-ccd-'.$patient->id.'-'.rand(1000, 9999),
             'status' => 'final',
             'type' => [
                 'coding' => [
@@ -76,7 +74,7 @@ class DirectMessagingService
                 ],
             ],
             'subject' => [
-                'reference' => 'Patient/' . $patient->id,
+                'reference' => 'Patient/'.$patient->id,
                 'display' => $patient->full_name,
                 'mrn' => $patient->mrn,
                 'birthDate' => $patient->date_of_birth->format('Y-m-d'),
@@ -85,7 +83,7 @@ class DirectMessagingService
             'date' => now()->toIso8601String(),
             'author' => [
                 [
-                    'reference' => 'Practitioner/' . Auth::id(),
+                    'reference' => 'Practitioner/'.Auth::id(),
                     'display' => Auth::user()->name,
                 ],
             ],
@@ -145,15 +143,6 @@ class DirectMessagingService
 
     /**
      * Share a patient clinical summary to an external provider via simulated Direct Messaging (phiMail).
-     *
-     * @param Patient $patient
-     * @param string $recipientName
-     * @param string $recipientAddress
-     * @param string $subject
-     * @param string $scope
-     * @param int|null $consentFormId
-     * @param string|null $expiresAt
-     * @return DirectMessage
      */
     public function sendDirectMessage(
         Patient $patient,
@@ -178,9 +167,9 @@ class DirectMessagingService
 
         // Simulate HISP transmission (phiMail gateway callback)
         // In production this wraps an HTTP client to EMR Direct HISP servers
-        $status = 'delivered'; 
+        $status = 'delivered';
 
-        $senderAddress = strtolower(str_replace(' ', '.', Auth::user()->name)) . '@direct.bloom.test';
+        $senderAddress = strtolower(str_replace(' ', '.', Auth::user()->name)).'@direct.bloom.test';
 
         $directMessage = DirectMessage::create([
             'practice_id' => $patient->practice_id ?? Auth::user()->practice_id,

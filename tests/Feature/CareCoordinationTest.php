@@ -12,7 +12,7 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->practice = Practice::create(['name' => 'Bloom clinic', 'slug' => 'bloom-clinic']);
-    
+
     // Attending/Provider
     $this->provider = User::factory()->create([
         'practice_id' => $this->practice->id,

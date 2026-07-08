@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Controllers\Api\Fhir;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\Fhir\PatientResource;
+use App\Models\Patient;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class PatientController extends Controller
+{
+    public function index(Request $request): JsonResponse
+    {
+        $patients = Patient::query()
+            ->when($request->filled('identifier'), fn ($q) => $q->where('mrn', $request->identifier))
+            ->when($request->filled('family'), fn ($q) => $q->where('last_name', 'like', $request->family.'%'))
+            ->when($request->filled('given'), fn ($q) => $q->where('first_name', 'like', $request->given.'%'))
+            ->when($request->filled('birthdate'), fn ($q) => $q->whereDate('date_of_birth', $request->birthdate))
+            ->when($request->filled('phone'), fn ($q) => $q->where('phone', $request->phone))
+            ->when($request->filled('email'), fn ($q) => $q->where('email', $request->email))
+            ->when($request->filled('_count'), fn ($q) => $q->take(min((int) $request->_count, 100)))
+            ->orderBy('id')
+            ->get();
+
+        return response()->json([
+            'resourceType' => 'Bundle',
+            'type' => 'searchset',
+            'total' => $patients->count(),
+            'entry' => PatientResource::collection($patients)->toArray($request),
+        ]);
+    }
+
+    public function show(Patient $patient): JsonResponse
+    {
+        return response()->json(new PatientResource($patient));
+    }
+}

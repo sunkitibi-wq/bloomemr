@@ -39,4 +39,22 @@ return [
         'key' => env('DAILY_API_KEY'),
     ],
 
+    'mirth' => [
+        'base_url' => env('MIRTH_BASE_URL', 'https://mirth:8443'),
+        'api_key' => env('MIRTH_API_KEY'),
+        'channel_id' => env('MIRTH_CHANNEL_ID'),
+    ],
+
+    'hie' => [
+        'endpoint' => env('HIE_ENDPOINT', 'https://hie.example.com/fhir'),
+        'api_key' => env('HIE_API_KEY'),
+        'org_id' => env('HIE_ORG_ID'),
+    ],
+
+    'orthanc' => [
+        'url' => env('ORTHANC_URL', 'https://orthanc:8042'),
+        'username' => env('ORTHANC_USERNAME'),
+        'password' => env('ORTHANC_PASSWORD'),
+    ],
+
 ];

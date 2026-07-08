@@ -13,7 +13,7 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->practice = Practice::create(['name' => 'Bloom clinic', 'slug' => 'bloom-clinic']);
-    
+
     // Attending
     $this->provider = User::factory()->create([
         'practice_id' => $this->practice->id,
@@ -79,12 +79,12 @@ test('technician or radiologist can publish radiology report findings and attach
         ->assertHasNoErrors();
 
     expect($order->fresh()->status)->toBe('reported');
-    
+
     $report = RadiologyReport::where('radiology_order_id', $order->id)->first();
     expect($report)->not->toBeNull();
     expect($report->findings)->toBe('Lungs are clear. No active disease.');
     expect($report->impression)->toBe('Normal chest x-ray.');
-    
+
     Storage::disk('public')->assertExists($report->attachment_path);
 });
 

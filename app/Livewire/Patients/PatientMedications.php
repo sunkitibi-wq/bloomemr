@@ -12,6 +12,7 @@ use App\Services\ClinicalDecisionSupportService;
 use App\Services\SurescriptsService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -66,7 +67,7 @@ class PatientMedications extends Component
         $this->patient->load(['medicationTeachingLogs.giver']);
     }
 
-    /** @return \Illuminate\Support\Collection<int, Pharmacy> */
+    /** @return Collection<int, Pharmacy> */
     public function getPharmaciesProperty()
     {
         return Pharmacy::where('practice_id', $this->patient->practice_id ?? Auth::user()->practice_id)

@@ -1,5 +1,7 @@
 <?php
 
+use App\Livewire\Patients\PatientDetail;
+use App\Livewire\Portal\PortalForms;
 use App\Models\FormTemplate;
 use App\Models\Patient;
 use App\Models\PatientForm;
@@ -58,7 +60,7 @@ beforeEach(function () {
 test('provider can assign a form to a patient', function () {
     $this->actingAs($this->provider);
 
-    Livewire::test(\App\Livewire\Patients\PatientDetail::class, ['patient' => $this->patient])
+    Livewire::test(PatientDetail::class, ['patient' => $this->patient])
         ->call('assignForm', $this->template->id)
         ->assertHasNoErrors();
 
@@ -81,7 +83,7 @@ test('guardian can view pending form on the portal', function () {
 
     $this->actingAs($this->guardian, 'portal');
 
-    Livewire::test(\App\Livewire\Portal\PortalForms::class)
+    Livewire::test(PortalForms::class)
         ->assertSee('Telehealth Consent')
         ->assertSee('Complete & Sign');
 });
@@ -96,7 +98,7 @@ test('guardian can submit and e-sign the assigned form with validation', functio
 
     $this->actingAs($this->guardian, 'portal');
 
-    Livewire::test(\App\Livewire\Portal\PortalForms::class)
+    Livewire::test(PortalForms::class)
         ->call('openForm', $assignedForm->id)
         // Submit empty to trigger validation
         ->call('submitForm')
@@ -144,7 +146,7 @@ test('guardian can submit a yes/no form field', function () {
 
     $this->actingAs($this->guardian, 'portal');
 
-    Livewire::test(\App\Livewire\Portal\PortalForms::class)
+    Livewire::test(PortalForms::class)
         ->call('openForm', $assignedForm->id)
         ->set('responses.consent_to_treatment', true)
         ->set('signature', 'Jane Doe')
@@ -160,7 +162,7 @@ test('guardian can submit a yes/no form field', function () {
 test('provider can create a new form template from the patient detail builder', function () {
     $this->actingAs($this->provider);
 
-    Livewire::test(\App\Livewire\Patients\PatientDetail::class, ['patient' => $this->patient])
+    Livewire::test(PatientDetail::class, ['patient' => $this->patient])
         ->set('templateTitle', 'New Intake Form')
         ->set('templateDescription', 'A custom intake form for onboarding.')
         ->set('templateType', 'intake')
@@ -198,7 +200,7 @@ test('provider can view the signed form details', function () {
 
     $this->actingAs($this->provider);
 
-    Livewire::test(\App\Livewire\Patients\PatientDetail::class, ['patient' => $this->patient])
+    Livewire::test(PatientDetail::class, ['patient' => $this->patient])
         ->call('viewCompletedForm', $assignedForm->id)
         ->assertSet('showFormModal', true)
         ->assertSet('selectedFormTitle', 'Telehealth Consent')

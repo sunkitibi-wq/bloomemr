@@ -13,6 +13,7 @@ use Livewire\Component;
 class PracticeAnalytics extends Component
 {
     public int $month;
+
     public int $year;
 
     public function mount(): void

@@ -16,6 +16,7 @@ class PortalRadiology extends Component
 
     // View Report Modal
     public bool $showViewModal = false;
+
     public ?RadiologyReport $selectedReport = null;
 
     public function mount(): void
@@ -30,7 +31,7 @@ class PortalRadiology extends Component
     public function viewReport(int $reportId): void
     {
         $this->selectedReport = RadiologyReport::with('order.orderedBy', 'radiologist')->findOrFail($reportId);
-        
+
         // Ensure patient is authorized to view this report
         if ($this->patient && $this->selectedReport->patient_id !== $this->patient->id) {
             abort(403);

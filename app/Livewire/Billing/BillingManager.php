@@ -2,9 +2,11 @@
 
 namespace App\Livewire\Billing;
 
+use App\Models\ClaimSubmission;
 use App\Models\Encounter;
 use App\Models\Invoice;
 use App\Models\Patient;
+use App\Services\ClearinghouseService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
@@ -243,7 +245,7 @@ class BillingManager extends Component
     public function submitClaim(int $invoiceId): void
     {
         $invoice = Invoice::findOrFail($invoiceId);
-        $service = app(\App\Services\ClearinghouseService::class);
+        $service = app(ClearinghouseService::class);
         $service->submitClaim($invoice);
         session()->flash('message', __('Insurance claim submitted to clearinghouse.'));
     }
@@ -251,14 +253,14 @@ class BillingManager extends Component
     public function viewEdiPayload(int $invoiceId): void
     {
         $this->ediInvoice = Invoice::findOrFail($invoiceId);
-        $submission = \App\Models\ClaimSubmission::where('invoice_id', $invoiceId)->latest()->first();
+        $submission = ClaimSubmission::where('invoice_id', $invoiceId)->latest()->first();
 
         if ($submission) {
             $this->ediRequestPayload = $submission->edi_request;
             $this->ediResponsePayload = $submission->edi_response;
         } else {
             // Generate preview if not submitted yet
-            $service = app(\App\Services\ClearinghouseService::class);
+            $service = app(ClearinghouseService::class);
             $this->ediRequestPayload = $service->generateEdi837($this->ediInvoice);
             $this->ediResponsePayload = __('Claim not yet submitted. Click "Submit Claim" to transmit.');
         }

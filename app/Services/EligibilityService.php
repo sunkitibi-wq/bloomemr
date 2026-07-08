@@ -10,9 +10,6 @@ class EligibilityService
 {
     /**
      * Verify patient's insurance coverage eligibility via a simulated 270/271 transaction.
-     *
-     * @param Patient $patient
-     * @return EligibilityCheck
      */
     public function checkEligibility(Patient $patient): EligibilityCheck
     {
@@ -32,11 +29,11 @@ class EligibilityService
 
         // Check if policy has dummy indicator for inactive
         $isInactive = str_contains(strtolower($insurance), 'inactive') || str_contains(strtolower($insurance), 'terminated');
-        
+
         $status = $isInactive ? 'ineligible' : 'eligible';
         $copay = $isInactive ? 0.00 : 30.00;
         $deductible = $isInactive ? 0.00 : 250.00;
-        
+
         // Extract payer name or default
         $payer = 'Blue Cross Blue Shield';
         if (preg_match('/(aetna|cigna|united|medicaid|medicare)/i', $insurance, $matches)) {

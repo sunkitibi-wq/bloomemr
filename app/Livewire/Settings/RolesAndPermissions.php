@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Settings;
 
-use App\Models\User;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;

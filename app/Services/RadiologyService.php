@@ -11,12 +11,6 @@ class RadiologyService
 {
     /**
      * Create a new radiology order for a patient.
-     *
-     * @param Patient $patient
-     * @param string $procedure
-     * @param string $indication
-     * @param int|null $encounterId
-     * @return RadiologyOrder
      */
     public function createOrder(Patient $patient, string $procedure, string $indication, ?int $encounterId = null): RadiologyOrder
     {
@@ -34,11 +28,6 @@ class RadiologyService
 
     /**
      * Upload and finalize a radiology report for an order.
-     *
-     * @param RadiologyOrder $order
-     * @param array $data
-     * @param string|null $filePath
-     * @return RadiologyReport
      */
     public function uploadReport(RadiologyOrder $order, array $data, ?string $filePath = null): RadiologyReport
     {

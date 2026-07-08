@@ -18,22 +18,31 @@ class InventoryManager extends Component
 
     // Supply form
     public string $itemName = '';
+
     public string $itemSku = '';
+
     public string $itemCategory = 'medical_supplies';
+
     public int $stockQuantity = 0;
+
     public int $reorderLevel = 10;
 
     // Asset form
     public string $assetName = '';
+
     public string $serialNumber = '';
+
     public string $nextCalibrationDue = '';
 
     // Restock
     public ?int $restockItemId = null;
+
     public int $restockQuantity = 0;
 
     public bool $showAddItem = false;
+
     public bool $showAddAsset = false;
+
     public bool $showRestockModal = false;
 
     #[Computed]
