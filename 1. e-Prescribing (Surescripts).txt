@@ -1,0 +1,18 @@
+1. e-Prescribing (Surescripts)
+What is built: Medication and Prescription database models, along with the provider UI for prescribing.
+What is left: The SurescriptsService.php is currently set up to simulate the connection and return a dummy success response. It needs to be wired to the real Surescripts (or DrFirst) API endpoints using valid clinical credentials.
+2. Laboratory Management (HL7 Integration)
+What is built: The UI for ordering labs and the LabOrder / LabResult models.
+What is left: The Hl7IntegrationService.php generates a mocked Quest Diagnostics HL7 ORU^R01 string. This service needs to be connected to an active HL7 interface engine (like Rhapsody, Mirth Connect, or Health Gorilla) to transmit and receive actual lab feeds.
+3. Billing & Revenue Cycle (Payments)
+What is built: Patient portal billing UI, Invoice, and Payment models.
+What is left: The StripePaymentService.php currently simulates the creation of a Stripe PaymentIntent. It needs to be updated to use the official Stripe PHP SDK and real API keys to process live credit card transactions.
+4. Insurance Claims & Eligibility
+What is built: ClaimSubmission and EligibilityCheck records and workflows.
+What is left: Both EligibilityService.php and ClearinghouseService.php simulate 270/271 eligibility transactions and 997 EDI acknowledgment files. They must be connected to a live clearinghouse API (such as Availity or Change Healthcare).
+5. Interoperability (Direct Messaging)
+What is built: Care coordination UI and DirectMessage tracking models.
+What is left: The DirectMessagingService.php simulates a HISP transmission (phiMail gateway callback). It needs an active connection to the EMR Direct phiMail REST API to securely push CCD/CDA clinical summaries to outside providers.
+6. AI Assistant for Clinical Documentation
+What is built: The Smart Phrase triggering system and the transcript-to-note generation workflow.
+What is left: Instead of calling an external LLM, AiClinicalAssistantService.php currently uses hardcoded string-matching (regex and keyword detection) to format notes and suggest phrases. To fully meet the PRD specifications, this service needs to be hooked up to the Anthropic Claude API (or an equivalent LLM).

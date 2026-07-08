@@ -17,12 +17,12 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'role' => fake()->randomElement([
+            'role' => $this->faker->randomElement([
                 'super_admin',
                 'hospital_administrator',
                 'doctor',
@@ -37,8 +37,8 @@ class UserFactory extends Factory
                 'insurance_officer',
                 'public_health_officer',
             ]),
-            'npi_number' => fake()->optional()->numerify('1########'),
-            'phone' => fake()->optional()->phoneNumber(),
+            'npi_number' => $this->faker->optional()->numerify('1########'),
+            'phone' => $this->faker->optional()->phoneNumber(),
             'timezone' => 'America/New_York',
             'is_active' => true,
         ];

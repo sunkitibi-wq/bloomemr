@@ -17,10 +17,10 @@ class EncounterFactory extends Factory
         return [
             'patient_id' => Patient::factory(),
             'provider_id' => User::factory(),
-            'type' => fake()->randomElement(['soap', 'dap', 'narrative', 'intake']),
+            'type' => $this->faker->randomElement(['soap', 'dap', 'narrative', 'intake']),
             'status' => 'draft',
-            'encounter_date' => fake()->dateTimeBetween('-1 month', 'now'),
-            'chief_complaint' => fake()->optional()->sentence(),
+            'encounter_date' => $this->faker->dateTimeBetween('-1 month', 'now'),
+            'chief_complaint' => $this->faker->optional()->sentence(),
         ];
     }
 

@@ -15,8 +15,8 @@ class ClinicalNoteFactory extends Factory
     {
         return [
             'encounter_id' => Encounter::factory(),
-            'template_type' => fake()->randomElement(['soap', 'dap', 'narrative', 'intake']),
-            'body' => fake()->optional()->paragraphs(3, true),
+            'template_type' => $this->faker->randomElement(['soap', 'dap', 'narrative', 'intake']),
+            'body' => $this->faker->optional()->paragraphs(3, true),
             'sections' => null,
             'draft' => null,
             'version' => 1,
