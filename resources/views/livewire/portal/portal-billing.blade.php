@@ -255,8 +255,15 @@
         <form wire:submit.prevent="processPayment" class="space-y-4">
             <div>
                 <flux:heading size="lg">{{ __('Complete Bill Payment') }}</flux:heading>
-                <flux:subheading>{{ __('Simulate credit card checkout via Stripe sandbox') }}</flux:subheading>
+                <flux:subheading>{{ __('Complete credit card checkout via Stripe') }}</flux:subheading>
             </div>
+
+            @error('payment_error')
+                <div class="p-3 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-lg text-sm font-semibold flex items-start gap-2">
+                    <span class="material-symbols-outlined text-sm mt-0.5" style="font-variation-settings: 'FILL' 1;">error</span>
+                    <span>{{ $message }}</span>
+                </div>
+            @enderror
 
             @if ($invoiceToPay)
                 <div class="p-4 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl flex justify-between items-center text-sm mb-2">
@@ -264,6 +271,11 @@
                     <span class="font-mono font-bold text-zinc-900 dark:text-zinc-100">${{ number_format($invoiceToPay->total_amount, 2) }}</span>
                 </div>
             @endif
+
+            <flux:radio.group wire:model="paymentGateway" label="Select Payment Gateway">
+                <flux:radio value="stripe" label="Stripe (Credit Card)" />
+                <flux:radio value="paystack" label="Paystack (Credit Card)" />
+            </flux:radio.group>
 
             <flux:input wire:model="cardNumber" mask="4444-4444-4444-4444" :label="__('Card Number')" placeholder="4111 2222 3333 4444" required />
             <flux:error name="cardNumber" />

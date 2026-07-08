@@ -57,4 +57,19 @@ return [
         'password' => env('ORTHANC_PASSWORD'),
     ],
 
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+    ],
+
+    'paystack' => [
+        'public' => env('PAYSTACK_PUBLIC_KEY'),
+        'secret' => env('PAYSTACK_SECRET_KEY'),
+    ],
+
+    'anthropic' => [
+        'secret' => env('ANTHROPIC_API_KEY'),
+        'mock' => env('ANTHROPIC_MOCK', true),
+    ],
+
 ];

@@ -9,9 +9,140 @@ use Illuminate\Support\Str;
 class AiClinicalAssistantService
 {
     /**
-     * Parse raw dialogue transcripts into structured note sections.
+     * Parse raw dialogue transcripts into structured note sections using Anthropic Claude or Mock.
      */
     public function generateDraftFromTranscript(string $templateType, string $transcript): array
+    {
+        if (config('services.anthropic.mock', true)) {
+            return $this->mockGenerateDraftFromTranscript($templateType, $transcript);
+        }
+
+        if (empty($transcript)) {
+            return [];
+        }
+
+        $systemPrompt = "You are an expert psychiatrist assistant. Convert the following patient-provider dialogue transcript into a formal {$templateType} clinical note. " . 
+                        "Return ONLY valid JSON. Do not include markdown code blocks (like ```json), just the raw JSON object.";
+
+        if ($templateType === 'SOAP') {
+            $systemPrompt .= " The JSON MUST have exactly these keys: subjective, objective, assessment, plan.";
+        } elseif ($templateType === 'DAP') {
+            $systemPrompt .= " The JSON MUST have exactly these keys: data, assessment, plan.";
+        } elseif ($templateType === 'Intake') {
+            $systemPrompt .= " The JSON MUST have exactly these keys: reason_for_visit, hpi, past_psychiatric_history, medical_history, family_history, social_history, mental_status_exam, diagnostic_impression, plan.";
+        } else {
+            $systemPrompt .= " The JSON MUST have exactly one key: body.";
+        }
+
+        $response = \Illuminate\Support\Facades\Http::withToken(config('services.anthropic.secret'))
+            ->withHeaders([
+                'anthropic-version' => '2023-06-01',
+            ])
+            ->post('https://api.anthropic.com/v1/messages', [
+                'model' => 'claude-3-haiku-20240307',
+                'max_tokens' => 2000,
+                'system' => $systemPrompt,
+                'messages' => [
+                    ['role' => 'user', 'content' => $transcript]
+                ],
+            ]);
+
+        if ($response->successful()) {
+            $text = $response->json('content.0.text');
+            // Clean markdown blocks if Claude includes them despite the prompt
+            $text = preg_replace('/```json\s*/', '', $text);
+            $text = preg_replace('/```\s*/', '', $text);
+            
+            $decoded = json_decode(trim($text), true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+        }
+
+        // Fallback or error handling
+        return ['body' => 'Failed to generate note from transcript using AI. Error: ' . $response->body()];
+    }
+
+    /**
+     * Suggest relevant smart phrases based on existing note contents using Anthropic Claude or Mock.
+     */
+    public function suggestSmartPhrases(string $text): Collection
+    {
+        if (config('services.anthropic.mock', true)) {
+            return $this->mockSuggestSmartPhrases($text);
+        }
+
+        if (empty($text)) {
+            return collect();
+        }
+
+        $textLower = strtolower($text);
+
+        // Fetch custom/global smart phrases matching category or keywords
+        $matches = SmartPhrase::where(function ($q) use ($textLower) {
+            $q->where('category', 'like', "%{$textLower}%")
+                ->orWhere('trigger', 'like', "%{$textLower}%");
+        })->get();
+
+        // Generate dynamic AI phrases if no direct database match is found
+        if ($matches->isEmpty()) {
+            $systemPrompt = "You are an expert psychiatrist assistant. Based on the following partial clinical note text, suggest 1 to 3 useful auto-completion 'Smart Phrases' that the doctor might want to insert next. " . 
+                "Return ONLY valid JSON as an array of objects. Each object MUST have exactly these keys: trigger (a short 1-2 word identifier starting with 'ai_'), expansion (the full suggested sentence or paragraph), category (a short category name). Do not include markdown blocks.";
+
+            $response = \Illuminate\Support\Facades\Http::withToken(config('services.anthropic.secret'))
+                ->withHeaders([
+                    'anthropic-version' => '2023-06-01',
+                ])
+                ->post('https://api.anthropic.com/v1/messages', [
+                    'model' => 'claude-3-haiku-20240307',
+                    'max_tokens' => 500,
+                    'system' => $systemPrompt,
+                    'messages' => [
+                        ['role' => 'user', 'content' => $text]
+                    ],
+                ]);
+
+            $suggestions = collect();
+
+            if ($response->successful()) {
+                $jsonText = $response->json('content.0.text');
+                $jsonText = preg_replace('/```json\s*/', '', $jsonText);
+                $jsonText = preg_replace('/```\s*/', '', $jsonText);
+
+                $decoded = json_decode(trim($jsonText), true);
+
+                if (is_array($decoded)) {
+                    foreach ($decoded as $item) {
+                        $suggestions->push(new SmartPhrase([
+                            'trigger' => $item['trigger'] ?? 'ai_suggestion',
+                            'expansion' => $item['expansion'] ?? '',
+                            'category' => $item['category'] ?? 'AI Suggestion',
+                            'is_ai_suggested' => true,
+                        ]));
+                    }
+                }
+            }
+
+            // Fallback if AI fails or returns empty
+            if ($suggestions->isEmpty()) {
+                $suggestions->push(new SmartPhrase([
+                    'trigger' => 'ai_normal',
+                    'expansion' => 'Patient denies any suicidal ideation, homicidal ideation, or auditory/visual hallucinations.',
+                    'category' => 'General Safety',
+                    'is_ai_suggested' => true,
+                ]));
+            }
+
+            return $suggestions;
+        }
+
+        return $matches;
+    }
+
+    /**
+     * Parse raw dialogue transcripts into structured note sections using hardcoded regex (Mock).
+     */
+    private function mockGenerateDraftFromTranscript(string $templateType, string $transcript): array
     {
         if (empty($transcript)) {
             return [];
@@ -129,9 +260,9 @@ class AiClinicalAssistantService
     }
 
     /**
-     * Suggest relevant smart phrases based on existing note contents.
+     * Suggest relevant smart phrases based on existing note contents (Mock).
      */
-    public function suggestSmartPhrases(string $text): Collection
+    private function mockSuggestSmartPhrases(string $text): Collection
     {
         $textLower = strtolower($text);
 

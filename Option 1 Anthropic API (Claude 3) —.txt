@@ -1,0 +1,18 @@
+Option 1: Anthropic API (Claude 3) — Recommended by your PRD
+Your PRD specifically mentions Claude. Claude 3 (Haiku or Sonnet) is widely considered the best model on the market for medical summarization and clinical tone.
+
+How it works: We use Laravel's built-in Http facade to send the transcript and a strong System Prompt directly to the api.anthropic.com/v1/messages endpoint. We can ask Claude to return the data in strict JSON format mapping to your subjective, objective, assessment, and plan arrays.
+Pros: Incredible clinical reasoning; follows the original PRD. Anthropic offers zero-data-retention agreements for healthcare companies.
+Cons: There is no official first-party PHP SDK, so we build the HTTP requests manually (which is relatively simple in Laravel).
+Option 2: OpenAI API (GPT-4o or GPT-4o-mini) — Easiest Integration
+OpenAI has massive ecosystem support in Laravel.
+
+How it works: We install the community-standard openai-php/laravel package. We pass the transcript to the API using OpenAI's "Structured Outputs" feature to guarantee it returns exactly the PHP array structure you need for your Livewire components.
+Pros: Very fast to integrate using the Laravel package. Excellent at guaranteeing structured JSON outputs.
+Cons: Deviates slightly from the PRD. You must ensure you sign a Business Associate Agreement (BAA) with OpenAI if processing real PHI.
+Option 3: Self-Hosted Open Source (Ollama + Llama 3) — Maximum Privacy
+If you want to avoid sending PHI to external third-party APIs altogether, you can host your own AI.
+
+How it works: You run an open-source model like Meta's Llama-3 or Mistral-Nemo on a private GPU server using a tool like Ollama. We point Laravel's Http client to your internal server URL instead of the public internet.
+Pros: 100% HIPAA compliant out of the box. No patient data ever leaves your internal network. No per-token API costs.
+Cons: You have to pay for and maintain a cloud server with a dedicated GPU (e.g., AWS EC2 g4dn instance), which is a high fixed monthly cost.
