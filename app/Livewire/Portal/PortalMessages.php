@@ -5,6 +5,7 @@ namespace App\Livewire\Portal;
 use App\Models\Patient;
 use App\Models\SecureMessage;
 use App\Models\User;
+use App\Services\AiClinicalAssistantService;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -26,6 +27,36 @@ class PortalMessages extends Component
     public ?SecureMessage $activeMessage = null;
 
     public $replyBody = '';
+
+    public string $aiPrompt = '';
+
+    public bool $isProcessingAi = false;
+
+    public function draftAiMessage(bool $isReply = false): void
+    {
+        $this->isProcessingAi = true;
+
+        $prompt = $isReply ? $this->aiPrompt : $this->aiPrompt;
+
+        if (empty($prompt)) {
+            $this->isProcessingAi = false;
+            session()->flash('message', __('Please enter a prompt for the AI.'));
+
+            return;
+        }
+
+        $service = app(AiClinicalAssistantService::class);
+        $draft = $service->draftPatientMessage($prompt);
+
+        if ($isReply) {
+            $this->replyBody = $draft;
+        } else {
+            $this->body = $draft;
+        }
+
+        $this->isProcessingAi = false;
+        $this->aiPrompt = '';
+    }
 
     public function mount(): void
     {

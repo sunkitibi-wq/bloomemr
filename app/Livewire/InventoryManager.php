@@ -19,9 +19,9 @@ class InventoryManager extends Component
     public string $itemName = '';
 
     public string $itemSku = '';
-    
+
     public string $lotNumber = '';
-    
+
     public string $expirationDate = '';
 
     public string $itemCategory = 'medical_supplies';

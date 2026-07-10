@@ -83,7 +83,7 @@ class ClearinghouseService
             config('services.avality.client_id', ''),
             config('services.avality.client_secret', '')
         )->withBody($ediRequest, 'application/edi-x12')
-        ->post('https://api.availity.com/v1/claims');
+            ->post('https://api.availity.com/v1/claims');
 
         $ediResponse = $response->body();
         $status = $response->successful() ? 'accepted' : 'rejected';

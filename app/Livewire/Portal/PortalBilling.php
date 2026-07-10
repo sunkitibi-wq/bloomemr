@@ -4,8 +4,8 @@ namespace App\Livewire\Portal;
 
 use App\Models\Invoice;
 use App\Models\Patient;
-use App\Services\StripePaymentService;
 use App\Services\PaystackPaymentService;
+use App\Services\StripePaymentService;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -81,10 +81,10 @@ class PortalBilling extends Component
 
         if ($this->invoiceToPay && $this->invoiceToPay->status !== 'paid') {
             try {
-                $service = $this->paymentGateway === 'paystack' 
-                    ? app(PaystackPaymentService::class) 
+                $service = $this->paymentGateway === 'paystack'
+                    ? app(PaystackPaymentService::class)
                     : app(StripePaymentService::class);
-                
+
                 $parts = explode('/', $this->cardExpiry);
                 if (count($parts) !== 2) {
                     throw new \Exception('Invalid expiration date format. Use MM/YY.');

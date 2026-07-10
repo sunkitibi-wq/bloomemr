@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Invoice;
 use App\Models\Payment;
-use Illuminate\Support\Facades\Http;
 use Exception;
+use Illuminate\Support\Facades\Http;
 
 class PaystackPaymentService
 {
@@ -33,7 +33,7 @@ class PaystackPaymentService
 
         if ($response->successful() && isset($result['status']) && $result['status'] === true) {
             $data = $result['data'];
-            
+
             // For a simple server-side implementation, we require immediate success.
             // (Standard Paystack charge might require PIN/OTP which is complex for a raw API call)
             if (isset($data['status']) && $data['status'] === 'success') {
@@ -53,7 +53,7 @@ class PaystackPaymentService
                 return $payment;
             }
 
-            throw new Exception('Paystack requires further action: ' . ($data['message'] ?? $data['status']));
+            throw new Exception('Paystack requires further action: '.($data['message'] ?? $data['status']));
         }
 
         throw new Exception($result['message'] ?? 'Payment failed or declined by Paystack.');

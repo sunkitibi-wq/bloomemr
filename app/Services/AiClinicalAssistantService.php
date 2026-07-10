@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\SmartPhrase;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class AiClinicalAssistantService
@@ -21,20 +22,20 @@ class AiClinicalAssistantService
             return [];
         }
 
-        $systemPrompt = "You are an expert psychiatrist assistant. Convert the following patient-provider dialogue transcript into a formal {$templateType} clinical note. " . 
-                        "Return ONLY valid JSON. Do not include markdown code blocks (like ```json), just the raw JSON object.";
+        $systemPrompt = "You are an expert psychiatrist assistant. Convert the following patient-provider dialogue transcript into a formal {$templateType} clinical note. ".
+                        'Return ONLY valid JSON. Do not include markdown code blocks (like ```json), just the raw JSON object.';
 
         if ($templateType === 'SOAP') {
-            $systemPrompt .= " The JSON MUST have exactly these keys: subjective, objective, assessment, plan.";
+            $systemPrompt .= ' The JSON MUST have exactly these keys: subjective, objective, assessment, plan.';
         } elseif ($templateType === 'DAP') {
-            $systemPrompt .= " The JSON MUST have exactly these keys: data, assessment, plan.";
+            $systemPrompt .= ' The JSON MUST have exactly these keys: data, assessment, plan.';
         } elseif ($templateType === 'Intake') {
-            $systemPrompt .= " The JSON MUST have exactly these keys: reason_for_visit, hpi, past_psychiatric_history, medical_history, family_history, social_history, mental_status_exam, diagnostic_impression, plan.";
+            $systemPrompt .= ' The JSON MUST have exactly these keys: reason_for_visit, hpi, past_psychiatric_history, medical_history, family_history, social_history, mental_status_exam, diagnostic_impression, plan.';
         } else {
-            $systemPrompt .= " The JSON MUST have exactly one key: body.";
+            $systemPrompt .= ' The JSON MUST have exactly one key: body.';
         }
 
-        $response = \Illuminate\Support\Facades\Http::withToken(config('services.anthropic.secret'))
+        $response = Http::withToken(config('services.anthropic.secret'))
             ->withHeaders([
                 'anthropic-version' => '2023-06-01',
             ])
@@ -43,7 +44,7 @@ class AiClinicalAssistantService
                 'max_tokens' => 2000,
                 'system' => $systemPrompt,
                 'messages' => [
-                    ['role' => 'user', 'content' => $transcript]
+                    ['role' => 'user', 'content' => $transcript],
                 ],
             ]);
 
@@ -52,7 +53,7 @@ class AiClinicalAssistantService
             // Clean markdown blocks if Claude includes them despite the prompt
             $text = preg_replace('/```json\s*/', '', $text);
             $text = preg_replace('/```\s*/', '', $text);
-            
+
             $decoded = json_decode(trim($text), true);
             if (is_array($decoded)) {
                 return $decoded;
@@ -60,7 +61,7 @@ class AiClinicalAssistantService
         }
 
         // Fallback or error handling
-        return ['body' => 'Failed to generate note from transcript using AI. Error: ' . $response->body()];
+        return ['body' => 'Failed to generate note from transcript using AI. Error: '.$response->body()];
     }
 
     /**
@@ -86,10 +87,10 @@ class AiClinicalAssistantService
 
         // Generate dynamic AI phrases if no direct database match is found
         if ($matches->isEmpty()) {
-            $systemPrompt = "You are an expert psychiatrist assistant. Based on the following partial clinical note text, suggest 1 to 3 useful auto-completion 'Smart Phrases' that the doctor might want to insert next. " . 
+            $systemPrompt = "You are an expert psychiatrist assistant. Based on the following partial clinical note text, suggest 1 to 3 useful auto-completion 'Smart Phrases' that the doctor might want to insert next. ".
                 "Return ONLY valid JSON as an array of objects. Each object MUST have exactly these keys: trigger (a short 1-2 word identifier starting with 'ai_'), expansion (the full suggested sentence or paragraph), category (a short category name). Do not include markdown blocks.";
 
-            $response = \Illuminate\Support\Facades\Http::withToken(config('services.anthropic.secret'))
+            $response = Http::withToken(config('services.anthropic.secret'))
                 ->withHeaders([
                     'anthropic-version' => '2023-06-01',
                 ])
@@ -98,7 +99,7 @@ class AiClinicalAssistantService
                     'max_tokens' => 500,
                     'system' => $systemPrompt,
                     'messages' => [
-                        ['role' => 'user', 'content' => $text]
+                        ['role' => 'user', 'content' => $text],
                     ],
                 ]);
 
@@ -326,5 +327,111 @@ class AiClinicalAssistantService
         }
 
         return $matches;
+    }
+
+    /**
+     * Draft a secure message for a patient based on a short prompt.
+     */
+    public function draftPatientMessage(string $prompt): string
+    {
+        if (config('services.anthropic.mock', true)) {
+            return "Hello Dr. Smith,\n\nI am writing to request: ".$prompt."\n\nPlease let me know if you need any additional information.\n\nThank you.";
+        }
+
+        if (empty($prompt)) {
+            return '';
+        }
+
+        $systemPrompt = 'You are a helpful AI assistant. Draft a polite, clear, and concise secure medical message on behalf of a patient to their clinician based on the following prompt. Do not include markdown blocks, just the text. Keep it professional and brief.';
+
+        $response = Http::withToken(config('services.anthropic.secret'))
+            ->withHeaders(['anthropic-version' => '2023-06-01'])
+            ->post('https://api.anthropic.com/v1/messages', [
+                'model' => 'claude-3-haiku-20240307',
+                'max_tokens' => 300,
+                'system' => $systemPrompt,
+                'messages' => [['role' => 'user', 'content' => $prompt]],
+            ]);
+
+        if ($response->successful()) {
+            $text = $response->json('content.0.text');
+
+            return trim($text);
+        }
+
+        return 'Failed to draft message: '.$response->body();
+    }
+
+    /**
+     * Explain lab results to a patient in plain English.
+     */
+    public function explainLabResult(array $labData): string
+    {
+        if (config('services.anthropic.mock', true)) {
+            return 'Based on your mock lab results, your values appear to be monitored. Please consult your physician for a full explanation.';
+        }
+
+        if (empty($labData)) {
+            return '';
+        }
+
+        $systemPrompt = 'You are an empathetic, reassuring medical assistant. Explain the following JSON lab results to the patient in plain English. Avoid complex jargon. If there are abnormal values (flagged High or Low), explain what they mean generally but ALWAYS state that they should discuss these with their doctor. Do not make definitive diagnoses. Do not use markdown blocks like ```json.';
+
+        $response = Http::withToken(config('services.anthropic.secret'))
+            ->withHeaders(['anthropic-version' => '2023-06-01'])
+            ->post('https://api.anthropic.com/v1/messages', [
+                'model' => 'claude-3-haiku-20240307',
+                'max_tokens' => 500,
+                'system' => $systemPrompt,
+                'messages' => [['role' => 'user', 'content' => json_encode($labData)]],
+            ]);
+
+        if ($response->successful()) {
+            return trim($response->json('content.0.text'));
+        }
+
+        return 'Failed to explain labs: '.$response->body();
+    }
+
+    /**
+     * Triage patient symptoms and provide routing advice.
+     */
+    public function triageSymptoms(string $symptoms): array
+    {
+        if (config('services.anthropic.mock', true)) {
+            return [
+                'advice' => 'This is a mock triage response. If you are experiencing an emergency, please call 911.',
+                'action' => 'routine',
+            ];
+        }
+
+        if (empty($symptoms)) {
+            return ['advice' => '', 'action' => 'none'];
+        }
+
+        $systemPrompt = "You are a medical triage assistant. You must analyze the patient's symptoms and return exactly ONE JSON object with two keys: 'advice' (a brief explanation of what the patient should do) and 'action' (must be exactly one of: 'emergency', 'urgent', 'telehealth', 'routine'). Do NOT provide medical diagnoses. If symptoms indicate chest pain, severe shortness of breath, stroke symptoms, or severe bleeding, action MUST be 'emergency'. Do not include markdown blocks like ```json.";
+
+        $response = Http::withToken(config('services.anthropic.secret'))
+            ->withHeaders(['anthropic-version' => '2023-06-01'])
+            ->post('https://api.anthropic.com/v1/messages', [
+                'model' => 'claude-3-haiku-20240307',
+                'max_tokens' => 200,
+                'system' => $systemPrompt,
+                'messages' => [['role' => 'user', 'content' => $symptoms]],
+            ]);
+
+        if ($response->successful()) {
+            $text = $response->json('content.0.text');
+            $text = preg_replace('/```json\s*/', '', $text);
+            $text = preg_replace('/```\s*/', '', $text);
+            $decoded = json_decode(trim($text), true);
+            if (is_array($decoded) && isset($decoded['advice']) && isset($decoded['action'])) {
+                return $decoded;
+            }
+
+            return ['advice' => $text, 'action' => 'routine']; // fallback
+        }
+
+        return ['advice' => 'Failed to triage symptoms: '.$response->body(), 'action' => 'none'];
     }
 }

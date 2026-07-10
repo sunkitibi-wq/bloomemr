@@ -27,7 +27,7 @@ class ClaimsCenter extends Component
                 ->where('status', '!=', 'draft')
                 ->where('insurance_claim_status', $this->filterStatus)
                 ->pluck('id')
-                ->map(fn($id) => (string) $id)
+                ->map(fn ($id) => (string) $id)
                 ->toArray();
         } else {
             $this->selectedInvoices = [];
@@ -44,15 +44,16 @@ class ClaimsCenter extends Component
     public function batchSubmit()
     {
         $count = count($this->selectedInvoices);
-        
+
         if ($count === 0) {
             session()->flash('error', __('Please select at least one claim to submit.'));
+
             return;
         }
 
         $service = app(ClearinghouseService::class);
         $invoices = Invoice::whereIn('id', $this->selectedInvoices)->get();
-        
+
         $success = 0;
         foreach ($invoices as $invoice) {
             try {

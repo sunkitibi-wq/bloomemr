@@ -2,11 +2,13 @@
 
 use App\Livewire\Assessments\ScoredAssessment;
 use App\Livewire\Billing\BillingManager;
+use App\Livewire\Billing\ClaimsCenter;
 use App\Livewire\Dashboard;
 use App\Livewire\Documents\DocumentUpload;
 use App\Livewire\Encounters\EncounterForm;
 use App\Livewire\Encounters\EncounterNote;
 use App\Livewire\InventoryManager;
+use App\Livewire\MessageCenter;
 use App\Livewire\Patients\PatientDetail;
 use App\Livewire\Patients\PatientForm;
 use App\Livewire\Patients\PatientList;
@@ -20,13 +22,17 @@ use App\Livewire\Portal\PortalCareCoordination;
 use App\Livewire\Portal\PortalDocumentUpload;
 use App\Livewire\Portal\PortalEducation;
 use App\Livewire\Portal\PortalForms;
+use App\Livewire\Portal\PortalLabs;
 use App\Livewire\Portal\PortalMessages;
 use App\Livewire\Portal\PortalRadiology;
 use App\Livewire\Portal\PortalRefills;
 use App\Livewire\Portal\PortalTelehealth;
+use App\Livewire\Portal\PortalTriage;
 use App\Livewire\Portal\PortalVisitSummaries;
 use App\Livewire\PracticeAnalytics;
+use App\Livewire\Reporting\ClinicalQualityMeasures;
 use App\Livewire\Scheduling\AppointmentList;
+use App\Livewire\Scheduling\FlowBoard;
 use App\Livewire\SystemAdmin\PracticeManager;
 use App\Models\SmartPhrase;
 use Illuminate\Http\Request;
@@ -37,15 +43,15 @@ Route::view('/', 'welcome')->name('home');
 Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::livewire('dashboard', Dashboard::class)->name('dashboard');
     Route::livewire('scheduling', AppointmentList::class)->name('scheduling');
-    Route::livewire('scheduling/flow-board', \App\Livewire\Scheduling\FlowBoard::class)->name('scheduling.flow-board');
+    Route::livewire('scheduling/flow-board', FlowBoard::class)->name('scheduling.flow-board');
     Route::livewire('billing', BillingManager::class)->name('billing');
-    Route::livewire('billing/claims', \App\Livewire\Billing\ClaimsCenter::class)->name('billing.claims');
+    Route::livewire('billing/claims', ClaimsCenter::class)->name('billing.claims');
     Route::livewire('pharmacy-portal', PharmacyPortal::class)->name('pharmacy.portal');
     Route::livewire('inventory', InventoryManager::class)->name('inventory');
     Route::livewire('population-health', PopulationHealth::class)->name('population-health');
     Route::livewire('analytics', PracticeAnalytics::class)->name('analytics');
-    Route::livewire('analytics/cqm', \App\Livewire\Reporting\ClinicalQualityMeasures::class)->name('analytics.cqm');
-    Route::livewire('messages', \App\Livewire\MessageCenter::class)->name('messages');
+    Route::livewire('analytics/cqm', ClinicalQualityMeasures::class)->name('analytics.cqm');
+    Route::livewire('messages', MessageCenter::class)->name('messages');
 
     // System Admin (is_system_admin = true users only)
     Route::livewire('system/practices', PracticeManager::class)
@@ -97,6 +103,8 @@ Route::middleware(['auth:portal,web', 'verified'])->group(function () {
     Route::livewire('portal/appointments', PortalAppointments::class)->name('portal.appointments');
     Route::livewire('portal/billing', PortalBilling::class)->name('portal.billing');
     Route::livewire('portal/messages', PortalMessages::class)->name('portal.messages');
+    Route::livewire('portal/labs', PortalLabs::class)->name('portal.labs');
+    Route::livewire('portal/triage', PortalTriage::class)->name('portal.triage');
     Route::livewire('portal/refills', PortalRefills::class)->name('portal.refills');
     Route::livewire('portal/telehealth', PortalTelehealth::class)->name('portal.telehealth');
     Route::livewire('portal/forms', PortalForms::class)->name('portal.forms');

@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Models\Invoice;
 use App\Models\Payment;
 use Illuminate\Support\Str;
-use Stripe\StripeClient;
 use Stripe\Exception\ApiErrorException;
+use Stripe\StripeClient;
 
 class StripePaymentService
 {
@@ -14,7 +14,7 @@ class StripePaymentService
 
     public function __construct()
     {
-        if (!config('services.stripe.mock', true)) {
+        if (! config('services.stripe.mock', true)) {
             $this->stripe = new StripeClient(config('services.stripe.secret') ?? 'sk_test_mock');
         }
     }
@@ -53,7 +53,7 @@ class StripePaymentService
                     'enabled' => true,
                     'allow_redirects' => 'never',
                 ],
-                'description' => 'Invoice #' . $invoice->id,
+                'description' => 'Invoice #'.$invoice->id,
                 'metadata' => [
                     'invoice_id' => $invoice->id,
                     'practice_id' => $invoice->practice_id,
@@ -77,7 +77,7 @@ class StripePaymentService
                 return $payment;
             }
 
-            throw new \Exception('Payment requires further action or failed. Status: ' . $paymentIntent->status);
+            throw new \Exception('Payment requires further action or failed. Status: '.$paymentIntent->status);
         } catch (ApiErrorException $e) {
             throw new \Exception($e->getMessage());
         }
@@ -93,7 +93,7 @@ class StripePaymentService
             'practice_id' => $invoice->practice_id,
             'amount' => $invoice->total_amount,
             'payment_method' => 'credit_card (ending in '.$last4.')',
-            'transaction_reference' => 'ch_mock_' . Str::random(24),
+            'transaction_reference' => 'ch_mock_'.Str::random(24),
             'paid_at' => now(),
         ]);
 

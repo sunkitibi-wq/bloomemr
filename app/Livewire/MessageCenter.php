@@ -21,17 +21,21 @@ class MessageCenter extends Component
 
     // Compose form
     public $showCompose = false;
+
     public $recipientId = '';
+
     public $patientId = '';
+
     public $subject = '';
+
     public $body = '';
 
     public function selectMessage(int $id)
     {
         $this->selectedMessageId = $id;
         $message = SecureMessage::findOrFail($id);
-        
-        if ($message->recipient_id === Auth::id() && null === $message->read_at) {
+
+        if ($message->recipient_id === Auth::id() && $message->read_at === null) {
             $message->update(['read_at' => now()]);
         }
     }
@@ -88,14 +92,14 @@ class MessageCenter extends Component
 
         $messages = $query->paginate(20);
         $selectedMessage = $this->selectedMessageId ? SecureMessage::with(['sender', 'recipient', 'patient'])->find($this->selectedMessageId) : null;
-        
+
         // Potential recipients (staff in same practice)
         $staff = User::where('practice_id', Auth::user()->practice_id)
             ->where('id', '!=', Auth::id())
             ->where('role', '!=', 'guardian')
             ->orderBy('name')
             ->get();
-            
+
         $patients = Patient::where('practice_id', Auth::user()->practice_id)->orderBy('last_name')->get();
 
         return view('livewire.message-center', [

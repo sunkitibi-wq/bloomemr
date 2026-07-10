@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Reporting;
 
-use App\Models\Patient;
 use App\Models\Encounter;
+use App\Models\Patient;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -12,25 +12,27 @@ use Livewire\Component;
 class ClinicalQualityMeasures extends Component
 {
     public $reportingPeriod = '2026';
-    
+
     // Simple simulated measures
     public function getMeasuresProperty()
     {
         $practiceId = Auth::user()->practice_id;
-        
+
         $totalPatients = Patient::where('practice_id', $practiceId)->count();
-        if ($totalPatients === 0) return [];
-        
+        if ($totalPatients === 0) {
+            return [];
+        }
+
         // Measure 1: Depression Screening
         $patientsWithScreening = Patient::where('practice_id', $practiceId)
-            ->whereHas('assessments', function($q) {
+            ->whereHas('assessments', function ($q) {
                 $q->where('instrument', 'PHQ-9');
             })->count();
-            
+
         // Measure 2: Medication Documented
         $patientsWithMeds = Patient::where('practice_id', $practiceId)
             ->whereHas('medications')->count();
-            
+
         // Measure 3: Encounters closed within 48h
         $totalEncounters = Encounter::where('practice_id', $practiceId)->count();
         $closedEncounters = Encounter::where('practice_id', $practiceId)
@@ -63,7 +65,7 @@ class ClinicalQualityMeasures extends Component
                 'numerator' => $closedEncounters,
                 'rate' => $totalEncounters > 0 ? round(($closedEncounters / $totalEncounters) * 100, 1) : 0,
                 'target' => 90,
-            ]
+            ],
         ];
     }
 
@@ -71,7 +73,7 @@ class ClinicalQualityMeasures extends Component
     {
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="cqm_report_' . $this->reportingPeriod . '.csv"',
+            'Content-Disposition' => 'attachment; filename="cqm_report_'.$this->reportingPeriod.'.csv"',
         ];
 
         $measures = $this->measures;
@@ -100,7 +102,7 @@ class ClinicalQualityMeasures extends Component
     public function render()
     {
         return view('livewire.reporting.clinical-quality-measures', [
-            'measures' => $this->measures
+            'measures' => $this->measures,
         ]);
     }
 }

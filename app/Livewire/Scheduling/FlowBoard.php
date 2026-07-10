@@ -29,7 +29,7 @@ class FlowBoard extends Component
             ->get();
 
         $boards = [
-            'Scheduled' => $appointments->filter(fn ($a) => !in_array($a->status, ['arrived', 'triaged', 'in-room', 'completed', 'cancelled'])),
+            'Scheduled' => $appointments->filter(fn ($a) => ! in_array($a->status, ['arrived', 'triaged', 'in-room', 'completed', 'cancelled'])),
             'Arrived' => $appointments->where('status', 'arrived'),
             'Triaged' => $appointments->where('status', 'triaged'),
             'In Room' => $appointments->where('status', 'in-room'),
