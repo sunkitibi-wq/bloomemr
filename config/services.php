@@ -60,16 +60,40 @@ return [
     'stripe' => [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
+        'mock' => env('STRIPE_MOCK', true),
     ],
 
     'paystack' => [
         'public' => env('PAYSTACK_PUBLIC_KEY'),
         'secret' => env('PAYSTACK_SECRET_KEY'),
+        'mock' => env('PAYSTACK_MOCK', true),
     ],
 
     'anthropic' => [
         'secret' => env('ANTHROPIC_API_KEY'),
         'mock' => env('ANTHROPIC_MOCK', true),
+    ],
+
+    'surescripts' => [
+        'key' => env('SURESCRIPTS_API_KEY'),
+        'secret' => env('SURESCRIPTS_API_SECRET'),
+        'mock' => env('SURESCRIPTS_MOCK', true),
+    ],
+
+    'avality' => [
+        'client_id' => env('AVALITY_CLIENT_ID'),
+        'client_secret' => env('AVALITY_CLIENT_SECRET'),
+        'mock' => env('AVALITY_MOCK', true),
+    ],
+
+    'health_gorilla' => [
+        'token' => env('HEALTH_GORILLA_TOKEN'),
+        'mock' => env('HEALTH_GORILLA_MOCK', true),
+    ],
+
+    'emr_direct' => [
+        'api_key' => env('EMR_DIRECT_API_KEY'),
+        'mock' => env('EMR_DIRECT_MOCK', true),
     ],
 
 ];

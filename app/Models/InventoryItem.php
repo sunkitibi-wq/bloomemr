@@ -14,6 +14,8 @@ class InventoryItem extends Model
         'practice_id',
         'name',
         'sku',
+        'lot_number',
+        'expiration_date',
         'category',
         'stock_quantity',
         'reorder_level',

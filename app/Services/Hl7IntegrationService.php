@@ -6,9 +6,32 @@ use App\Models\LabOrder;
 use App\Models\LabResult;
 use App\Models\Patient;
 use App\Models\Practice;
+use Illuminate\Support\Facades\Http;
 
 class Hl7IntegrationService
 {
+    /**
+     * Fetch Lab Results from Health Gorilla API or Mock based on config.
+     */
+    public function fetchLabResults(Patient $patient, LabOrder $order, array $observations = []): string
+    {
+        if (config('services.health_gorilla.mock', true)) {
+            return $this->generateMockQuestHl7($patient, $order, $observations);
+        }
+
+        $response = Http::withToken(config('services.health_gorilla.token', ''))
+            ->get('https://api.healthgorilla.com/fhir/R4/DiagnosticReport', [
+                'patient' => $patient->id,
+                'based-on' => $order->id,
+            ]);
+
+        if ($response->successful()) {
+            return $response->body();
+        }
+
+        return '';
+    }
+
     /**
      * Generates a mock Quest Diagnostics HL7 ORU^R01 message string.
      */
@@ -38,6 +61,11 @@ class Hl7IntegrationService
      */
     public function parseOruPayload(string $hl7Payload, Practice $practice): ?LabResult
     {
+        // Check if FHIR payload
+        if (str_starts_with(trim($hl7Payload), '{')) {
+            return $this->parseFhirPayload($hl7Payload, $practice);
+        }
+
         $lines = explode("\n", trim($hl7Payload));
         $patient = null;
         $labOrder = null;
@@ -100,6 +128,50 @@ class Hl7IntegrationService
         ]);
 
         // Complete the lab order
+        $labOrder->update(['status' => 'completed']);
+
+        return $result;
+    }
+
+    private function parseFhirPayload(string $fhirPayload, Practice $practice): ?LabResult
+    {
+        $data = json_decode($fhirPayload, true);
+        if (! $data || ($data['resourceType'] ?? '') !== 'DiagnosticReport') {
+            return null;
+        }
+
+        $patientId = str_replace('Patient/', '', $data['subject']['reference'] ?? '');
+        $orderId = str_replace('ServiceRequest/', '', $data['basedOn'][0]['reference'] ?? '');
+
+        $patient = Patient::find($patientId);
+        $labOrder = LabOrder::find($orderId);
+
+        if (! $patient || ! $labOrder) {
+            return null;
+        }
+
+        $observations = [];
+        $isCritical = false;
+
+        foreach ($data['result'] ?? [] as $res) {
+            $obs = [
+                'name' => $res['display'] ?? 'Observation',
+                'value' => $res['valueQuantity']['value'] ?? '',
+                'unit' => $res['valueQuantity']['unit'] ?? '',
+                'range' => $res['referenceRange'][0]['text'] ?? '',
+                'flag' => '',
+            ];
+            $observations[] = $obs;
+        }
+
+        $result = LabResult::create([
+            'practice_id' => $practice->id,
+            'patient_id' => $patient->id,
+            'lab_order_id' => $labOrder->id,
+            'result_data' => $observations,
+            'is_critical' => $isCritical,
+        ]);
+
         $labOrder->update(['status' => 'completed']);
 
         return $result;

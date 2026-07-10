@@ -10,11 +10,13 @@ use Stripe\Exception\ApiErrorException;
 
 class StripePaymentService
 {
-    protected StripeClient $stripe;
+    protected ?StripeClient $stripe = null;
 
     public function __construct()
     {
-        $this->stripe = new StripeClient(config('services.stripe.secret') ?? 'sk_test_mock');
+        if (!config('services.stripe.mock', true)) {
+            $this->stripe = new StripeClient(config('services.stripe.secret') ?? 'sk_test_mock');
+        }
     }
 
     /**
@@ -22,6 +24,10 @@ class StripePaymentService
      */
     public function processCardPayment(Invoice $invoice, string $cardNumber, string $expMonth, string $expYear, string $cvc): Payment
     {
+        if (config('services.stripe.mock', true)) {
+            return $this->mockProcessCardPayment($invoice, $cardNumber);
+        }
+
         // Remove any non-numeric characters from the card number (e.g., spaces, dashes)
         $cardNumber = preg_replace('/[^0-9]/', '', $cardNumber);
 
@@ -75,5 +81,24 @@ class StripePaymentService
         } catch (ApiErrorException $e) {
             throw new \Exception($e->getMessage());
         }
+    }
+
+    private function mockProcessCardPayment(Invoice $invoice, string $cardNumber): Payment
+    {
+        $cardNumber = preg_replace('/[^0-9]/', '', $cardNumber);
+        $last4 = substr($cardNumber, -4) ?: '4242';
+
+        $payment = Payment::create([
+            'invoice_id' => $invoice->id,
+            'practice_id' => $invoice->practice_id,
+            'amount' => $invoice->total_amount,
+            'payment_method' => 'credit_card (ending in '.$last4.')',
+            'transaction_reference' => 'ch_mock_' . Str::random(24),
+            'paid_at' => now(),
+        ]);
+
+        $invoice->update(['status' => 'paid']);
+
+        return $payment;
     }
 }

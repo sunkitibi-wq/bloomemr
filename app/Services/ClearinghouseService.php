@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ClaimSubmission;
 use App\Models\Invoice;
+use Illuminate\Support\Facades\Http;
 
 class ClearinghouseService
 {
@@ -71,6 +72,39 @@ class ClearinghouseService
      * Submit an insurance claim for an invoice to the clearinghouse.
      */
     public function submitClaim(Invoice $invoice): ClaimSubmission
+    {
+        if (config('services.avality.mock', true)) {
+            return $this->mockSubmitClaim($invoice);
+        }
+
+        $ediRequest = $this->generateEdi837($invoice);
+
+        $response = Http::withBasicAuth(
+            config('services.avality.client_id', ''),
+            config('services.avality.client_secret', '')
+        )->withBody($ediRequest, 'application/edi-x12')
+        ->post('https://api.availity.com/v1/claims');
+
+        $ediResponse = $response->body();
+        $status = $response->successful() ? 'accepted' : 'rejected';
+
+        $submission = ClaimSubmission::create([
+            'invoice_id' => $invoice->id,
+            'edi_request' => $ediRequest,
+            'edi_response' => $ediResponse,
+            'status' => $status,
+        ]);
+
+        $invoice->update([
+            'insurance_claim_status' => $status === 'accepted' ? 'submitted' : 'failed',
+            'submitted_at' => now(),
+            'claim_reference' => 'CLM-'.str_pad((string) $invoice->id, 5, '0', STR_PAD_LEFT),
+        ]);
+
+        return $submission;
+    }
+
+    private function mockSubmitClaim(Invoice $invoice): ClaimSubmission
     {
         $ediRequest = $this->generateEdi837($invoice);
 

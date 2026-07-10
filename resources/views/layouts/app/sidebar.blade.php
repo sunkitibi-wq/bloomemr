@@ -41,11 +41,19 @@
                             <flux:sidebar.item icon="calendar" :href="route('scheduling')" :current="request()->routeIs('scheduling')" wire:navigate>
                                 {{ __('Scheduling') }}
                             </flux:sidebar.item>
+                            
+                            <flux:sidebar.item icon="queue-list" :href="route('scheduling.flow-board')" :current="request()->routeIs('scheduling.flow-board')" wire:navigate>
+                                {{ __('Flow Board') }}
+                            </flux:sidebar.item>
                         @endif
 
                         @if ($user && in_array($user->role, ['attending', 'super_admin', 'billing_admin'], true))
                             <flux:sidebar.item icon="credit-card" :href="route('billing')" :current="request()->routeIs('billing')" wire:navigate>
                                 {{ __('Billing') }}
+                            </flux:sidebar.item>
+                            
+                            <flux:sidebar.item icon="document-text" :href="route('billing.claims')" :current="request()->routeIs('billing.claims')" wire:navigate>
+                                {{ __('Claims Center') }}
                             </flux:sidebar.item>
                         @endif
 
@@ -57,6 +65,10 @@
                     </flux:sidebar.group>
 
                     <flux:sidebar.group :heading="__('Operations')" class="grid">
+                        <flux:sidebar.item icon="envelope" :href="route('messages')" :current="request()->routeIs('messages')" wire:navigate>
+                            {{ __('Messages') }}
+                        </flux:sidebar.item>
+
                         @if ($user && in_array($user->role, ['attending', 'super_admin', 'clinical_staff'], true))
                             <flux:sidebar.item icon="archive-box" :href="route('inventory')" :current="request()->routeIs('inventory')" wire:navigate>
                                 {{ __('Inventory') }}
@@ -70,6 +82,10 @@
 
                             <flux:sidebar.item icon="chart-bar" :href="route('analytics')" :current="request()->routeIs('analytics')" wire:navigate>
                                 {{ __('Analytics') }}
+                            </flux:sidebar.item>
+                            
+                            <flux:sidebar.item icon="clipboard-document-check" :href="route('analytics.cqm')" :current="request()->routeIs('analytics.cqm')" wire:navigate>
+                                {{ __('Quality Measures') }}
                             </flux:sidebar.item>
                         @endif
                     </flux:sidebar.group>

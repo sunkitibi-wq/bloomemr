@@ -16,10 +16,13 @@ class InventoryManager extends Component
 {
     public string $activeTab = 'supplies';
 
-    // Supply form
     public string $itemName = '';
 
     public string $itemSku = '';
+    
+    public string $lotNumber = '';
+    
+    public string $expirationDate = '';
 
     public string $itemCategory = 'medical_supplies';
 
@@ -82,6 +85,8 @@ class InventoryManager extends Component
         $this->validate([
             'itemName' => 'required|string|max:255',
             'itemSku' => 'nullable|string|max:100',
+            'lotNumber' => 'nullable|string|max:100',
+            'expirationDate' => 'nullable|date',
             'itemCategory' => 'required|string',
             'stockQuantity' => 'required|integer|min:0',
             'reorderLevel' => 'required|integer|min:0',
@@ -91,13 +96,15 @@ class InventoryManager extends Component
             'practice_id' => Auth::user()->practice_id,
             'name' => $this->itemName,
             'sku' => $this->itemSku ?: null,
+            'lot_number' => $this->lotNumber ?: null,
+            'expiration_date' => $this->expirationDate ?: null,
             'category' => $this->itemCategory,
             'stock_quantity' => $this->stockQuantity,
             'reorder_level' => $this->reorderLevel,
             'status' => $this->stockQuantity <= $this->reorderLevel ? 'low_stock' : 'active',
         ]);
 
-        $this->reset(['itemName', 'itemSku', 'itemCategory', 'stockQuantity', 'reorderLevel', 'showAddItem']);
+        $this->reset(['itemName', 'itemSku', 'lotNumber', 'expirationDate', 'itemCategory', 'stockQuantity', 'reorderLevel', 'showAddItem']);
         $this->stockQuantity = 0;
         $this->reorderLevel = 10;
         $this->itemCategory = 'medical_supplies';

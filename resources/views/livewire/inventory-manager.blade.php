@@ -85,7 +85,8 @@
                     <tr>
                         <th class="px-6 py-3.5">{{ __('Item Name') }}</th>
                         <th class="px-6 py-3.5">{{ __('Category') }}</th>
-                        <th class="px-6 py-3.5">{{ __('SKU') }}</th>
+                        <th class="px-6 py-3.5">{{ __('SKU / Lot') }}</th>
+                        <th class="px-6 py-3.5">{{ __('Expires') }}</th>
                         <th class="px-6 py-3.5 text-center">{{ __('Stock') }}</th>
                         <th class="px-6 py-3.5 text-center">{{ __('Reorder At') }}</th>
                         <th class="px-6 py-3.5">{{ __('Status') }}</th>
@@ -97,7 +98,13 @@
                         <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors" wire:key="inv-{{ $item->id }}">
                             <td class="px-6 py-4 font-semibold text-zinc-900 dark:text-zinc-100">{{ $item->name }}</td>
                             <td class="px-6 py-4 text-zinc-500 capitalize">{{ str_replace('_', ' ', $item->category) }}</td>
-                            <td class="px-6 py-4 text-zinc-400 font-mono text-xs">{{ $item->sku ?? '—' }}</td>
+                            <td class="px-6 py-4 text-zinc-400 font-mono text-xs">
+                                <div>SKU: {{ $item->sku ?? '—' }}</div>
+                                <div>Lot: {{ $item->lot_number ?? '—' }}</div>
+                            </td>
+                            <td class="px-6 py-4 text-zinc-500 text-xs">
+                                {{ $item->expiration_date ? \Carbon\Carbon::parse($item->expiration_date)->format('M j, Y') : '—' }}
+                            </td>
                             <td class="px-6 py-4 text-center font-mono font-bold text-zinc-900 dark:text-zinc-100">{{ $item->stock_quantity }}</td>
                             <td class="px-6 py-4 text-center font-mono text-zinc-400">{{ $item->reorder_level }}</td>
                             <td class="px-6 py-4">
@@ -200,7 +207,7 @@
                     </flux:field>
                     <div class="grid grid-cols-2 gap-4">
                         <flux:field>
-                            <flux:label>{{ __('SKU / Lot Number') }}</flux:label>
+                            <flux:label>{{ __('SKU') }}</flux:label>
                             <flux:input wire:model="itemSku" placeholder="Optional" />
                         </flux:field>
                         <flux:field>
@@ -212,6 +219,16 @@
                                 <option value="ppe">{{ __('PPE') }}</option>
                                 <option value="office_supplies">{{ __('Office Supplies') }}</option>
                             </flux:select>
+                        </flux:field>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <flux:field>
+                            <flux:label>{{ __('Lot Number') }}</flux:label>
+                            <flux:input wire:model="lotNumber" placeholder="Optional (for vaccines/meds)" />
+                        </flux:field>
+                        <flux:field>
+                            <flux:label>{{ __('Expiration Date') }}</flux:label>
+                            <flux:input type="date" wire:model="expirationDate" />
                         </flux:field>
                     </div>
                     <div class="grid grid-cols-2 gap-4">

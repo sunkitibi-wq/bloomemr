@@ -37,11 +37,15 @@ Route::view('/', 'welcome')->name('home');
 Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::livewire('dashboard', Dashboard::class)->name('dashboard');
     Route::livewire('scheduling', AppointmentList::class)->name('scheduling');
+    Route::livewire('scheduling/flow-board', \App\Livewire\Scheduling\FlowBoard::class)->name('scheduling.flow-board');
     Route::livewire('billing', BillingManager::class)->name('billing');
+    Route::livewire('billing/claims', \App\Livewire\Billing\ClaimsCenter::class)->name('billing.claims');
     Route::livewire('pharmacy-portal', PharmacyPortal::class)->name('pharmacy.portal');
     Route::livewire('inventory', InventoryManager::class)->name('inventory');
     Route::livewire('population-health', PopulationHealth::class)->name('population-health');
     Route::livewire('analytics', PracticeAnalytics::class)->name('analytics');
+    Route::livewire('analytics/cqm', \App\Livewire\Reporting\ClinicalQualityMeasures::class)->name('analytics.cqm');
+    Route::livewire('messages', \App\Livewire\MessageCenter::class)->name('messages');
 
     // System Admin (is_system_admin = true users only)
     Route::livewire('system/practices', PracticeManager::class)

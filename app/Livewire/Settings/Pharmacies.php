@@ -113,7 +113,7 @@ class Pharmacies extends Component
         $this->loadData();
     }
 
-    protected function resetForm(): void
+    public function resetForm(): void
     {
         $this->selectedPharmacyId = null;
         $this->name = '';

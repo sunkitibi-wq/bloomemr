@@ -6,6 +6,7 @@ use App\Models\DirectMessage;
 use App\Models\Patient;
 use App\Models\PatientForm;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class DirectMessagingService
 {
@@ -142,7 +143,7 @@ class DirectMessagingService
     }
 
     /**
-     * Share a patient clinical summary to an external provider via simulated Direct Messaging (phiMail).
+     * Share a patient clinical summary to an external provider via Direct Messaging (phiMail).
      */
     public function sendDirectMessage(
         Patient $patient,
@@ -153,7 +154,10 @@ class DirectMessagingService
         ?int $consentFormId,
         ?string $expiresAt
     ): DirectMessage {
-        // Enforce ROI signed consent form check
+        if (config('services.emr_direct.mock', true)) {
+            return $this->mockSendDirectMessage($patient, $recipientName, $recipientAddress, $subject, $scope, $consentFormId, $expiresAt);
+        }
+
         if (empty($consentFormId)) {
             throw new \InvalidArgumentException('A signed Release of Information (ROI) consent record is required to share clinical records.');
         }
@@ -162,16 +166,20 @@ class DirectMessagingService
             ->where('status', 'completed')
             ->findOrFail($consentFormId);
 
-        // Generate the FHIR R4 Composition payload
         $fhirPayload = $this->generateFhirComposition($patient);
-
-        // Simulate HISP transmission (phiMail gateway callback)
-        // In production this wraps an HTTP client to EMR Direct HISP servers
-        $status = 'delivered';
-
         $senderAddress = strtolower(str_replace(' ', '.', Auth::user()->name)).'@direct.bloom.test';
 
-        $directMessage = DirectMessage::create([
+        $response = Http::withToken(config('services.emr_direct.api_key', ''))
+            ->post('https://api.emrdirect.com/phimail/v1/send', [
+                'from' => $senderAddress,
+                'to' => $recipientAddress,
+                'subject' => $subject,
+                'fhir_composition' => json_encode($fhirPayload),
+            ]);
+
+        $status = $response->successful() ? 'delivered' : 'failed';
+
+        return DirectMessage::create([
             'practice_id' => $patient->practice_id ?? Auth::user()->practice_id,
             'patient_id' => $patient->id,
             'patient_form_id' => $consent->id,
@@ -185,7 +193,42 @@ class DirectMessagingService
             'status' => $status,
             'expires_at' => $expiresAt ? now()->parse($expiresAt) : null,
         ]);
+    }
 
-        return $directMessage;
+    private function mockSendDirectMessage(
+        Patient $patient,
+        string $recipientName,
+        string $recipientAddress,
+        string $subject,
+        string $scope,
+        ?int $consentFormId,
+        ?string $expiresAt
+    ): DirectMessage {
+        if (empty($consentFormId)) {
+            throw new \InvalidArgumentException('A signed Release of Information (ROI) consent record is required to share clinical records.');
+        }
+
+        $consent = PatientForm::where('patient_id', $patient->id)
+            ->where('status', 'completed')
+            ->findOrFail($consentFormId);
+
+        $fhirPayload = $this->generateFhirComposition($patient);
+        $status = 'delivered';
+        $senderAddress = strtolower(str_replace(' ', '.', Auth::user()->name)).'@direct.bloom.test';
+
+        return DirectMessage::create([
+            'practice_id' => $patient->practice_id ?? Auth::user()->practice_id,
+            'patient_id' => $patient->id,
+            'patient_form_id' => $consent->id,
+            'sender_id' => Auth::id(),
+            'sender_address' => $senderAddress,
+            'recipient_address' => $recipientAddress,
+            'recipient_name' => $recipientName,
+            'subject' => $subject,
+            'scope' => $scope,
+            'payload' => $fhirPayload,
+            'status' => $status,
+            'expires_at' => $expiresAt ? now()->parse($expiresAt) : null,
+        ]);
     }
 }
