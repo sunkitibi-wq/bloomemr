@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Bloom EMR | Demo</title>
+    
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    @fonts
+
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Inter:wght@400;600&family=JetBrains+Mono&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-growth-sage/30">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface shadow-sm transition-all duration-300 h-20 flex items-center">
+    <nav class="flex justify-between items-center px-margin-page w-full max-w-7xl mx-auto">
+        <a href="{{ route('home') }}" class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-trust-navy text-3xl" style="font-variation-settings: 'FILL' 1;">spa</span>
+            <span class="font-headline-md text-headline-md font-bold text-trust-navy">Bloom EMR</span>
+        </a>
+        <div class="hidden md:flex gap-8 items-center">
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('home') }}#features">Features</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('home') }}#technology">Technology</a>
+            <a class="font-body-md text-body-md text-trust-navy font-semibold transition-colors" href="{{ route('demo') }}">Demo</a>
+            
+            @if (Route::has('login'))
+                @auth
+                    <a href="{{ route('dashboard') }}" class="bg-trust-navy text-on-primary px-6 py-2.5 rounded-lg font-label-md text-label-md transition-all active:scale-95 hover:bg-trust-navy/90 shadow-sm">
+                        {{ __('Go to Dashboard') }}
+                    </a>
+                @else
+                    <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('login') }}">{{ __('Log in') }}</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="bg-trust-navy text-on-primary px-6 py-2.5 rounded-lg font-label-md text-label-md transition-all active:scale-95 hover:bg-trust-navy/90 shadow-sm">
+                            {{ __('Register') }}
+                        </a>
+                    @endif
+                @endauth
+            @endif
+        </div>
+        <div class="md:hidden">
+            @if (Route::has('login'))
+                @auth
+                    <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-trust-navy">Dashboard</a>
+                @else
+                    <a href="{{ route('login') }}" class="text-sm font-semibold text-trust-navy">Log in</a>
+                @endauth
+            @endif
+        </div>
+    </nav>
+</header>
+<main class="pt-32 pb-24 bg-surface min-h-screen">
+    <div class="max-w-4xl mx-auto px-margin-page">
+        <!-- Header -->
+        <div class="mb-12">
+            <h1 class="font-headline-xl text-headline-xl text-trust-navy mb-4">Fully Working Bloom EMR Demo</h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant">
+                We offer fully functional demo installations for you to try out. Some simple configuration has been added for clearer demonstration of Bloom EMR, medical billing, access controls and patient portal. Each demo is reset overnight so no data is persistent.
+            </p>
+        </div>
+
+        <!-- System Demo -->
+        <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 shadow-sm mb-12 overflow-hidden">
+            <div class="p-8 border-b border-outline-variant/30 bg-trust-navy/5">
+                <h2 class="font-headline-lg text-headline-lg text-trust-navy">Bloom EMR Demo</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-2">Access the main clinical and administrative system.</p>
+            </div>
+            
+            <div class="p-8 space-y-8">
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-trust-navy mb-4">Links</h3>
+                    <div class="grid gap-4">
+                        <a href="{{ route('login') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-trust-navy/30 hover:bg-trust-navy/5 transition-all group">
+                            <div>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Main Demo</h4>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/login') }}</p>
+                            </div>
+                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-trust-navy group-hover:translate-x-1 transition-all">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-trust-navy mb-4">Credentials</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b-2 border-outline-variant/50">
+                                    <th class="py-3 px-4 font-label-md text-label-md font-bold text-trust-navy whitespace-nowrap">Username</th>
+                                    <th class="py-3 px-4 font-label-md text-label-md font-bold text-trust-navy whitespace-nowrap">Password</th>
+                                    <th class="py-3 px-4 font-label-md text-label-md font-bold text-trust-navy">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="font-body-md text-body-md">
+                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
+                                    <td class="py-3 px-4 font-data-mono">admin@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">password</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">System Administrator</td>
+                                </tr>
+                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
+                                    <td class="py-3 px-4 font-data-mono">doctor@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">password</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Physician / Clinician</td>
+                                </tr>
+                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
+                                    <td class="py-3 px-4 font-data-mono">billing@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">password</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Accountant / Biller</td>
+                                </tr>
+                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
+                                    <td class="py-3 px-4 font-data-mono">frontdesk@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">password</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Front desk receptionist</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Portal Demo -->
+        <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 shadow-sm overflow-hidden">
+            <div class="p-8 border-b border-outline-variant/30 bg-growth-sage/10">
+                <h2 class="font-headline-lg text-headline-lg text-trust-navy">Patient Portal Demo</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-2">Experience the system from the patient's perspective.</p>
+            </div>
+            
+            <div class="p-8 space-y-8">
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-trust-navy mb-4">Links</h3>
+                    <div class="grid gap-4">
+                        <a href="{{ route('login') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-trust-navy/30 hover:bg-growth-sage/5 transition-all group">
+                            <div>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Portal Demo</h4>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/login') }}</p>
+                            </div>
+                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-trust-navy group-hover:translate-x-1 transition-all">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-headline-md text-headline-md text-trust-navy mb-4">Credentials</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="border-b-2 border-outline-variant/50">
+                                    <th class="py-3 px-4 font-label-md text-label-md font-bold text-trust-navy">Patient Email</th>
+                                    <th class="py-3 px-4 font-label-md text-label-md font-bold text-trust-navy">Password</th>
+                                </tr>
+                            </thead>
+                            <tbody class="font-body-md text-body-md">
+                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
+                                    <td class="py-3 px-4 font-data-mono">patient@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">password</td>
+                                </tr>
+                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
+                                    <td class="py-3 px-4 font-data-mono">patient2@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">password</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Footer -->
+<footer class="bg-trust-navy text-on-primary w-full">
+<div class="py-16 px-margin-page grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-7xl mx-auto">
+<div class="md:col-span-1 space-y-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-growth-sage text-2xl" style="font-variation-settings: 'FILL' 1;">spa</span>
+<span class="font-headline-sm text-headline-sm font-bold text-on-primary">Bloom</span>
+</div>
+<p class="font-body-sm text-body-sm opacity-70 leading-relaxed">
+                    Designed for practitioners, by practitioners. Leading the evolution of pediatric EMR systems.
+                </p>
+</div>
+<div class="space-y-4">
+<h4 class="font-label-md text-label-md uppercase tracking-widest text-growth-sage">Product</h4>
+<nav class="flex flex-col gap-2">
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('home') }}#features">Features</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('home') }}#technology">Technology</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('demo') }}">Demo</a>
+</nav>
+</div>
+<div class="space-y-4">
+<h4 class="font-label-md text-label-md uppercase tracking-widest text-growth-sage">Compliance</h4>
+<nav class="flex flex-col gap-2">
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">HIPAA Standards</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Security Audit</a>
+</nav>
+</div>
+<div class="space-y-4">
+<h4 class="font-label-md text-label-md uppercase tracking-widest text-growth-sage">Resources</h4>
+<nav class="flex flex-col gap-2">
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Help Center</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Clinical Guides</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">System Status</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Contact Support</a>
+</nav>
+</div>
+</div>
+<div class="border-t border-on-primary/10 py-8 px-margin-page">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+<p class="font-body-sm text-body-sm opacity-60">
+                    © 2026 Bloom EMR. All rights reserved. HIPAA Compliant.
+                </p>
+</div>
+</div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md', 'bg-surface/95', 'backdrop-blur-md');
+            } else {
+                header.classList.remove('shadow-md', 'bg-surface/95', 'backdrop-blur-md');
+            }
+        });
+    });
+</script>
+</body>
+</html>

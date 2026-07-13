@@ -42,6 +42,7 @@
         <div class="hidden md:flex gap-8 items-center">
             <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#features">Features</a>
             <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#technology">Technology</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('demo') }}">Demo</a>
             
             @if (Route::has('login'))
                 @auth
@@ -278,10 +279,9 @@
 <div class="space-y-4">
 <h4 class="font-label-md text-label-md uppercase tracking-widest text-growth-sage">Product</h4>
 <nav class="flex flex-col gap-2">
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Features</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Technology</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">E-Prescribing</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Patient Portal</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#features">Features</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#technology">Technology</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('demo') }}">Demo</a>
 </nav>
 </div>
 <div class="space-y-4">

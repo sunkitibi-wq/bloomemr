@@ -39,6 +39,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+Route::view('/demo', 'demo')->name('demo');
 
 Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::livewire('dashboard', Dashboard::class)->name('dashboard');
