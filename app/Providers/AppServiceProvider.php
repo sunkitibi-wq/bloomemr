@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\LabResultReceived;
+use Laravel\Passport\Passport;
 use App\Http\Responses\LoginResponse;
 use App\Http\Responses\RegisterResponse;
 use App\Listeners\InjectLabSummaryIntoEncounter;
@@ -91,6 +92,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        Passport::authorizationView('passport.authorize');
+        Passport::enablePasswordGrant();
 
         Gate::before(function ($user, $ability) {
             if ($user->isSystemAdmin()) {

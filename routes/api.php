@@ -9,6 +9,11 @@ use App\Http\Controllers\Api\Fhir\PatientController;
 use App\Http\Controllers\Api\Fhir\SubscriptionController;
 use App\Http\Controllers\Api\SmartConfigurationController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 // SMART on FHIR well-known configuration (unauthenticated)
 Route::get('/.well-known/smart-configuration', SmartConfigurationController::class);

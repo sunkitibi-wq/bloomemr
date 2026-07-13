@@ -39,6 +39,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
+Route::view('/features', 'features')->name('features');
 Route::view('/demo', 'demo')->name('demo');
 
 Route::middleware(['auth:web', 'verified'])->group(function () {

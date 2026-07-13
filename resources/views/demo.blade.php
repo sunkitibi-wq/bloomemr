@@ -31,8 +31,8 @@
             <span class="font-headline-md text-headline-md font-bold text-trust-navy">Bloom EMR</span>
         </a>
         <div class="hidden md:flex gap-8 items-center">
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('home') }}#features">Features</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('home') }}#technology">Technology</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('features') }}">Features</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('home') }}#modules">Modules</a>
             <a class="font-body-md text-body-md text-trust-navy font-semibold transition-colors" href="{{ route('demo') }}">Demo</a>
             
             @if (Route::has('login'))
@@ -194,8 +194,8 @@
 <div class="space-y-4">
 <h4 class="font-label-md text-label-md uppercase tracking-widest text-growth-sage">Product</h4>
 <nav class="flex flex-col gap-2">
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('home') }}#features">Features</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('home') }}#technology">Technology</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('features') }}">Features</a>
+<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('home') }}#modules">Modules</a>
 <a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('demo') }}">Demo</a>
 </nav>
 </div>
