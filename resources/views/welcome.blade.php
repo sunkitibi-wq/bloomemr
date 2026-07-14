@@ -32,39 +32,48 @@
     </style>
 </head>
 <body class="bg-background text-on-background font-body-md selection:bg-growth-sage/30">
-<!-- Top Navigation Bar -->
-<header class="fixed top-0 w-full z-50 bg-surface shadow-sm transition-all duration-300 h-20 flex items-center">
+<!-- Top Utility Bar -->
+<div class="bg-surface-container-low border-b border-outline-variant/30 py-2 hidden md:block">
+    <div class="max-w-7xl mx-auto px-margin-page flex justify-end gap-6">
+        <a href="#" class="font-body-sm text-body-sm text-on-surface-variant hover:text-trust-navy transition-colors">Logins & support</a>
+        <a href="#" class="font-body-sm text-body-sm text-on-surface-variant hover:text-trust-navy transition-colors">Prior Authorization Portal</a>
+    </div>
+</div>
+<!-- Main Navigation Bar -->
+<header class="sticky top-0 w-full z-50 bg-white shadow-sm transition-all duration-300 h-20 flex items-center">
     <nav class="flex justify-between items-center px-margin-page w-full max-w-7xl mx-auto">
         <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-trust-navy text-3xl" style="font-variation-settings: 'FILL' 1;">spa</span>
-            <span class="font-headline-md text-headline-md font-bold text-trust-navy">Bloom EMR</span>
+            <span class="font-headline-md text-headline-md font-bold text-trust-navy uppercase tracking-wide">Bloom EMR</span>
         </div>
-        <div class="hidden md:flex gap-8 items-center">
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('features') }}">Features</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#modules">Modules</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('demo') }}">Demo</a>
+        <div class="hidden md:flex gap-10 items-center">
+            <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('features') }}">Who we serve</a>
+            <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="#modules">Products</a>
+            <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('demo') }}">Network</a>
             
-            @if (Route::has('login'))
-                @auth
-                    <a href="{{ route('dashboard') }}" class="bg-trust-navy text-on-primary px-6 py-2.5 rounded-lg font-label-md text-label-md transition-all active:scale-95 hover:bg-trust-navy/90 shadow-sm">
-                        {{ __('Go to Dashboard') }}
-                    </a>
-                @else
-                    <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('login') }}">{{ __('Log in') }}</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="bg-trust-navy text-on-primary px-6 py-2.5 rounded-lg font-label-md text-label-md transition-all active:scale-95 hover:bg-trust-navy/90 shadow-sm">
-                            {{ __('Register') }}
+            <div class="flex items-center gap-4 ml-4">
+                @if (Route::has('login'))
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="bg-trust-navy text-white px-6 py-2 rounded-md font-label-md text-label-md uppercase tracking-wider transition-all hover:bg-slate-dark shadow-sm">
+                            {{ __('Dashboard') }}
                         </a>
-                    @endif
-                @endauth
-            @endif
+                    @else
+                        <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors flex items-center gap-1" href="{{ route('login') }}">
+                            <span class="material-symbols-outlined text-lg">login</span> {{ __('Log in') }}
+                        </a>
+                    @endauth
+                @endif
+                <button class="text-trust-navy hover:text-growth-sage transition-colors ml-2">
+                    <span class="material-symbols-outlined text-2xl">search</span>
+                </button>
+            </div>
         </div>
         <div class="md:hidden">
             @if (Route::has('login'))
                 @auth
-                    <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-trust-navy">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-trust-navy uppercase">Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm font-semibold text-trust-navy">Log in</a>
+                    <a href="{{ route('login') }}" class="text-sm font-semibold text-trust-navy uppercase">Log in</a>
                 @endauth
             @endif
         </div>
@@ -72,264 +81,243 @@
 </header>
 <main class="pt-20">
 <!-- Hero Section -->
-<section class="relative min-h-[870px] flex items-center overflow-hidden bg-surface-bright">
-<div class="absolute inset-0 cellular-bg opacity-40"></div>
-<div class="max-w-7xl mx-auto px-margin-page grid grid-cols-1 lg:grid-cols-2 gap-gutter items-center relative z-10 py-16">
-<div class="space-y-8 animate-fade-in-up">
-<div class="inline-flex items-center gap-2 px-3 py-1 bg-growth-sage/10 text-growth-sage rounded-full border border-growth-sage/20">
-<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
-<span class="font-label-md text-label-md uppercase tracking-wider">HIPAA Compliant Platform</span>
-</div>
-<h1 class="font-headline-xl text-headline-xl text-trust-navy leading-tight">
-                        Precision Care for Every <span class="text-growth-sage">Milestone.</span>
+<section class="relative min-h-[700px] flex items-center overflow-hidden bg-trust-navy text-white">
+<div class="max-w-7xl mx-auto px-margin-page grid grid-cols-1 lg:grid-cols-2 gap-gutter items-center relative z-10 py-20">
+<div class="space-y-8 animate-fade-in-up pr-8">
+<h1 class="font-headline-xl text-headline-xl text-white leading-tight font-bold">
+                        The Healthcare Network.
 </h1>
-<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
-                        The only EMR built specifically for child psychiatry and neurodevelopmental medicine. Streamline ADOS-2 workflows and developmental tracking in one unified interface.
+<p class="font-body-lg text-body-lg text-white/90 max-w-xl text-lg">
+                        We do not replace a hospital management system. Instead, we connect Hospitals, Clinics, Pharmacies, Insurance companies, PBMs, and Laboratories.
                     </p>
-<div class="flex flex-col sm:flex-row gap-4">
+<div class="flex flex-col sm:flex-row gap-4 pt-4">
 @auth
-    <a href="{{ route('dashboard') }}" class="bg-trust-navy text-on-primary px-8 py-4 rounded-xl font-headline-md text-body-md transition-all hover:shadow-lg active:scale-[0.98] flex items-center justify-center gap-2">
+    <a href="{{ route('dashboard') }}" class="bg-growth-sage text-white px-8 py-4 rounded-md font-headline-md text-body-md font-semibold transition-all hover:shadow-lg hover:bg-opacity-90 flex items-center justify-center gap-2">
         {{ __('Go to Dashboard') }}
-        <span class="material-symbols-outlined">arrow_forward</span>
     </a>
 @else
-    <a href="{{ route('login') }}" class="bg-trust-navy text-on-primary px-8 py-4 rounded-xl font-headline-md text-body-md transition-all hover:shadow-lg active:scale-[0.98] flex items-center justify-center gap-2">
+    <a href="{{ route('login') }}" class="bg-growth-sage text-white px-8 py-4 rounded-md font-headline-md text-body-md font-semibold transition-all hover:shadow-lg hover:bg-opacity-90 flex items-center justify-center gap-2">
         {{ __('Get Started') }}
-        <span class="material-symbols-outlined">arrow_forward</span>
     </a>
 @endauth
-<a href="#features" class="border border-outline-variant text-trust-navy px-8 py-4 rounded-xl font-headline-md text-body-md transition-all hover:bg-surface-container-low active:scale-[0.98] text-center flex items-center justify-center">
-                            Explore Features
+<a href="#features" class="border-2 border-white text-white px-8 py-4 rounded-md font-headline-md text-body-md font-semibold transition-all hover:bg-white hover:text-trust-navy text-center flex items-center justify-center">
+                            Learn more
 </a>
 </div>
-<div class="flex items-center gap-6 pt-4">
-<div class="flex -space-x-3">
-<img class="w-10 h-10 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmR5r4YCo3RG-cygjjpLWJfeIlX6Fvmc-VtIk63Xpq4WHQChL6ku_zOl7a8TISFTY__uhtd2-5JhUo8kc2zaSWwUaeyG4bLVOIXdAvQSGaESxYZw5073yZ-ir2djFPhuUvx--4xq0BRZNjD1SJ_Y6XaEBASc8uvdYyZJyMImiqZdgSIjerAPnkJ35XsOhZglEG_wfAlOxKFm30MhGrjyLCtd7Hky9nwJ6px6JL5fYKRwLhavBppPFGWBuet31DVwLx_mv5tHgn4NQ"/>
-<img class="w-10 h-10 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDzrM0GhmpJ64gDajfinSdgeIIKU67NnZUOGFuQuJyeMupVTBhQ0rGi7Jco5v9fPfRmRQA7rV9ZEh1AHibh7tphKx4dzoiygMH6WO22k3yzszW06VfqcZZiFYPMPu24xGitQjaxEcGRzYaWLiQLfsed-vhe27WdAVjp0s7cq9-TOyVv3i2DFaqvQRJTKAWu9KuQ3S3csdkPp-hgSpjh9HykKJFoSG_heRh7TnckVBTfypwIGopB6GTm_V0cLHsvlbTRgpyiplW-OA"/>
-<img class="w-10 h-10 rounded-full border-2 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxOVaq7Js00iMZxqtHTMdjIiq7q10nS8vgkDLGAkvKEPdc7rRSGlHWPqGSvKhHFE_DqGDpj5iCg9eYFNAfKdCn_2L-OcQrdJGyXifVqooJzZ30j3kOVkGL0jjXg8nO_VSdp_hwiX0XoKaDyZUlrjJtxYlw4SzDyc0DWZzaV47Bik-i-nYfmIazUhl65c1mxJM01KEMxTJVUC_2UxtrBxZDRUbilPNASmtUgRFpLW6DkTJbj1G5z-KidRjQzuVKA680pv77GYoGSLA"/>
 </div>
-<p class="font-label-md text-label-md text-on-surface-variant">Trusted by 200+ specialized practices</p>
-</div>
-</div>
-<div class="relative lg:h-[600px] flex justify-center lg:justify-end">
-<div class="w-full h-full max-w-lg relative bg-surface-container-lowest rounded-2xl overflow-hidden shadow-2xl border border-outline-variant/30">
-<img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4RSNk6C2tvX3N1IOca6D58G5gJqAJVEktyxiE_X2U4_GAl6yHDiyBgHRbATXJidj51Wft2oJH0HdltGNEjqesKUQexxAhBk5uj873TGSrgBoCbNRfIRErhCX6rAgjGMWxo-xuamUHcjLxvjwAV7FD8HYvRwwic1NsXiJqsRRiiZ-s6cakIkfWVD9q3i2QogHJn7TGzzl39Q8-MtjZ8i_A3GL3u_9ZtHdwJVlH6UYuQhiVWEApSLlnsxeJ7XcMGNM3U6CuyEd0Q-A"/>
-<div class="absolute bottom-6 left-6 right-6 glass-card p-4 rounded-xl shadow-xl flex items-center gap-4 animate-bounce-subtle">
-<div class="w-12 h-12 bg-growth-sage/20 rounded-lg flex items-center justify-center text-growth-sage">
-<span class="material-symbols-outlined">analytics</span>
-</div>
-<div>
-<p class="font-label-md text-label-md text-trust-navy">ADOS-2 Processing</p>
-<p class="font-data-mono text-data-mono text-on-surface-variant">Real-time score calculation...</p>
-</div>
+<div class="relative lg:h-[500px] flex justify-center lg:justify-end mt-12 lg:mt-0">
+<div class="w-full h-full max-w-lg relative bg-slate-dark rounded-xl overflow-hidden shadow-2xl border-4 border-slate-dark/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+<img class="w-full h-full object-cover mix-blend-overlay opacity-80" src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Medical professional using tablet"/>
+<div class="absolute inset-0 bg-gradient-to-t from-trust-navy/90 to-transparent flex flex-col justify-end p-8">
+    <h3 class="text-2xl font-bold text-white mb-2">Empowering Care Decisions</h3>
+    <p class="text-white/80">Connecting practices with critical patient insights at the point of care.</p>
 </div>
 </div>
 </div>
 </div>
 </section>
 <!-- Stats Section -->
-<section class="py-12 bg-trust-navy text-on-primary">
-<div class="max-w-7xl mx-auto px-margin-page grid grid-cols-1 md:grid-cols-3 gap-gutter text-center">
-<div class="p-6">
-<h3 class="font-headline-xl text-headline-xl text-growth-sage">40%</h3>
-<p class="font-body-md text-body-md opacity-80">Reduction in documentation time</p>
+<section class="py-16 bg-slate-dark text-white">
+<div class="max-w-7xl mx-auto px-margin-page grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x divide-white/20">
+<div class="pt-8 md:pt-0">
+<h3 class="font-headline-xl text-3xl text-growth-sage font-bold mb-2">Patient Safety</h3>
+<p class="font-body-md text-body-md text-white/80">Reduce prescription errors, duplicate tests, and medication conflicts.</p>
 </div>
-<div class="p-6 border-y md:border-y-0 md:border-x border-on-primary/10">
-<h3 class="font-headline-xl text-headline-xl text-growth-sage">99.9%</h3>
-<p class="font-body-md text-body-md opacity-80">Uptime for critical clinical ops</p>
+<div class="pt-8 md:pt-0">
+<h3 class="font-headline-xl text-3xl text-growth-sage font-bold mb-2">HIPAA Compliant</h3>
+<p class="font-body-md text-body-md text-white/80">User authentication, role-based access, audit logs, and secure encryption.</p>
 </div>
-<div class="p-6">
-<h3 class="font-headline-xl text-headline-xl text-growth-sage">100%</h3>
-<p class="font-body-md text-body-md opacity-80">HIPAA audit coverage success</p>
+<div class="pt-8 md:pt-0">
+<h3 class="font-headline-xl text-3xl text-growth-sage font-bold mb-2">Clinical Workflows</h3>
+<p class="font-body-md text-body-md text-white/80">Streamline patient registration, clinical documentation, and care coordination.</p>
 </div>
 </div>
 </section>
 <!-- Feature Grid Section -->
-<section class="py-24 bg-surface" id="features">
+<section class="py-24 bg-white" id="features">
 <div class="max-w-7xl mx-auto px-margin-page">
 <div class="text-center mb-16 space-y-4">
-<h2 class="font-headline-lg text-headline-lg text-trust-navy">Engineered for Specialized Care</h2>
-<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Powerful tools designed to match the complexity of neurodevelopmental assessments.</p>
+<h2 class="font-headline-lg text-4xl text-trust-navy font-bold">Core Capabilities</h2>
+<p class="font-body-lg text-body-lg text-slate-dark max-w-2xl mx-auto">Providing the foundational tools required for modern healthcare delivery and communication.</p>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-10">
 <!-- Feature 1 -->
-<div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/30 hover:shadow-xl transition-all group">
-<div class="w-14 h-14 bg-trust-navy text-on-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-growth-sage transition-colors">
-<span class="material-symbols-outlined text-2xl">clinical_notes</span>
+<div class="bg-white p-8 hover:-translate-y-1 transition-transform group shadow-sm border border-slate-dark/5 rounded-xl">
+<div class="w-16 h-16 bg-white border-2 border-growth-sage text-trust-navy rounded-full flex items-center justify-center mb-6 group-hover:bg-growth-sage group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">folder_shared</span>
 </div>
-<h3 class="font-headline-md text-headline-md text-trust-navy mb-3">Clinical Precision</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6">Built-in templates for ADOS-2, Vanderbilt, and M-CHAT. Structured data capture ensures consistent longitudinal tracking of developmental milestones.</p>
+<h3 class="font-headline-md text-2xl text-trust-navy mb-4 font-bold">Electronic Health Records</h3>
+<p class="font-body-md text-body-md text-slate-dark mb-6 leading-relaxed">Store patient demographics, access medical history, view medications, review allergies, view laboratory results, and track diagnoses seamlessly.</p>
 <ul class="space-y-3 font-label-md text-label-md text-trust-navy">
-<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Automated Scoring Engines</li>
-<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Longitudinal Growth Charts</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Comprehensive Patient Data</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Direct Data Management</li>
 </ul>
 </div>
 <!-- Feature 2 -->
-<div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/30 hover:shadow-xl transition-all group">
-<div class="w-14 h-14 bg-trust-navy text-on-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-growth-sage transition-colors">
-<span class="material-symbols-outlined text-2xl">auto_fix_high</span>
+<div class="bg-white p-8 hover:-translate-y-1 transition-transform group shadow-sm border border-slate-dark/5 rounded-xl">
+<div class="w-16 h-16 bg-white border-2 border-growth-sage text-trust-navy rounded-full flex items-center justify-center mb-6 group-hover:bg-growth-sage group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">prescriptions</span>
 </div>
-<h3 class="font-headline-md text-headline-md text-trust-navy mb-3">AI-Powered Productivity</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6">Intelligent Smart Phrases and auto-population tools that learn your clinical style. Spend more time with patients, less with the keyboard.</p>
+<h3 class="font-headline-md text-2xl text-trust-navy mb-4 font-bold">Electronic Prescriptions</h3>
+<p class="font-body-md text-body-md text-slate-dark mb-6 leading-relaxed">Prescribe medications electronically, check drug interactions, verify medication history, and send prescriptions directly to pharmacies.</p>
 <ul class="space-y-3 font-label-md text-label-md text-trust-navy">
-<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Context-Aware Dot Phrases</li>
-<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Instant Report Generation</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Interaction Checking</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Direct Pharmacy Routing</li>
 </ul>
 </div>
 <!-- Feature 3 -->
-<div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/30 hover:shadow-xl transition-all group">
-<div class="w-14 h-14 bg-trust-navy text-on-primary rounded-xl flex items-center justify-center mb-6 group-hover:bg-growth-sage transition-colors">
-<span class="material-symbols-outlined text-2xl">family_restroom</span>
+<div class="bg-white p-8 hover:-translate-y-1 transition-transform group shadow-sm border border-slate-dark/5 rounded-xl">
+<div class="w-16 h-16 bg-white border-2 border-growth-sage text-trust-navy rounded-full flex items-center justify-center mb-6 group-hover:bg-growth-sage group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-3xl">hub</span>
 </div>
-<h3 class="font-headline-md text-headline-md text-trust-navy mb-3">Patient-Centered Portal</h3>
-<p class="font-body-md text-body-md text-on-surface-variant mb-6">Family-first secure messaging and document sharing. Keep caregivers informed with a simplified portal optimized for mobile access.</p>
+<h3 class="font-headline-md text-2xl text-trust-navy mb-4 font-bold">Healthcare Interoperability</h3>
+<p class="font-body-md text-body-md text-slate-dark mb-6 leading-relaxed">Exchange healthcare data between systems using common standards, enabling hospitals, clinics, and labs to communicate electronically.</p>
 <ul class="space-y-3 font-label-md text-label-md text-trust-navy">
-<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Secure Caregiver Inbox</li>
-<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> Mobile-Ready Bill Pay</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> HL7, FHIR, CCD/C-CDA</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span> ICD-10, SNOMED CT, LOINC</li>
 </ul>
 </div>
 </div>
 </div>
 </section>
 <!-- Modules Section -->
-<section class="py-24 bg-surface-container-lowest" id="modules">
+<section class="py-24 bg-surface-container-low" id="modules">
 <div class="max-w-7xl mx-auto px-margin-page">
 <div class="text-center mb-16 space-y-4">
-<div class="inline-block px-3 py-1 bg-trust-navy/5 text-trust-navy font-label-md text-label-md rounded-lg">Comprehensive Suite</div>
-<h2 class="font-headline-lg text-headline-lg text-trust-navy">Integrated Modules for Every Workflow</h2>
-<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">From clinical documentation to revenue cycle management, Bloom EMR provides specialized tools tailored for your practice.</p>
+<h2 class="font-headline-lg text-4xl text-trust-navy font-bold">Connecting the Healthcare Ecosystem</h2>
+<p class="font-body-lg text-body-lg text-slate-dark max-w-2xl mx-auto">We connect key entities across the continuum of care to specialize in e-Prescribing, medication history, prior authorization, and health information exchange.</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 <!-- Module 1 -->
-<div class="bg-surface p-6 rounded-2xl border border-outline-variant/30 hover:border-growth-sage/50 hover:shadow-md transition-all flex items-start gap-4 group">
-<div class="w-12 h-12 bg-growth-sage/10 text-growth-sage group-hover:bg-growth-sage group-hover:text-on-primary transition-colors rounded-xl flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-2xl">family_home</span>
+<div class="bg-white p-8 shadow-sm border-t-4 border-transparent hover:border-growth-sage hover:shadow-md transition-all flex flex-col gap-4 group rounded-xl">
+<div class="w-12 h-12 text-growth-sage flex items-center shrink-0">
+<span class="material-symbols-outlined text-4xl">local_hospital</span>
 </div>
 <div>
-<h3 class="font-headline-md text-headline-md text-trust-navy mb-2">Patient Portal</h3>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Empower families with secure messaging, form submissions, and appointment scheduling.</p>
+<h3 class="font-headline-md text-xl text-trust-navy font-bold mb-2">Hospitals</h3>
+<p class="font-body-sm text-body-sm text-slate-dark">Integrated networks for inpatient care and system-wide intelligence.</p>
 </div>
 </div>
 
 <!-- Module 2 -->
-<div class="bg-surface p-6 rounded-2xl border border-outline-variant/30 hover:border-growth-sage/50 hover:shadow-md transition-all flex items-start gap-4 group">
-<div class="w-12 h-12 bg-growth-sage/10 text-growth-sage group-hover:bg-growth-sage group-hover:text-on-primary transition-colors rounded-xl flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-2xl">receipt_long</span>
+<div class="bg-white p-8 shadow-sm border-t-4 border-transparent hover:border-growth-sage hover:shadow-md transition-all flex flex-col gap-4 group rounded-xl">
+<div class="w-12 h-12 text-growth-sage flex items-center shrink-0">
+<span class="material-symbols-outlined text-4xl">medical_services</span>
 </div>
 <div>
-<h3 class="font-headline-md text-headline-md text-trust-navy mb-2">Billing & Claims</h3>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Automated coding, integrated clearinghouse submissions, and revenue cycle management.</p>
+<h3 class="font-headline-md text-xl text-trust-navy font-bold mb-2">Clinics</h3>
+<p class="font-body-sm text-body-sm text-slate-dark">Point-of-care connectivity for outpatient practitioners and specialists.</p>
 </div>
 </div>
 
 <!-- Module 3 -->
-<div class="bg-surface p-6 rounded-2xl border border-outline-variant/30 hover:border-growth-sage/50 hover:shadow-md transition-all flex items-start gap-4 group">
-<div class="w-12 h-12 bg-growth-sage/10 text-growth-sage group-hover:bg-growth-sage group-hover:text-on-primary transition-colors rounded-xl flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-2xl">prescriptions</span>
+<div class="bg-white p-8 shadow-sm border-t-4 border-transparent hover:border-growth-sage hover:shadow-md transition-all flex flex-col gap-4 group rounded-xl">
+<div class="w-12 h-12 text-growth-sage flex items-center shrink-0">
+<span class="material-symbols-outlined text-4xl">local_pharmacy</span>
 </div>
 <div>
-<h3 class="font-headline-md text-headline-md text-trust-navy mb-2">Pharmacy</h3>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Safe medication delivery with e-prescribing and seamless Surescripts integration.</p>
+<h3 class="font-headline-md text-xl text-trust-navy font-bold mb-2">Pharmacies</h3>
+<p class="font-body-sm text-body-sm text-slate-dark">Direct electronic prescribing and medication fulfillment workflows.</p>
 </div>
 </div>
 
 <!-- Module 4 -->
-<div class="bg-surface p-6 rounded-2xl border border-outline-variant/30 hover:border-growth-sage/50 hover:shadow-md transition-all flex items-start gap-4 group">
-<div class="w-12 h-12 bg-growth-sage/10 text-growth-sage group-hover:bg-growth-sage group-hover:text-on-primary transition-colors rounded-xl flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-2xl">monitoring</span>
+<div class="bg-white p-8 shadow-sm border-t-4 border-transparent hover:border-growth-sage hover:shadow-md transition-all flex flex-col gap-4 group rounded-xl">
+<div class="w-12 h-12 text-growth-sage flex items-center shrink-0">
+<span class="material-symbols-outlined text-4xl">health_and_safety</span>
 </div>
 <div>
-<h3 class="font-headline-md text-headline-md text-trust-navy mb-2">Analytics</h3>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Real-time dashboards, custom reporting, and CQM tracking for practice insights.</p>
+<h3 class="font-headline-md text-xl text-trust-navy font-bold mb-2">Insurance Companies</h3>
+<p class="font-body-sm text-body-sm text-slate-dark">Streamlined prior authorizations and eligibility verifications.</p>
 </div>
 </div>
 
 <!-- Module 5 -->
-<div class="bg-surface p-6 rounded-2xl border border-outline-variant/30 hover:border-growth-sage/50 hover:shadow-md transition-all flex items-start gap-4 group">
-<div class="w-12 h-12 bg-growth-sage/10 text-growth-sage group-hover:bg-growth-sage group-hover:text-on-primary transition-colors rounded-xl flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-2xl">calendar_month</span>
+<div class="bg-white p-8 shadow-sm border-t-4 border-transparent hover:border-growth-sage hover:shadow-md transition-all flex flex-col gap-4 group rounded-xl">
+<div class="w-12 h-12 text-growth-sage flex items-center shrink-0">
+<span class="material-symbols-outlined text-4xl">verified_user</span>
 </div>
 <div>
-<h3 class="font-headline-md text-headline-md text-trust-navy mb-2">Scheduling</h3>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Smart flow boards, eligibility checks, and automated appointment reminders.</p>
+<h3 class="font-headline-md text-xl text-trust-navy font-bold mb-2">PBMs</h3>
+<p class="font-body-sm text-body-sm text-slate-dark">Pharmacy Benefit Managers ensuring cost-effective medication access.</p>
 </div>
 </div>
 
 <!-- Module 6 -->
-<div class="bg-surface p-6 rounded-2xl border border-outline-variant/30 hover:border-growth-sage/50 hover:shadow-md transition-all flex items-start gap-4 group">
-<div class="w-12 h-12 bg-growth-sage/10 text-growth-sage group-hover:bg-growth-sage group-hover:text-on-primary transition-colors rounded-xl flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-2xl">inventory_2</span>
+<div class="bg-white p-8 shadow-sm border-t-4 border-transparent hover:border-growth-sage hover:shadow-md transition-all flex flex-col gap-4 group rounded-xl">
+<div class="w-12 h-12 text-growth-sage flex items-center shrink-0">
+<span class="material-symbols-outlined text-4xl">science</span>
 </div>
 <div>
-<h3 class="font-headline-md text-headline-md text-trust-navy mb-2">Inventory</h3>
-<p class="font-body-sm text-body-sm text-on-surface-variant">Effortlessly track clinical supplies, lot numbers, vaccines, and expirations.</p>
+<h3 class="font-headline-md text-xl text-trust-navy font-bold mb-2">Laboratories</h3>
+<p class="font-body-sm text-body-sm text-slate-dark">Seamless exchange of diagnostic reports and laboratory orders.</p>
 </div>
 </div>
 </div>
 </div>
 </section>
 <!-- Final CTA Section -->
-<section class="py-24 px-margin-page relative overflow-hidden">
-<div class="absolute inset-0 bg-growth-sage/5 -z-10"></div>
-<div class="max-w-4xl mx-auto text-center space-y-10">
-<h2 class="font-headline-xl text-headline-xl text-trust-navy">Ready to modernize your practice?</h2>
-<p class="font-body-lg text-body-lg text-on-surface-variant">Join the future of neurodevelopmental care with the most intuitive, specialized clinical toolset on the market.</p>
-<div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+<section class="py-24 px-margin-page bg-trust-navy text-white text-center">
+<div class="max-w-4xl mx-auto space-y-10">
+<h2 class="font-headline-xl text-4xl font-bold">Ready to modernize your practice?</h2>
+<p class="font-body-lg text-xl text-white/90">Join the future of neurodevelopmental care with the most intuitive, specialized clinical toolset on the market.</p>
+<div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
 @auth
-    <a href="{{ route('dashboard') }}" class="bg-trust-navy text-on-primary px-10 py-5 rounded-2xl font-headline-md text-headline-md transition-all hover:scale-[1.02] shadow-xl hover:shadow-trust-navy/20">
+    <a href="{{ route('dashboard') }}" class="bg-growth-sage text-white px-10 py-4 rounded-md font-headline-md font-bold transition-all hover:bg-opacity-90">
         {{ __('Go to Dashboard') }}
     </a>
 @else
-    <a href="{{ route('login') }}" class="bg-trust-navy text-on-primary px-10 py-5 rounded-2xl font-headline-md text-headline-md transition-all hover:scale-[1.02] shadow-xl hover:shadow-trust-navy/20">
+    <a href="{{ route('login') }}" class="bg-growth-sage text-white px-10 py-4 rounded-md font-headline-md font-bold transition-all hover:bg-opacity-90">
         {{ __('Get Started Today') }}
     </a>
 @endauth
+<a href="#" class="text-white underline hover:text-growth-sage font-headline-md">Contact Sales</a>
 </div>
 </div>
 </section>
 </main>
 <!-- Footer -->
-<footer class="bg-trust-navy text-on-primary w-full">
-<div class="py-16 px-margin-page grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-7xl mx-auto">
+<footer class="bg-slate-dark text-white w-full border-t-[10px] border-growth-sage">
+<div class="py-16 px-margin-page grid grid-cols-1 md:grid-cols-4 gap-12 max-w-7xl mx-auto">
 <div class="md:col-span-1 space-y-6">
 <div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-growth-sage text-2xl" style="font-variation-settings: 'FILL' 1;">spa</span>
-<span class="font-headline-sm text-headline-sm font-bold text-on-primary">Bloom</span>
+<span class="material-symbols-outlined text-growth-sage text-3xl" style="font-variation-settings: 'FILL' 1;">spa</span>
+<span class="font-headline-sm text-2xl font-bold text-white tracking-wide uppercase">Bloom</span>
 </div>
-<p class="font-body-sm text-body-sm opacity-70 leading-relaxed">
+<p class="font-body-sm text-white/80 leading-relaxed pr-4">
                     Designed for practitioners, by practitioners. Leading the evolution of pediatric EMR systems.
                 </p>
 </div>
-<div class="space-y-4">
-<h4 class="font-label-md text-label-md uppercase tracking-widest text-growth-sage">Product</h4>
-<nav class="flex flex-col gap-2">
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('features') }}">Features</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#modules">Modules</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="{{ route('demo') }}">Demo</a>
+<div class="space-y-6">
+<h4 class="font-headline-sm text-lg font-bold text-white border-b border-white/20 pb-2">Product</h4>
+<nav class="flex flex-col gap-3">
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="{{ route('features') }}">Features</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#modules">Modules</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="{{ route('demo') }}">Demo</a>
 </nav>
 </div>
-<div class="space-y-4">
-<h4 class="font-label-md text-label-md uppercase tracking-widest text-growth-sage">Compliance</h4>
-<nav class="flex flex-col gap-2">
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">HIPAA Standards</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Privacy Policy</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Security Audit</a>
+<div class="space-y-6">
+<h4 class="font-headline-sm text-lg font-bold text-white border-b border-white/20 pb-2">Compliance</h4>
+<nav class="flex flex-col gap-3">
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">HIPAA Standards</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">Security Audit</a>
 </nav>
 </div>
-<div class="space-y-4">
-<h4 class="font-label-md text-label-md uppercase tracking-widest text-growth-sage">Resources</h4>
-<nav class="flex flex-col gap-2">
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Help Center</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Clinical Guides</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">System Status</a>
-<a class="font-body-sm text-body-sm opacity-80 hover:text-growth-sage transition-colors" href="#">Contact Support</a>
+<div class="space-y-6">
+<h4 class="font-headline-sm text-lg font-bold text-white border-b border-white/20 pb-2">Resources</h4>
+<nav class="flex flex-col gap-3">
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">Help Center</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">Clinical Guides</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">System Status</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">Contact Support</a>
 </nav>
 </div>
 </div>
-<div class="border-t border-on-primary/10 py-8 px-margin-page">
-<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
-<p class="font-body-sm text-body-sm opacity-60">
+<div class="border-t border-white/10 py-8 px-margin-page bg-[#2c3a47]">
+<div class="max-w-7xl mx-auto flex justify-center text-center">
+<p class="font-body-sm text-white/60">
                     © 2026 Bloom EMR. All rights reserved. HIPAA Compliant.
                 </p>
 </div>

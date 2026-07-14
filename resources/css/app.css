@@ -12,8 +12,9 @@
     --font-sans: 'Inter', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
     --font-heading: 'Hanken Grotesk', sans-serif;
 
-    --color-trust-navy: #0F172A;
-    --color-growth-sage: #74A57F;
+    --color-trust-navy: #005677; /* Deep Blue */
+    --color-slate-dark: #415363; /* Dark Slate */
+    --color-growth-sage: #00A3E0; /* Action Teal */
 
     /* Landing Page Specific Colors */
     --color-outline: #76777d;
