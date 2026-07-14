@@ -61,6 +61,11 @@
                         <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors flex items-center gap-1" href="{{ route('login') }}">
                             <span class="material-symbols-outlined text-lg">login</span> {{ __('Log in') }}
                         </a>
+                        @if (Route::has('register'))
+                            <a class="bg-trust-navy text-white px-6 py-2 rounded-md font-label-md text-label-md uppercase tracking-wider transition-all hover:bg-slate-dark shadow-sm ml-2" href="{{ route('register') }}">
+                                {{ __('Register') }}
+                            </a>
+                        @endif
                     @endauth
                 @endif
                 <button class="text-trust-navy hover:text-growth-sage transition-colors ml-2">
@@ -73,13 +78,18 @@
                 @auth
                     <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-trust-navy uppercase">Dashboard</a>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm font-semibold text-trust-navy uppercase">Log in</a>
+                    <div class="flex flex-col gap-2 mt-4">
+                        <a href="{{ route('login') }}" class="text-sm font-semibold text-trust-navy uppercase">Log in</a>
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="text-sm font-semibold text-trust-navy uppercase">Register</a>
+                        @endif
+                    </div>
                 @endauth
             @endif
         </div>
     </nav>
 </header>
-<main class="pt-20">
+<main>
 <!-- Hero Section -->
 <section class="relative min-h-[700px] flex items-center overflow-hidden bg-trust-navy text-white">
 <div class="max-w-7xl mx-auto px-margin-page grid grid-cols-1 lg:grid-cols-2 gap-gutter items-center relative z-10 py-20">
@@ -96,7 +106,7 @@
         {{ __('Go to Dashboard') }}
     </a>
 @else
-    <a href="{{ route('login') }}" class="bg-growth-sage text-white px-8 py-4 rounded-md font-headline-md text-body-md font-semibold transition-all hover:shadow-lg hover:bg-opacity-90 flex items-center justify-center gap-2">
+    <a href="{{ route('register') }}" class="bg-growth-sage text-white px-8 py-4 rounded-md font-headline-md text-body-md font-semibold transition-all hover:shadow-lg hover:bg-opacity-90 flex items-center justify-center gap-2">
         {{ __('Get Started') }}
     </a>
 @endauth
@@ -268,7 +278,7 @@
         {{ __('Go to Dashboard') }}
     </a>
 @else
-    <a href="{{ route('login') }}" class="bg-growth-sage text-white px-10 py-4 rounded-md font-headline-md font-bold transition-all hover:bg-opacity-90">
+    <a href="{{ Route::has('register') ? route('register') : route('login') }}" class="bg-growth-sage text-white px-10 py-4 rounded-md font-headline-md font-bold transition-all hover:bg-opacity-90">
         {{ __('Get Started Today') }}
     </a>
 @endauth
