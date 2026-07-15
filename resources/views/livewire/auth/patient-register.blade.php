@@ -98,7 +98,6 @@
                     id="terms"
                     label="{{ __('I agree to the Terms of Service and Privacy Policy') }}"
                 />
-                <x-input-error :messages="$errors->get('terms')" class="mt-2" />
 
                 <div class="flex items-center gap-3 pt-2">
                     <flux:button type="button" @click="step = 1" variant="ghost" class="h-12 px-4 rounded-xl font-semibold flex items-center justify-center gap-2">

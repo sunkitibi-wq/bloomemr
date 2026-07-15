@@ -1,48 +1,45 @@
-<x-layouts::auth :title="__('Log in')">
+<x-layouts::auth :title="__('Patient Portal Login')">
     <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Welcome Back')" :description="__('Please enter your credentials to access the clinical ecosystem.')" />
+        <!-- Portal Badge -->
+        <div class="flex items-center justify-center">
+            <div class="flex items-center gap-2 px-4 py-2 bg-growth-sage/10 border border-growth-sage/30 rounded-full">
+                <span class="material-symbols-outlined text-growth-sage text-[18px]" style="font-variation-settings: 'FILL' 1;">family_restroom</span>
+                <span class="text-xs font-bold text-growth-sage uppercase tracking-wider">{{ __('Patient & Family Portal') }}</span>
+            </div>
+        </div>
+
+        <x-auth-header :title="__('Welcome to Your Portal')" :description="__('Sign in to view your health records, appointments, and messages from your care team.')" />
 
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <x-passkey-verify />
-
-        <!-- Role Switcher -->
-        <div class="flex p-1 bg-zinc-100 dark:bg-zinc-800 rounded-xl border border-zinc-200/50 dark:border-zinc-700/50">
-            <button type="button" class="flex-grow flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-semibold bg-trust-navy text-white shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">medical_services</span>
-                <span>{{ __('Clinician Login') }}</span>
-            </button>
-            <a href="{{ route('patient.login') }}" class="flex-grow flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-semibold text-zinc-500 hover:text-trust-navy dark:hover:text-zinc-200 hover:bg-zinc-250 dark:hover:bg-zinc-700 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">family_restroom</span>
-                <span>{{ __('Patient & Family') }}</span>
-            </a>
-        </div>
-
         <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
             @csrf
+
+            {{-- Signal to AppServiceProvider to use the portal guard --}}
+            <input type="hidden" name="portal_login" value="1" />
 
             <!-- Email Address -->
             <flux:input
                 name="email"
-                :label="__('Professional Email')"
+                label="{{ __('Email Address') }}"
                 :value="old('email')"
                 type="email"
                 required
                 autofocus
                 autocomplete="email"
-                placeholder="doctor@bloom.com"
+                placeholder="jane.doe@example.com"
             />
 
             <!-- Password -->
             <div class="relative">
                 <flux:input
                     name="password"
-                    :label="__('Secure Password')"
+                    label="{{ __('Password') }}"
                     type="password"
                     required
                     autocomplete="current-password"
-                    :placeholder="__('Password')"
+                    placeholder="••••••••••••"
                     viewable
                 />
 
@@ -54,11 +51,11 @@
             </div>
 
             <!-- Remember Me -->
-            <flux:checkbox name="remember" :label="__('Remember this device for 30 days')" :checked="old('remember')" />
+            <flux:checkbox name="remember" :label="__('Keep me signed in')" :checked="old('remember')" />
 
             <div class="flex items-center justify-end">
-                <flux:button variant="primary" type="submit" class="w-full h-12 bg-trust-navy dark:bg-zinc-150 hover:bg-trust-navy/90 text-white dark:text-zinc-900 rounded-xl font-semibold flex items-center justify-center gap-2" data-test="login-button">
-                    <span>{{ __('Sign In to Workflow') }}</span>
+                <flux:button variant="primary" type="submit" class="w-full h-12 bg-growth-sage text-white rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-[#5f8c69]" data-test="patient-login-button">
+                    <span>{{ __('Access My Portal') }}</span>
                     <span class="material-symbols-outlined text-sm">arrow_forward</span>
                 </flux:button>
             </div>
@@ -76,9 +73,15 @@
             </div>
         </div>
 
-        <div class="space-x-1 text-sm text-center rtl:space-x-reverse text-zinc-650 dark:text-zinc-400">
-            <span>{{ __('Don\'t have an account?') }}</span>
-            <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
+        <div class="space-y-1 text-sm text-center text-zinc-650 dark:text-zinc-400">
+            <div class="space-x-1">
+                <span>{{ __("Don't have an account?") }}</span>
+                <flux:link :href="route('patient.register')" wire:navigate>{{ __('Register here') }}</flux:link>
+            </div>
+            <div class="space-x-1">
+                <span>{{ __('Are you a staff member?') }}</span>
+                <flux:link :href="route('login')" wire:navigate>{{ __('Staff login') }}</flux:link>
+            </div>
         </div>
     </div>
 </x-layouts::auth>

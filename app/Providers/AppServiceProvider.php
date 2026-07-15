@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Events\LabResultReceived;
-use Laravel\Passport\Passport;
 use App\Http\Responses\LoginResponse;
 use App\Http\Responses\RegisterResponse;
 use App\Listeners\InjectLabSummaryIntoEncounter;
@@ -20,6 +19,7 @@ use Illuminate\Validation\Rules\Password;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use Laravel\Fortify\Contracts\TwoFactorLoginResponse as TwoFactorLoginResponseContract;
+use Laravel\Passport\Passport;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,17 +36,22 @@ class AppServiceProvider extends ServiceProvider
             $request = $app['request'];
             $guard = 'web';
 
-            if ($request->is('register') && $request->isMethod('POST')) {
+            if ($request->is('register', 'patient/register') && $request->isMethod('POST')) {
                 $role = $request->input('role');
                 if ($role === 'guardian') {
                     $guard = 'portal';
                 }
             } elseif ($request->is('login') && $request->isMethod('POST')) {
-                $email = $request->input('email');
-                if ($email) {
-                    $user = User::where('email', $email)->first();
-                    if ($user && $user->role === 'guardian') {
-                        $guard = 'portal';
+                // Patient portal login form sends portal_login=1 as a fast-path signal
+                if ($request->boolean('portal_login')) {
+                    $guard = 'portal';
+                } else {
+                    $email = $request->input('email');
+                    if ($email) {
+                        $user = User::where('email', $email)->first();
+                        if ($user && $user->role === 'guardian') {
+                            $guard = 'portal';
+                        }
                     }
                 }
             } elseif ($request->is('two-factor-challenge') && $request->isMethod('POST')) {

@@ -44,6 +44,7 @@ Route::view('/demo', 'demo')->name('demo');
 
 Route::middleware('guest')->group(function () {
     Route::view('/patient/register', 'livewire.auth.patient-register')->name('patient.register');
+    Route::view('/patient/login', 'livewire.auth.patient-login')->name('patient.login');
 });
 
 Route::middleware(['auth:web', 'verified'])->group(function () {
