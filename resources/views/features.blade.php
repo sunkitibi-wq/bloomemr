@@ -51,16 +51,41 @@
                 @endauth
             @endif
         </div>
-        <div class="md:hidden">
+        <div class="md:hidden flex items-center">
+            <button id="mobile-menu-btn" class="text-trust-navy p-2 hover:bg-slate-50 rounded-md transition-colors">
+                <span class="material-symbols-outlined text-3xl" id="menu-icon">menu</span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-white shadow-lg border-t border-slate-100 z-40 md:hidden">
+        <div class="flex flex-col px-6 py-6 gap-5">
+            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('features') }}">Features</a>
+            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('home') }}#modules">Modules</a>
+            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('how-it-works') }}">How It Works</a>
+            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('demo') }}">Demo</a>
+            
+            <div class="h-px w-full bg-slate-100 my-2"></div>
+            
             @if (Route::has('login'))
                 @auth
-                    <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-trust-navy">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="bg-trust-navy text-white text-center px-6 py-3 rounded-md font-label-md text-label-md uppercase tracking-wider transition-all hover:bg-slate-dark shadow-sm">
+                        {{ __('Dashboard') }}
+                    </a>
                 @else
-                    <a href="{{ route('login') }}" class="text-sm font-semibold text-trust-navy">Log in</a>
+                    <a href="{{ route('login') }}" class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xl">login</span> {{ __('Log in') }}
+                    </a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="bg-trust-navy text-white text-center px-6 py-3 rounded-md font-label-md text-label-md uppercase tracking-wider transition-all hover:bg-slate-dark shadow-sm">
+                            {{ __('Register') }}
+                        </a>
+                    @endif
                 @endauth
             @endif
         </div>
-    </nav>
+    </div>
 </header>
 <main class="pt-32 pb-24 bg-surface min-h-screen">
     <div class="max-w-5xl mx-auto px-margin-page">
@@ -244,6 +269,21 @@
                 header.classList.remove('shadow-md', 'bg-surface/95', 'backdrop-blur-md');
             }
         });
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                if (mobileMenu.classList.contains('hidden')) {
+                    menuIcon.textContent = 'menu';
+                } else {
+                    menuIcon.textContent = 'close';
+                }
+            });
+        }
     });
 </script>
 </body>
