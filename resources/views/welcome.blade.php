@@ -75,21 +75,42 @@
                 </button>
             </div>
         </div>
-        <div class="md:hidden">
+        <div class="md:hidden flex items-center">
+            <button id="mobile-menu-btn" class="text-trust-navy p-2 hover:bg-slate-50 rounded-md transition-colors">
+                <span class="material-symbols-outlined text-3xl" id="menu-icon">menu</span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-white shadow-lg border-t border-slate-100 z-40 md:hidden">
+        <div class="flex flex-col px-6 py-6 gap-5">
+            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('features') }}">Who we serve</a>
+            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="#modules">Products</a>
+            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('how-it-works') }}">How It Works</a>
+            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="#pricing">Pricing</a>
+            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('demo') }}">Network</a>
+            
+            <div class="h-px w-full bg-slate-100 my-2"></div>
+            
             @if (Route::has('login'))
                 @auth
-                    <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-trust-navy uppercase">Dashboard</a>
+                    <a href="{{ route('dashboard') }}" class="bg-trust-navy text-white text-center px-6 py-3 rounded-md font-label-md text-label-md uppercase tracking-wider transition-all hover:bg-slate-dark shadow-sm">
+                        {{ __('Dashboard') }}
+                    </a>
                 @else
-                    <div class="flex flex-col gap-2 mt-4">
-                        <a href="{{ route('login') }}" class="text-sm font-semibold text-trust-navy uppercase">Log in</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="text-sm font-semibold text-trust-navy uppercase">Register</a>
-                        @endif
-                    </div>
+                    <a href="{{ route('login') }}" class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xl">login</span> {{ __('Log in') }}
+                    </a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="bg-trust-navy text-white text-center px-6 py-3 rounded-md font-label-md text-label-md uppercase tracking-wider transition-all hover:bg-slate-dark shadow-sm">
+                            {{ __('Register') }}
+                        </a>
+                    @endif
                 @endauth
             @endif
         </div>
-    </nav>
+    </div>
 </header>
 <main>
 <!-- Hero Section -->
@@ -117,7 +138,7 @@
 </a>
 </div>
 </div>
-<div class="relative lg:h-[500px] flex justify-center lg:justify-end mt-12 lg:mt-0">
+<div class="relative h-[350px] sm:h-[400px] lg:h-[500px] flex justify-center lg:justify-end mt-12 lg:mt-0 w-full">
 <div class="w-full h-full max-w-lg relative bg-slate-dark rounded-xl overflow-hidden shadow-2xl border-4 border-slate-dark/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
 <img class="w-full h-full object-cover mix-blend-overlay opacity-80" src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Medical professional using tablet"/>
 <div class="absolute inset-0 bg-gradient-to-t from-trust-navy/90 to-transparent flex flex-col justify-end p-8">
@@ -401,7 +422,7 @@
 <div class="md:col-span-1 space-y-6">
 <div class="flex items-center gap-2">
 <span class="material-symbols-outlined text-growth-sage text-3xl" style="font-variation-settings: 'FILL' 1;">spa</span>
-<span class="font-headline-sm text-2xl font-bold text-white tracking-wide uppercase">Bloom</span>
+<span class="font-headline-sm text-2xl font-bold text-white tracking-wide uppercase">GAMUT-C</span>
 </div>
 <p class="font-body-sm text-white/80 leading-relaxed pr-4">
                     Designed for practitioners, by practitioners. Leading the evolution of pediatric EMR systems.
@@ -465,6 +486,21 @@
             el.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-10');
             observer.observe(el);
         });
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                if (mobileMenu.classList.contains('hidden')) {
+                    menuIcon.textContent = 'menu';
+                } else {
+                    menuIcon.textContent = 'close';
+                }
+            });
+        }
     });
 </script>
 </body>
