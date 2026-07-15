@@ -1,26 +1,9 @@
-<!DOCTYPE html>
-<html class="scroll-smooth" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>GAMUT-C | How It Works</title>
-    <meta name="description" content="Learn how GAMUT-C connects clinicians, administrative staff, and patients in a seamless clinical workflow.">
+@extends('layouts.frontend')
 
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+@section('title', 'GAMUT-C | How It Works')
 
-    @fonts
-
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Inter:wght@400;600&family=JetBrains+Mono&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
+@section('head')
     <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            display: inline-block;
-            vertical-align: middle;
-        }
         .role-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
         .role-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(15,23,42,0.12); }
         .step-connector { background: linear-gradient(to right, #E2E8F0, #E2E8F0); }
@@ -29,74 +12,10 @@
         .section-fade { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
         .section-fade.visible { opacity: 1; transform: translateY(0); }
     </style>
-</head>
-<body class="bg-background text-on-background font-body-md selection:bg-growth-sage/30">
+@endsection
 
-<!-- Navigation -->
-<header class="fixed top-0 w-full z-50 bg-surface shadow-sm transition-all duration-300 h-20 flex items-center">
-    <nav class="flex justify-between items-center px-margin-page w-full max-w-7xl mx-auto">
-        <a href="{{ route('home') }}" class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-trust-navy text-3xl" style="font-variation-settings: 'FILL' 1;">spa</span>
-            <span class="font-headline-md text-headline-md font-bold text-trust-navy">GAMUT-C</span>
-        </a>
-        <div class="hidden md:flex gap-8 items-center">
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('features') }}">Features</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('home') }}#modules">Modules</a>
-            <a class="font-body-md text-body-md text-trust-navy font-semibold transition-colors" href="{{ route('how-it-works') }}">How It Works</a>
-            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('demo') }}">Demo</a>
-            @if (Route::has('login'))
-                @auth
-                    <a href="{{ route('dashboard') }}" class="bg-trust-navy text-on-primary px-6 py-2.5 rounded-lg font-label-md text-label-md transition-all active:scale-95 hover:bg-trust-navy/90 shadow-sm">
-                        {{ __('Go to Dashboard') }}
-                    </a>
-                @else
-                    <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('login') }}">{{ __('Log in') }}</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="bg-trust-navy text-on-primary px-6 py-2.5 rounded-lg font-label-md text-label-md transition-all active:scale-95 hover:bg-trust-navy/90 shadow-sm">
-                            {{ __('Register') }}
-                        </a>
-                    @endif
-                @endauth
-            @endif
-        </div>
-        <div class="md:hidden flex items-center">
-            <button id="mobile-menu-btn" class="text-trust-navy p-2 hover:bg-slate-50 rounded-md transition-colors">
-                <span class="material-symbols-outlined text-3xl" id="menu-icon">menu</span>
-            </button>
-        </div>
-    </nav>
-    
-    <!-- Mobile Navigation Menu -->
-    <div id="mobile-menu" class="hidden absolute top-20 left-0 w-full bg-white shadow-lg border-t border-slate-100 z-40 md:hidden">
-        <div class="flex flex-col px-6 py-6 gap-5">
-            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('features') }}">Features</a>
-            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('home') }}#modules">Modules</a>
-            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('how-it-works') }}">How It Works</a>
-            <a class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('demo') }}">Demo</a>
-            
-            <div class="h-px w-full bg-slate-100 my-2"></div>
-            
-            @if (Route::has('login'))
-                @auth
-                    <a href="{{ route('dashboard') }}" class="bg-trust-navy text-white text-center px-6 py-3 rounded-md font-label-md text-label-md uppercase tracking-wider transition-all hover:bg-slate-dark shadow-sm">
-                        {{ __('Dashboard') }}
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="font-headline-sm text-body-lg text-trust-navy font-semibold hover:text-growth-sage transition-colors flex items-center gap-2">
-                        <span class="material-symbols-outlined text-xl">login</span> {{ __('Log in') }}
-                    </a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="bg-trust-navy text-white text-center px-6 py-3 rounded-md font-label-md text-label-md uppercase tracking-wider transition-all hover:bg-slate-dark shadow-sm">
-                            {{ __('Register') }}
-                        </a>
-                    @endif
-                @endauth
-            @endif
-        </div>
-    </div>
-</header>
-
-<main class="pt-28 pb-24 min-h-screen">
+@section('content')
+<div class="pt-28 pb-24 min-h-screen">
 
     <!-- Hero -->
     <section class="bg-gradient-to-br from-trust-navy via-slate-800 to-slate-900 text-white py-20 px-margin-page">
@@ -490,24 +409,10 @@
             </div>
         </div>
     </section>
-</main>
+</div>
+@endsection
 
-<!-- Footer -->
-<footer class="bg-trust-navy text-on-primary w-full border-t border-white/10">
-    <div class="py-12 px-margin-page max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-        <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-growth-sage text-2xl" style="font-variation-settings: 'FILL' 1;">spa</span>
-            <span class="font-headline-sm font-bold text-on-primary">GAMUT-C</span>
-        </div>
-        <p class="font-body-sm text-body-sm opacity-60 text-center">© 2026 GAMUT-C. All rights reserved. HIPAA Compliant.</p>
-        <div class="flex gap-6">
-            <a href="{{ route('features') }}" class="font-body-sm text-body-sm opacity-70 hover:opacity-100 hover:text-growth-sage transition-colors">Features</a>
-            <a href="{{ route('demo') }}" class="font-body-sm text-body-sm opacity-70 hover:opacity-100 hover:text-growth-sage transition-colors">Demo</a>
-            <a href="{{ route('how-it-works') }}" class="font-body-sm text-body-sm opacity-70 hover:opacity-100 hover:text-growth-sage transition-colors">How It Works</a>
-        </div>
-    </div>
-</footer>
-
+@section('scripts')
 <script>
     // Scroll animations
     const observer = new IntersectionObserver((entries) => {
@@ -519,34 +424,5 @@
     }, { threshold: 0.1 });
 
     document.querySelectorAll('.section-fade').forEach(el => observer.observe(el));
-
-    // Header shadow on scroll
-    const header = document.querySelector('header');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 20) {
-            header.classList.add('shadow-md', 'bg-surface/95', 'backdrop-blur-md');
-        } else {
-            header.classList.remove('shadow-md', 'bg-surface/95', 'backdrop-blur-md');
-        }
-    });
-
-    // Mobile Menu Toggle
-    document.addEventListener('DOMContentLoaded', () => {
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const menuIcon = document.getElementById('menu-icon');
-
-        if (mobileMenuBtn && mobileMenu) {
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-                if (mobileMenu.classList.contains('hidden')) {
-                    menuIcon.textContent = 'menu';
-                } else {
-                    menuIcon.textContent = 'close';
-                }
-            });
-        }
-    });
 </script>
-</body>
-</html>
+@endsection

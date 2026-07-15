@@ -22,7 +22,7 @@
                 <!-- Top Bar -->
                 <header class="fixed top-0 w-full md:w-1/2 flex justify-between items-center px-8 h-16 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md z-10 border-b border-zinc-100 dark:border-zinc-800">
                     <div class="font-headline-md text-lg font-bold text-trust-navy dark:text-zinc-100">
-                        Bloom<span class="text-growth-sage">EMR</span>
+                        GAMUT-C<span class="text-growth-sage"> EMR</span>
                     </div>
                     <div class="flex items-center gap-2 text-zinc-500 font-semibold text-xs tracking-wider uppercase">
                         <span class="material-symbols-outlined text-[18px]">verified_user</span>
