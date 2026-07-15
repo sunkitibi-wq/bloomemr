@@ -84,8 +84,15 @@
                     <div class="grid gap-4">
                         <a href="{{ route('login') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-trust-navy/30 hover:bg-trust-navy/5 transition-all group">
                             <div>
-                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Main Demo</h4>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Staff Login</h4>
                                 <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/login') }}</p>
+                            </div>
+                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-trust-navy group-hover:translate-x-1 transition-all">arrow_forward</span>
+                        </a>
+                        <a href="{{ route('register') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-trust-navy/30 hover:bg-trust-navy/5 transition-all group">
+                            <div>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Staff Registration</h4>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/register') }}</p>
                             </div>
                             <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-trust-navy group-hover:translate-x-1 transition-all">arrow_forward</span>
                         </a>
@@ -162,30 +169,39 @@
                 <div>
                     <h3 class="font-headline-md text-headline-md text-trust-navy mb-4">Links</h3>
                     <div class="grid gap-4">
-                        <a href="{{ route('login') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-trust-navy/30 hover:bg-growth-sage/5 transition-all group">
+                        <a href="{{ route('patient.login') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-growth-sage/30 hover:bg-growth-sage/5 transition-all group">
                             <div>
-                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Portal Demo</h4>
-                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/login') }}</p>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Patient Portal Login</h4>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/patient/login') }}</p>
                             </div>
-                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-trust-navy group-hover:translate-x-1 transition-all">arrow_forward</span>
+                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-growth-sage group-hover:translate-x-1 transition-all">arrow_forward</span>
+                        </a>
+                        <a href="{{ route('patient.register') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-growth-sage/30 hover:bg-growth-sage/5 transition-all group">
+                            <div>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Patient Portal Registration</h4>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/patient/register') }}</p>
+                            </div>
+                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-growth-sage group-hover:translate-x-1 transition-all">arrow_forward</span>
                         </a>
                     </div>
                 </div>
 
                 <div>
-                    <h3 class="font-headline-md text-headline-md text-trust-navy mb-4">Credentials</h3>
+                    <h3 class="font-headline-md text-headline-md text-trust-navy mb-4">Patient Credentials</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b-2 border-outline-variant/50">
-                                    <th class="py-3 px-4 font-label-md text-label-md font-bold text-trust-navy">Patient Email</th>
+                                    <th class="py-3 px-4 font-label-md text-label-md font-bold text-trust-navy">Email</th>
                                     <th class="py-3 px-4 font-label-md text-label-md font-bold text-trust-navy">Password</th>
+                                    <th class="py-3 px-4 font-label-md text-label-md font-bold text-trust-navy">Description</th>
                                 </tr>
                             </thead>
                             <tbody class="font-body-md text-body-md">
                                 <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
                                     <td class="py-3 px-4 font-data-mono">guardian@bloomemr.test</td>
                                     <td class="py-3 px-4 font-data-mono">password</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Parent / Guardian (use Patient Portal Login)</td>
                                 </tr>
                             </tbody>
                         </table>
