@@ -41,6 +41,8 @@ class UserFactory extends Factory
             'phone' => \fake()->optional()->phoneNumber(),
             'timezone' => 'America/New_York',
             'is_active' => true,
+            'kyc_status' => 'approved',
+            'subscribed_until' => now()->addYear(),
         ];
     }
 

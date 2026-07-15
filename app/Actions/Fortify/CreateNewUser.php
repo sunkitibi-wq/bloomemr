@@ -25,13 +25,16 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
-            'role' => ['required', 'string', 'in:attending,resident,clinical_staff,receptionist,laboratory_officer,pharmacist,billing_admin,medical_records_officer,radiologist,insurance_officer,public_health_officer,hospital_administrator,guardian'],
+            'role' => ['nullable', 'string', 'in:clinician,attending,resident,clinical_staff,receptionist,laboratory_officer,pharmacist,billing_admin,medical_records_officer,radiologist,insurance_officer,public_health_officer,hospital_administrator,guardian'],
             'practice_name' => ['nullable', 'string', 'max:255'],
             'child_name' => ['nullable', 'string', 'max:255'],
-            'terms' => ['required_if:role,guardian', 'accepted'],
+            'terms' => ['accepted_if:role,guardian'],
         ])->validate();
 
-        $role = $input['role'];
+        $role = $input['role'] ?? 'attending';
+        if ($role === 'clinician') {
+            $role = 'attending';
+        }
 
         // Resolve an existing practice from the middleware context or create a new one for clinicians
         $practice = app()->bound('current_practice') ? app('current_practice') : null;
@@ -77,7 +80,7 @@ class CreateNewUser implements CreatesNewUsers
         ]);
         $user->practice_id = $practiceId;
         $user->save();
-        
+
         $user->assignRole($role);
 
         // Grant super_admin to first clinician of a freshly created practice

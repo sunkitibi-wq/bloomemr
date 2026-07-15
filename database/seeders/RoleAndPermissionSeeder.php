@@ -60,6 +60,10 @@ class RoleAndPermissionSeeder extends Seeder
             'review_insurance_claims',
 
             'view_public_health_reports',
+
+            // Pharmacy-specific
+            'manage_inventory',
+            'view_pharmacy_settings',
         ];
 
         foreach ($permissions as $permission) {
@@ -79,6 +83,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view_clinical_notes', 'create_clinical_notes', 'update_clinical_notes', 'sign_clinical_notes',
             'view_lab_orders', 'manage_lab_orders',
             'view_imaging_requests', 'manage_imaging_requests',
+            'manage_inventory',
         ];
         $doctorRole->syncPermissions($doctorPermissions);
         $attendingRole->syncPermissions($doctorPermissions);
@@ -104,6 +109,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view_clinical_notes', 'create_clinical_notes',
             'view_lab_orders',
             'view_imaging_requests',
+            'manage_inventory',
         ];
         $nurseRole->syncPermissions($nursePermissions);
         $staffRole->syncPermissions($nursePermissions);
@@ -125,8 +131,18 @@ class RoleAndPermissionSeeder extends Seeder
         // Pharmacist
         $pharmacistRole = Role::findOrCreate('pharmacist');
         $pharmacistRole->syncPermissions([
+            // Core prescription workflow
             'view_prescriptions',
             'update_prescriptions',
+
+            // Patient look-up (read-only) to verify allergies, DOB, insurance
+            'view_patients',
+
+            // Medication inventory & stock management
+            'manage_inventory',
+
+            // Pharmacy settings (manage linked pharmacy records)
+            'view_pharmacy_settings',
         ]);
 
         // Cashier / Billing Admin / Billing Officer

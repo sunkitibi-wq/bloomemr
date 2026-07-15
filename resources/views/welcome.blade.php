@@ -49,6 +49,8 @@
         <div class="hidden md:flex gap-10 items-center">
             <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('features') }}">Who we serve</a>
             <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="#modules">Products</a>
+            <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('how-it-works') }}">How It Works</a>
+            <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="#pricing">Pricing</a>
             <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('demo') }}">Network</a>
             
             <div class="flex items-center gap-4 ml-4">
@@ -267,6 +269,112 @@
 </div>
 </div>
 </section>
+<!-- Pricing Section -->
+<section class="py-24 bg-surface-container-lowest" id="pricing">
+    <div class="max-w-7xl mx-auto px-margin-page">
+        <div class="text-center mb-16 space-y-4">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-growth-sage/10 text-growth-sage rounded-full text-xs font-bold uppercase tracking-wider">
+                <span class="material-symbols-outlined text-sm">payments</span>
+                Pricing Options
+            </div>
+            <h2 class="font-headline-lg text-4xl text-trust-navy font-bold">Simple, Transparent Licensing</h2>
+            <p class="font-body-lg text-body-lg text-slate-dark max-w-2xl mx-auto">Choose the license that fits your practice model. All plans include full clinical features.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+            <!-- Individual Practitioner Card -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition-shadow">
+                <div>
+                    <span class="text-xs font-bold text-growth-sage uppercase tracking-wider">{{ __('Individual License') }}</span>
+                    <h3 class="text-2xl font-bold text-trust-navy mt-2">{{ __('Practitioner Plan') }}</h3>
+                    <p class="text-xs text-slate-500 mt-1">{{ __('Billed per clinical user. Choose your duration.') }}</p>
+                    
+                    <div class="my-8 space-y-4">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-4xl font-extrabold text-trust-navy">$99</span>
+                            <span class="text-sm text-slate-500">/ {{ __('Month') }}</span>
+                        </div>
+                        <div class="p-3.5 bg-slate-50 rounded-xl flex justify-between items-center text-xs">
+                            <span class="font-semibold text-slate-700">{{ __('6 Month Save Plan') }}</span>
+                            <span class="font-bold text-trust-navy">$499 <span class="text-growth-sage text-[10px] uppercase font-extrabold ml-1">Save 15%</span></span>
+                        </div>
+                        <div class="p-3.5 bg-slate-50 rounded-xl flex justify-between items-center text-xs">
+                            <span class="font-semibold text-slate-700">{{ __('1 Year Value Plan') }}</span>
+                            <span class="font-bold text-trust-navy">$899 <span class="text-primary text-[10px] uppercase font-extrabold ml-1">Save 25%</span></span>
+                        </div>
+                    </div>
+
+                    <ul class="space-y-3.5 text-xs text-slate-600 border-t border-slate-100 pt-6">
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span>Full SOAP/DAP/Intake Clinical Notes</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span>Electronic Prescribing & Refill Audits</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span>Patient Portal Access for Guardians</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span>Billing Cycle & Claims Manager Access</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-slate-100">
+                    <a href="{{ route('register') }}" class="block w-full py-3 bg-growth-sage text-white text-center rounded-xl font-bold hover:bg-growth-sage/95 shadow-sm text-sm">
+                        {{ __('Register & Subscribe') }}
+                    </a>
+                </div>
+            </div>
+
+            <!-- Enterprise Card -->
+            <div class="bg-gradient-to-br from-trust-navy to-slate-900 p-8 rounded-2xl shadow-sm text-white flex flex-col justify-between hover:shadow-md transition-shadow">
+                <div>
+                    <span class="text-xs font-bold text-growth-sage uppercase tracking-wider">{{ __('Organization Plan') }}</span>
+                    <h3 class="text-2xl font-bold text-white mt-2">{{ __('Clinic & Health System') }}</h3>
+                    <p class="text-xs text-slate-350 mt-1">{{ __('Multi-practitioner practices and medical centers.') }}</p>
+                    
+                    <div class="my-8">
+                        <div class="text-3xl font-extrabold text-white">{{ __('Custom Licensing') }}</div>
+                        <p class="text-xs text-slate-300 mt-2 leading-relaxed">
+                            {{ __('Organization licenses must be configured directly by our support team. Includes volume discounts for multi-user practices.') }}
+                        </p>
+                    </div>
+
+                    <ul class="space-y-3.5 text-xs text-slate-200 border-t border-white/10 pt-6">
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span>Dedicated Private HIPAA Server Instance</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span>Custom HIE & Lab Integration Endpoints</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span>Volume Discounts & Clinic Roster Control</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-growth-sage text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span>SLA & Technical Support Manager</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-white/10">
+                    <a href="{{ route('how-it-works') }}#pricing" class="block w-full py-3 bg-white/10 hover:bg-white/20 border border-white/15 text-white text-center rounded-xl font-bold text-sm transition-colors">
+                        {{ __('View Organization Guide') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Final CTA Section -->
 <section class="py-24 px-margin-page bg-trust-navy text-white text-center">
 <div class="max-w-4xl mx-auto space-y-10">

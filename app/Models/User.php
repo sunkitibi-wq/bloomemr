@@ -40,7 +40,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password', 'role', 'npi_number', 'dea_number', 'phone', 'timezone', 'is_system_admin'])]
+#[Fillable(['name', 'email', 'password', 'role', 'npi_number', 'dea_number', 'phone', 'timezone', 'is_system_admin', 'kyc_status', 'kyc_data', 'kyc_rejection_reason', 'subscribed_until'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -71,7 +71,22 @@ class User extends Authenticatable implements PasskeyUser
             'password' => 'hashed',
             'is_active' => 'boolean',
             'is_system_admin' => 'boolean',
+            'subscribed_until' => 'datetime',
+            'kyc_data' => 'array',
         ];
+    }
+
+    public function isSubscribed(): bool
+    {
+        if ($this->subscribed_until && $this->subscribed_until->isFuture()) {
+            return true;
+        }
+
+        if ($this->practice && $this->practice->is_enterprise && $this->practice->enterprise_expires_at && $this->practice->enterprise_expires_at->isFuture()) {
+            return true;
+        }
+
+        return false;
     }
 
     public function initials(): string

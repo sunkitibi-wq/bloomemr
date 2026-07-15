@@ -1,11 +1,16 @@
+    @php
+        $patient = auth('portal')->check() && auth('portal')->user()->role === 'guardian'
+            ? \App\Models\Patient::where('portal_user_id', auth('portal')->id())->first()
+            : \App\Models\Patient::where('practice_id', auth()->user()?->practice_id)->first();
+    @endphp
     <nav class="w-full md:w-64 shrink-0 flex flex-col p-5 bg-white dark:bg-zinc-900 border-r border-slate-200 dark:border-zinc-800">
         <!-- Logo -->
         <div class="flex items-center gap-2.5 mb-8 px-1">
             <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-bold">
-                B
+                {{ $patient ? substr($patient->first_name, 0, 1) : 'B' }}
             </div>
             <div>
-                <span class="font-headline-md font-bold text-trust-navy dark:text-zinc-100 tracking-tight text-base">Bloom</span>
+                <span class="font-headline-md font-bold text-trust-navy dark:text-zinc-100 tracking-tight text-base">{{ $patient ? $patient->first_name . "'s Care" : 'Bloom' }}</span>
                 <span class="text-[9px] text-zinc-400 block -mt-1 uppercase tracking-wider">{{ __('Patient Portal') }}</span>
             </div>
         </div>

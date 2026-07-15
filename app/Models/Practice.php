@@ -12,6 +12,8 @@ class Practice extends Model
         'slug',
         'is_active',
         'settings',
+        'is_enterprise',
+        'enterprise_expires_at',
     ];
 
     protected function casts(): array
@@ -19,6 +21,8 @@ class Practice extends Model
         return [
             'is_active' => 'boolean',
             'settings' => 'array',
+            'is_enterprise' => 'boolean',
+            'enterprise_expires_at' => 'datetime',
         ];
     }
 

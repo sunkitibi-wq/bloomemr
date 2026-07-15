@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureKycAndSubscription;
 use App\Http\Middleware\IdentifyPractice;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'scopes' => CheckToken::class,
             'scope' => CheckTokenForAnyScope::class,
+            'kyc.subscribed' => EnsureKycAndSubscription::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

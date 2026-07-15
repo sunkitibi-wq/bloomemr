@@ -1,6 +1,8 @@
 <?php
 
 use App\Livewire\Assessments\ScoredAssessment;
+use App\Livewire\Auth\KycOnboarding;
+use App\Livewire\Auth\UserSubscription;
 use App\Livewire\Billing\BillingManager;
 use App\Livewire\Billing\ClaimsCenter;
 use App\Livewire\Dashboard;
@@ -33,6 +35,7 @@ use App\Livewire\PracticeAnalytics;
 use App\Livewire\Reporting\ClinicalQualityMeasures;
 use App\Livewire\Scheduling\AppointmentList;
 use App\Livewire\Scheduling\FlowBoard;
+use App\Livewire\SystemAdmin\KycVerificationManager;
 use App\Livewire\SystemAdmin\PracticeManager;
 use App\Models\SmartPhrase;
 use Illuminate\Http\Request;
@@ -40,14 +43,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 Route::view('/features', 'features')->name('features');
+Route::view('/how-it-works', 'how-it-works')->name('how-it-works');
 Route::view('/demo', 'demo')->name('demo');
 
 Route::middleware('guest')->group(function () {
     Route::view('/patient/register', 'livewire.auth.patient-register')->name('patient.register');
     Route::view('/patient/login', 'livewire.auth.patient-login')->name('patient.login');
+    Route::view('/doctor/login', 'livewire.auth.doctor-login')->name('doctor.login');
+    Route::view('/hospital/login', 'livewire.auth.hospital-login')->name('hospital.login');
+    Route::view('/pharmacy/login', 'livewire.auth.pharmacy-login')->name('pharmacy.login');
 });
 
-Route::middleware(['auth:web', 'verified'])->group(function () {
+Route::middleware(['auth:web', 'verified', 'kyc.subscribed'])->group(function () {
+    Route::livewire('kyc', KycOnboarding::class)->name('kyc');
+    Route::livewire('subscribe', UserSubscription::class)->name('subscribe');
+
     Route::livewire('dashboard', Dashboard::class)->name('dashboard');
     Route::livewire('scheduling', AppointmentList::class)->name('scheduling');
     Route::livewire('scheduling/flow-board', FlowBoard::class)->name('scheduling.flow-board');
@@ -64,6 +74,9 @@ Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::livewire('system/practices', PracticeManager::class)
         ->middleware('can:system_admin')
         ->name('system.practices');
+    Route::livewire('system/kyc', KycVerificationManager::class)
+        ->middleware('can:system_admin')
+        ->name('system.kyc');
 
     Route::prefix('patients')->name('patients.')->group(function () {
         Route::livewire('/', PatientList::class)->name('index');

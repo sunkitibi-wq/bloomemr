@@ -33,6 +33,7 @@
         <div class="hidden md:flex gap-8 items-center">
             <a class="font-body-md text-body-md text-trust-navy font-semibold transition-colors" href="{{ route('features') }}">Features</a>
             <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('home') }}#modules">Modules</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('how-it-works') }}">How It Works</a>
             <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('demo') }}">Demo</a>
             
             @if (Route::has('login'))

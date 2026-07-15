@@ -58,6 +58,7 @@ test('guardian can register with child name and link patient', function () {
         'password_confirmation' => 'SecurePassword123!',
         'role' => 'guardian',
         'child_name' => 'Child Kiddo',
+        'terms' => 'on',
     ]);
 
     $response->assertSessionHasNoErrors()

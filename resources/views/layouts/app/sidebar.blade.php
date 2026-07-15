@@ -16,7 +16,29 @@
                 @if ($user && $user->role === 'pharmacist')
                     <flux:sidebar.group :heading="__('Pharmacy')" class="grid">
                         <flux:sidebar.item icon="beaker" :href="route('pharmacy.portal')" :current="request()->routeIs('pharmacy.portal')" wire:navigate>
-                            {{ __('Pharmacy Portal') }}
+                            {{ __('Prescription Queue') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item icon="users" :href="route('patients.index')" :current="request()->routeIs('patients.*')" wire:navigate>
+                            {{ __('Patient Lookup') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item icon="archive-box" :href="route('inventory')" :current="request()->routeIs('inventory')" wire:navigate>
+                            {{ __('Drug Inventory') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item icon="envelope" :href="route('messages')" :current="request()->routeIs('messages')" wire:navigate>
+                            {{ __('Messages') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+
+                    <flux:sidebar.group :heading="__('Configuration')" class="grid">
+                        <flux:sidebar.item icon="building-storefront" :href="route('settings.pharmacies')" :current="request()->routeIs('settings.pharmacies')" wire:navigate>
+                            {{ __('Pharmacies') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item icon="cog" :href="route('profile.edit')" :current="request()->routeIs('profile.*') || request()->routeIs('security.*') || request()->routeIs('appearance.*')" wire:navigate>
+                            {{ __('Settings') }}
                         </flux:sidebar.item>
                     </flux:sidebar.group>
                 @else
@@ -92,8 +114,23 @@
 
                     @if ($user && $user->isSystemAdmin())
                         <flux:sidebar.group :heading="__('System Admin')" class="grid">
-                            <flux:sidebar.item icon="building-office" :href="route('system.practices')" :current="request()->routeIs('system.*')" wire:navigate>
+                            <flux:sidebar.item icon="building-office" :href="route('system.practices')" :current="request()->routeIs('system.practices')" wire:navigate>
                                 {{ __('All Practices') }}
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="check-badge" :href="route('system.kyc')" :current="request()->routeIs('system.kyc')" wire:navigate>
+                                {{ __('KYC Verifications') }}
+                            </flux:sidebar.item>
+                        </flux:sidebar.group>
+                    @endif
+
+                    @if ($user && ! $user->isSystemAdmin() && $user->role !== 'guardian')
+                        <flux:sidebar.group :heading="__('License Plan')" class="grid">
+                            <flux:sidebar.item icon="credit-card" :href="route('subscribe')" :current="request()->routeIs('subscribe')" wire:navigate>
+                                @if ($user->subscribed_until)
+                                    {{ __('Active until :date', ['date' => $user->subscribed_until->format('M j, Y')]) }}
+                                @else
+                                    {{ __('Enterprise License') }}
+                                @endif
                             </flux:sidebar.item>
                         </flux:sidebar.group>
                     @endif

@@ -31,7 +31,7 @@ class Pharmacies extends Component
 
     public function mount(): void
     {
-        if (! Gate::allows('manage_users')) {
+        if (! Gate::allows('manage_users') && ! Gate::allows('view_pharmacy_settings')) {
             abort(403, 'Unauthorized.');
         }
 

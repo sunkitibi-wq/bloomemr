@@ -48,6 +48,13 @@ class InventoryManager extends Component
 
     public bool $showRestockModal = false;
 
+    public function mount(): void
+    {
+        if (! Auth::user()?->can('manage_inventory')) {
+            abort(403, 'Unauthorized.');
+        }
+    }
+
     #[Computed]
     public function inventoryItems()
     {

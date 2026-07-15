@@ -33,6 +33,7 @@
         <div class="hidden md:flex gap-8 items-center">
             <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('features') }}">Features</a>
             <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('home') }}#modules">Modules</a>
+            <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('how-it-works') }}">How It Works</a>
             <a class="font-body-md text-body-md text-trust-navy font-semibold transition-colors" href="{{ route('demo') }}">Demo</a>
             
             @if (Route::has('login'))
@@ -84,15 +85,50 @@
                     <div class="grid gap-4">
                         <a href="{{ route('login') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-trust-navy/30 hover:bg-trust-navy/5 transition-all group">
                             <div>
-                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Staff Login</h4>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Staff Login (General)</h4>
                                 <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/login') }}</p>
                             </div>
                             <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-trust-navy group-hover:translate-x-1 transition-all">arrow_forward</span>
+                        </a>
+                        <a href="{{ route('doctor.login') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-trust-navy/30 hover:bg-trust-navy/5 transition-all group">
+                            <div>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Doctor & Clinician Portal</h4>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/doctor/login') }}</p>
+                            </div>
+                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-trust-navy group-hover:translate-x-1 transition-all">arrow_forward</span>
+                        </a>
+                        <a href="{{ route('hospital.login') }}" class="flex items-center justify-between p-4 rounded-xl border border-rose-200 hover:border-rose-400/50 hover:bg-rose-50/50 transition-all group">
+                            <div>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Hospital Administration Portal</h4>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/hospital/login') }}</p>
+                            </div>
+                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-rose-600 group-hover:translate-x-1 transition-all">arrow_forward</span>
+                        </a>
+                        <a href="{{ route('pharmacy.login') }}" class="flex items-center justify-between p-4 rounded-xl border border-indigo-200 hover:border-indigo-400/50 hover:bg-indigo-50/50 transition-all group">
+                            <div>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Pharmacy Portal</h4>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/pharmacy/login') }}</p>
+                            </div>
+                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-indigo-600 group-hover:translate-x-1 transition-all">arrow_forward</span>
                         </a>
                         <a href="{{ route('register') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-trust-navy/30 hover:bg-trust-navy/5 transition-all group">
                             <div>
                                 <h4 class="font-label-md text-label-md font-bold text-trust-navy">Staff Registration</h4>
                                 <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/register') }}</p>
+                            </div>
+                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-trust-navy group-hover:translate-x-1 transition-all">arrow_forward</span>
+                        </a>
+                        <a href="{{ route('kyc') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-trust-navy/30 hover:bg-trust-navy/5 transition-all group">
+                            <div>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Identity Verification (KYC Onboarding)</h4>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/kyc') }}</p>
+                            </div>
+                            <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-trust-navy group-hover:translate-x-1 transition-all">arrow_forward</span>
+                        </a>
+                        <a href="{{ route('subscribe') }}" class="flex items-center justify-between p-4 rounded-xl border border-outline-variant hover:border-trust-navy/30 hover:bg-trust-navy/5 transition-all group">
+                            <div>
+                                <h4 class="font-label-md text-label-md font-bold text-trust-navy">Manage Subscription Plan</h4>
+                                <p class="font-body-sm text-body-sm text-on-surface-variant">{{ url('/subscribe') }}</p>
                             </div>
                             <span class="material-symbols-outlined text-trust-navy/50 group-hover:text-trust-navy group-hover:translate-x-1 transition-all">arrow_forward</span>
                         </a>
