@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Bloom EMR | Features</title>
+    <title>GAMUT-C | Features</title>
     
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -28,7 +28,7 @@
     <nav class="flex justify-between items-center px-margin-page w-full max-w-7xl mx-auto">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
             <span class="material-symbols-outlined text-trust-navy text-3xl" style="font-variation-settings: 'FILL' 1;">spa</span>
-            <span class="font-headline-md text-headline-md font-bold text-trust-navy">Bloom EMR</span>
+            <span class="font-headline-md text-headline-md font-bold text-trust-navy">GAMUT-C</span>
         </a>
         <div class="hidden md:flex gap-8 items-center">
             <a class="font-body-md text-body-md text-trust-navy font-semibold transition-colors" href="{{ route('features') }}">Features</a>
@@ -65,9 +65,9 @@
     <div class="max-w-5xl mx-auto px-margin-page">
         <!-- Header -->
         <div class="mb-12 text-center">
-            <h1 class="font-headline-xl text-headline-xl text-trust-navy mb-4">Bloom EMR Features</h1>
+            <h1 class="font-headline-xl text-headline-xl text-trust-navy mb-4">GAMUT-C Features</h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl mx-auto">
-                Bloom EMR is a comprehensive electronic health records and medical practice management application. It features fully integrated electronic health records, practice management, scheduling, electronic billing, and a whole lot more.
+                GAMUT-C is a comprehensive electronic health records and medical practice management application. It features fully integrated electronic health records, practice management, scheduling, electronic billing, and a whole lot more.
             </p>
         </div>
 
@@ -228,7 +228,7 @@
 <div class="border-t border-on-primary/10 py-8 px-margin-page">
 <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
 <p class="font-body-sm text-body-sm opacity-60">
-                    © 2026 Bloom EMR. All rights reserved. HIPAA Compliant.
+                    © 2026 GAMUT-C. All rights reserved. HIPAA Compliant.
                 </p>
 </div>
 </div>

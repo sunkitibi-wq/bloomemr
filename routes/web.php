@@ -42,6 +42,10 @@ Route::view('/', 'welcome')->name('home');
 Route::view('/features', 'features')->name('features');
 Route::view('/demo', 'demo')->name('demo');
 
+Route::middleware('guest')->group(function () {
+    Route::view('/patient/register', 'livewire.auth.patient-register')->name('patient.register');
+});
+
 Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::livewire('dashboard', Dashboard::class)->name('dashboard');
     Route::livewire('scheduling', AppointmentList::class)->name('scheduling');

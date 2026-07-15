@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Bloom EMR | Precision Care for Every Milestone</title>
+    <title>GAMUT-C | Precision Care for Every Milestone</title>
     
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -44,7 +44,7 @@
     <nav class="flex justify-between items-center px-margin-page w-full max-w-7xl mx-auto">
         <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-trust-navy text-3xl" style="font-variation-settings: 'FILL' 1;">spa</span>
-            <span class="font-headline-md text-headline-md font-bold text-trust-navy uppercase tracking-wide">Bloom EMR</span>
+            <span class="font-headline-md text-headline-md font-bold text-trust-navy uppercase tracking-wide">GAMUT-C</span>
         </div>
         <div class="hidden md:flex gap-10 items-center">
             <a class="font-headline-sm text-body-md text-trust-navy font-semibold hover:text-growth-sage transition-colors" href="{{ route('features') }}">Who we serve</a>
@@ -328,7 +328,7 @@
 <div class="border-t border-white/10 py-8 px-margin-page bg-[#2c3a47]">
 <div class="max-w-7xl mx-auto flex justify-center text-center">
 <p class="font-body-sm text-white/60">
-                    © 2026 Bloom EMR. All rights reserved. HIPAA Compliant.
+                    © 2026 GAMUT-C. All rights reserved. HIPAA Compliant.
                 </p>
 </div>
 </div>

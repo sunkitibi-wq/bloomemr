@@ -39,7 +39,7 @@
 
                 <!-- Footer -->
                 <footer class="px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-zinc-100 dark:border-zinc-800 text-xs text-zinc-400">
-                    <p>© 2026 Bloom EMR. HIPAA Compliant.</p>
+                    <p>© 2026 GAMUT-C. HIPAA Compliant.</p>
                     <div class="flex gap-6">
                         <a class="hover:text-growth-sage transition-colors" href="#">Privacy Policy</a>
                         <a class="hover:text-growth-sage transition-colors" href="#">Terms of Service</a>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Bloom EMR | Demo</title>
+    <title>GAMUT-C | Demo</title>
     
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -28,7 +28,7 @@
     <nav class="flex justify-between items-center px-margin-page w-full max-w-7xl mx-auto">
         <a href="{{ route('home') }}" class="flex items-center gap-2">
             <span class="material-symbols-outlined text-trust-navy text-3xl" style="font-variation-settings: 'FILL' 1;">spa</span>
-            <span class="font-headline-md text-headline-md font-bold text-trust-navy">Bloom EMR</span>
+            <span class="font-headline-md text-headline-md font-bold text-trust-navy">GAMUT-C</span>
         </a>
         <div class="hidden md:flex gap-8 items-center">
             <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="{{ route('features') }}">Features</a>
@@ -65,16 +65,16 @@
     <div class="max-w-4xl mx-auto px-margin-page">
         <!-- Header -->
         <div class="mb-12">
-            <h1 class="font-headline-xl text-headline-xl text-trust-navy mb-4">Fully Working Bloom EMR Demo</h1>
+            <h1 class="font-headline-xl text-headline-xl text-trust-navy mb-4">Fully Working GAMUT-C Demo</h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant">
-                We offer fully functional demo installations for you to try out. Some simple configuration has been added for clearer demonstration of Bloom EMR, medical billing, access controls and patient portal. Each demo is reset overnight so no data is persistent.
+                We offer fully functional demo installations for you to try out. Some simple configuration has been added for clearer demonstration of GAMUT-C, medical billing, access controls and patient portal. Each demo is reset overnight so no data is persistent.
             </p>
         </div>
 
         <!-- System Demo -->
         <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 shadow-sm mb-12 overflow-hidden">
             <div class="p-8 border-b border-outline-variant/30 bg-trust-navy/5">
-                <h2 class="font-headline-lg text-headline-lg text-trust-navy">Bloom EMR Demo</h2>
+                <h2 class="font-headline-lg text-headline-lg text-trust-navy">GAMUT-C Demo</h2>
                 <p class="font-body-md text-body-md text-on-surface-variant mt-2">Access the main clinical and administrative system.</p>
             </div>
             
@@ -105,24 +105,44 @@
                             </thead>
                             <tbody class="font-body-md text-body-md">
                                 <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
-                                    <td class="py-3 px-4 font-data-mono">admin@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">admin@bloomemr.test</td>
                                     <td class="py-3 px-4 font-data-mono">password</td>
-                                    <td class="py-3 px-4 text-on-surface-variant">System Administrator</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Admin User (Super Admin)</td>
                                 </tr>
                                 <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
-                                    <td class="py-3 px-4 font-data-mono">doctor@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">sarah@bloomemr.test</td>
                                     <td class="py-3 px-4 font-data-mono">password</td>
-                                    <td class="py-3 px-4 text-on-surface-variant">Physician / Clinician</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Dr. Sarah Chen (Attending)</td>
                                 </tr>
                                 <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
-                                    <td class="py-3 px-4 font-data-mono">billing@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">james@bloomemr.test</td>
                                     <td class="py-3 px-4 font-data-mono">password</td>
-                                    <td class="py-3 px-4 text-on-surface-variant">Accountant / Biller</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Dr. James Wilson (Attending)</td>
                                 </tr>
                                 <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
-                                    <td class="py-3 px-4 font-data-mono">frontdesk@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">mike@bloomemr.test</td>
                                     <td class="py-3 px-4 font-data-mono">password</td>
-                                    <td class="py-3 px-4 text-on-surface-variant">Front desk receptionist</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Dr. Mike Rivera (Resident)</td>
+                                </tr>
+                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
+                                    <td class="py-3 px-4 font-data-mono">lisa@bloomemr.test</td>
+                                    <td class="py-3 px-4 font-data-mono">password</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Lisa Park (Clinical Staff)</td>
+                                </tr>
+                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
+                                    <td class="py-3 px-4 font-data-mono">karen@bloomemr.test</td>
+                                    <td class="py-3 px-4 font-data-mono">password</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Karen Miller (Billing Admin)</td>
+                                </tr>
+                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
+                                    <td class="py-3 px-4 font-data-mono">pharmacy@bloomemr.test</td>
+                                    <td class="py-3 px-4 font-data-mono">password</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">PharmD. Elena Ruiz (Pharmacist)</td>
+                                </tr>
+                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
+                                    <td class="py-3 px-4 font-data-mono">test@example.com</td>
+                                    <td class="py-3 px-4 font-data-mono">password</td>
+                                    <td class="py-3 px-4 text-on-surface-variant">Test User</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -164,11 +184,7 @@
                             </thead>
                             <tbody class="font-body-md text-body-md">
                                 <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
-                                    <td class="py-3 px-4 font-data-mono">patient@bloom.test</td>
-                                    <td class="py-3 px-4 font-data-mono">password</td>
-                                </tr>
-                                <tr class="border-b border-outline-variant/30 hover:bg-surface-container-lowest/50">
-                                    <td class="py-3 px-4 font-data-mono">patient2@bloom.test</td>
+                                    <td class="py-3 px-4 font-data-mono">guardian@bloomemr.test</td>
                                     <td class="py-3 px-4 font-data-mono">password</td>
                                 </tr>
                             </tbody>
@@ -220,7 +236,7 @@
 <div class="border-t border-on-primary/10 py-8 px-margin-page">
 <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
 <p class="font-body-sm text-body-sm opacity-60">
-                    © 2026 Bloom EMR. All rights reserved. HIPAA Compliant.
+                    © 2026 GAMUT-C. All rights reserved. HIPAA Compliant.
                 </p>
 </div>
 </div>
