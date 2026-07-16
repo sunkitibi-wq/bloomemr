@@ -84,6 +84,10 @@
                                 {{ __('Radiology') }}
                             </flux:sidebar.item>
 
+                            <flux:sidebar.item icon="sparkles" :href="route('clinical.ai-assistant')" :current="request()->routeIs('clinical.ai-assistant')" wire:navigate>
+                                {{ __('AI Assistant') }}
+                            </flux:sidebar.item>
+
                             <flux:sidebar.item icon="beaker" :href="route('settings.pharmacies')" :current="request()->routeIs('settings.pharmacies')" wire:navigate>
                                 {{ __('Pharmacies') }}
                             </flux:sidebar.item>
@@ -93,6 +97,10 @@
                     <flux:sidebar.group :heading="__('Operations')" class="grid">
                         <flux:sidebar.item icon="envelope" :href="route('messages')" :current="request()->routeIs('messages')" wire:navigate>
                             {{ __('Messages') }}
+                        </flux:sidebar.item>
+
+                        <flux:sidebar.item icon="megaphone" :href="route('crm.campaigns')" :current="request()->routeIs('crm.campaigns')" wire:navigate>
+                            {{ __('Campaigns') }}
                         </flux:sidebar.item>
 
                         @if ($user && in_array($user->role, ['attending', 'super_admin', 'clinical_staff'], true))

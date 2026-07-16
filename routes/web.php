@@ -63,6 +63,7 @@ Route::middleware(['auth:web', 'verified', 'kyc.subscribed'])->group(function ()
     Route::livewire('scheduling/flow-board', FlowBoard::class)->name('scheduling.flow-board');
     Route::livewire('billing', BillingManager::class)->name('billing');
     Route::livewire('billing/claims', ClaimsCenter::class)->name('billing.claims');
+    Route::livewire('billing/claims/{invoice}', \App\Livewire\Billing\ClaimManager::class)->name('billing.claims.show');
     Route::livewire('pharmacy-portal', PharmacyPortal::class)->name('pharmacy.portal');
     Route::livewire('inventory', InventoryManager::class)->name('inventory');
     Route::livewire('population-health', PopulationHealth::class)->name('population-health');
@@ -70,6 +71,8 @@ Route::middleware(['auth:web', 'verified', 'kyc.subscribed'])->group(function ()
     Route::livewire('analytics/cqm', ClinicalQualityMeasures::class)->name('analytics.cqm');
     Route::livewire('messages', MessageCenter::class)->name('messages');
     Route::livewire('radiology', \App\Livewire\Radiology\RadiologyManager::class)->name('radiology');
+    Route::livewire('clinical/ai-assistant', \App\Livewire\Clinical\AiAssistantDashboard::class)->name('clinical.ai-assistant');
+    Route::livewire('crm/campaigns', \App\Livewire\Crm\CampaignManager::class)->name('crm.campaigns');
 
     // System Admin (is_system_admin = true users only)
     Route::livewire('system/practices', PracticeManager::class)

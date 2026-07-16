@@ -46,7 +46,9 @@
                                 <flux:checkbox wire:model.live="selectedInvoices" value="{{ $claim->id }}" />
                             </td>
                             <td class="px-4 py-3 font-medium text-zinc-900 dark:text-white">
-                                {{ $claim->claim_reference ?? ('INV-'.str_pad($claim->id, 5, '0', STR_PAD_LEFT)) }}
+                                <a href="{{ route('billing.claims.show', $claim) }}" class="hover:underline">
+                                    {{ $claim->claim_reference ?? ('INV-'.str_pad($claim->id, 5, '0', STR_PAD_LEFT)) }}
+                                </a>
                             </td>
                             <td class="px-4 py-3">
                                 <a href="{{ route('patients.show', $claim->patient_id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">

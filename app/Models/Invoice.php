@@ -6,6 +6,7 @@ use App\Models\Concerns\BelongsToPractice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Invoice extends Model
@@ -46,5 +47,10 @@ class Invoice extends Model
     public function encounter(): BelongsTo
     {
         return $this->belongsTo(Encounter::class);
+    }
+
+    public function claimSubmissions(): HasMany
+    {
+        return $this->hasMany(ClaimSubmission::class);
     }
 }

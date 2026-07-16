@@ -40,7 +40,11 @@ Route::prefix('fhir')->middleware(['auth:api', 'scopes:patient.read'])->group(fu
 
 // FHIR RESTful write endpoints
 Route::prefix('fhir')->middleware(['auth:api', 'scopes:patient.write'])->group(function () {
-    // Write operations can be added here
+    Route::post('/Patient', [PatientController::class, 'store']);
+    Route::put('/Patient/{patient}', [PatientController::class, 'update']);
+
+    Route::post('/Encounter', [EncounterController::class, 'store']);
+    Route::put('/Encounter/{encounter}', [EncounterController::class, 'update']);
 });
 
 // FHIR subscription management

@@ -35,4 +35,29 @@ class EncounterController extends Controller
     {
         return response()->json(new EncounterResource($encounter));
     }
+
+    public function store(Request $request): JsonResponse
+    {
+        $patientId = $request->input('subject.reference') ? str_replace('Patient/', '', $request->input('subject.reference')) : null;
+
+        $encounter = Encounter::create([
+            'practice_id' => $request->user()->practice_id ?? 1,
+            'patient_id' => $patientId,
+            'status' => $request->input('status', 'planned'),
+            'type' => 'SOAP', // default type
+            'encounter_date' => $request->input('period.start', now()),
+        ]);
+
+        return response()->json(new EncounterResource($encounter), 201);
+    }
+
+    public function update(Request $request, Encounter $encounter): JsonResponse
+    {
+        $encounter->update([
+            'status' => $request->input('status', $encounter->status),
+            'encounter_date' => $request->input('period.start', $encounter->encounter_date),
+        ]);
+
+        return response()->json(new EncounterResource($encounter));
+    }
 }

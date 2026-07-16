@@ -35,4 +35,34 @@ class PatientController extends Controller
     {
         return response()->json(new PatientResource($patient));
     }
+
+    public function store(Request $request): JsonResponse
+    {
+        // Minimal FHIR parsing for demonstration
+        $patient = Patient::create([
+            'practice_id' => $request->user()->practice_id ?? 1,
+            'mrn' => $request->input('identifier.0.value'),
+            'first_name' => $request->input('name.0.given.0'),
+            'last_name' => $request->input('name.0.family'),
+            'date_of_birth' => $request->input('birthDate'),
+            'gender_identity' => $request->input('gender'),
+            'phone' => $request->input('telecom.0.value'),
+        ]);
+
+        return response()->json(new PatientResource($patient), 201);
+    }
+
+    public function update(Request $request, Patient $patient): JsonResponse
+    {
+        $patient->update([
+            'mrn' => $request->input('identifier.0.value', $patient->mrn),
+            'first_name' => $request->input('name.0.given.0', $patient->first_name),
+            'last_name' => $request->input('name.0.family', $patient->last_name),
+            'date_of_birth' => $request->input('birthDate', $patient->date_of_birth),
+            'gender_identity' => $request->input('gender', $patient->gender_identity),
+            'phone' => $request->input('telecom.0.value', $patient->phone),
+        ]);
+
+        return response()->json(new PatientResource($patient));
+    }
 }

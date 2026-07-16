@@ -1,12 +1,13 @@
-<!-- Load Daily.co JS SDK -->
-<script crossorigin src="https://unpkg.com/@daily-co/daily-js"></script>
+<div>
+    <!-- Load Daily.co JS SDK -->
+    <script crossorigin src="https://unpkg.com/@daily-co/daily-js"></script>
 
-<div class="mt-6 bg-zinc-950 rounded-3xl overflow-hidden border border-zinc-800 shadow-xl relative min-h-[500px] flex flex-col" x-data="{ callJoined: @entangle('isCallActive'), isConnecting: false }">
+    <div class="mt-6 bg-zinc-950 rounded-3xl overflow-hidden border border-zinc-800 shadow-xl relative min-h-[500px] flex flex-col" x-data="{ callJoined: @entangle('isCallActive'), isConnecting: false, roomUrl: @entangle('roomUrl'), meetingToken: @entangle('meetingToken') }">
     <!-- Real Daily.co Video Room -->
     <div 
-        x-show="callJoined && $wire.roomUrl" 
+        x-show="callJoined && roomUrl" 
         x-init="
-            $watch('$wire.roomUrl', url => {
+            $watch('roomUrl', url => {
                 if (url) {
                     const container = $el;
                     container.innerHTML = '';
@@ -23,14 +24,14 @@
                     });
                     callFrame.join({
                         url: url,
-                        token: $wire.meetingToken
+                        token: meetingToken
                     });
                     callFrame.on('left-meeting', () => {
                         $wire.endCall();
                     });
                 }
             });
-            if ($wire.roomUrl) {
+            if (roomUrl) {
                 const container = $el;
                 container.innerHTML = '';
                 const callFrame = window.DailyIframe.createFrame(container, {
@@ -45,8 +46,8 @@
                     }
                 });
                 callFrame.join({
-                    url: $wire.roomUrl,
-                    token: $wire.meetingToken
+                    url: roomUrl,
+                    token: meetingToken
                 });
                 callFrame.on('left-meeting', () => {
                     $wire.endCall();
@@ -58,7 +59,7 @@
     ></div>
 
     <!-- Call Connected screen (Simulation Fallback) -->
-    <template x-if="callJoined && !$wire.roomUrl">
+    <template x-if="callJoined && !roomUrl">
         <div class="flex-1 flex flex-col md:flex-row relative min-h-[500px]">
             <!-- Main Video Panel (Patient) -->
             <div class="flex-1 bg-zinc-900 relative flex items-center justify-center">
@@ -134,4 +135,5 @@
             </div>
         </div>
     </template>
+    </div>
 </div>
