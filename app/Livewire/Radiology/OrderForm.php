@@ -10,15 +10,18 @@ use Livewire\Component;
 class OrderForm extends Component
 {
     public RadiologyOrder $order;
+
     public $patients;
-    
+
     public $patient_id;
+
     public $procedure_name;
+
     public $clinical_indication;
 
     public function mount()
     {
-        $this->order = new RadiologyOrder();
+        $this->order = new RadiologyOrder;
         $this->patients = Patient::query()
             ->orderBy('last_name')
             ->orderBy('first_name')
@@ -51,10 +54,10 @@ class OrderForm extends Component
         $this->order->save();
 
         $this->dispatch('order-created');
-        
+
         Flux::modal('create-order-modal')->close();
         Flux::toast('Radiology order created successfully.', variant: 'success');
-        
+
         $this->reset(['patient_id', 'procedure_name', 'clinical_indication']);
     }
 

@@ -204,12 +204,28 @@
                     <flux:heading size="lg">{{ __('Clinical Summary') }}</flux:heading>
                     <dl class="mt-4 space-y-4 text-sm">
                         <div>
-                            <dt class="font-medium text-neutral-500">{{ __('Allergies') }}</dt>
-                            <dd class="mt-1">{{ $patient->allergies ?? 'NKDA' }}</dd>
+                            <dt class="font-medium text-neutral-500">{{ __('Problem List') }}</dt>
+                            <dd class="mt-1 whitespace-pre-line">{{ $patient->problem_list ?: '—' }}</dd>
                         </div>
                         <div>
-                            <dt class="font-medium text-neutral-500">{{ __('Problem List') }}</dt>
-                            <dd class="mt-1 whitespace-pre-line">{{ $patient->problem_list ?? '—' }}</dd>
+                            <dt class="font-medium text-neutral-500">{{ __('Allergies') }}</dt>
+                            <dd class="mt-1 whitespace-pre-line">{{ $patient->allergies ?: 'NKDA' }}</dd>
+                        </div>
+                        <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800">
+                            <dt class="font-medium text-neutral-500">{{ __('Past Medical History') }}</dt>
+                            <dd class="mt-1 whitespace-pre-line">{{ $patient->past_medical_history ?: '—' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="font-medium text-neutral-500">{{ __('Surgical History') }}</dt>
+                            <dd class="mt-1 whitespace-pre-line">{{ $patient->surgical_history ?: '—' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="font-medium text-neutral-500">{{ __('Family History') }}</dt>
+                            <dd class="mt-1 whitespace-pre-line">{{ $patient->family_history ?: '—' }}</dd>
+                        </div>
+                        <div>
+                            <dt class="font-medium text-neutral-500">{{ __('Social History') }}</dt>
+                            <dd class="mt-1 whitespace-pre-line">{{ $patient->social_history ?: '—' }}</dd>
                         </div>
                     </dl>
                 </div>

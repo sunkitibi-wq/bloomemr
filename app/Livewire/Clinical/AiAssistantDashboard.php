@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Clinical;
 
-use App\Models\Patient;
 use App\Models\ClinicalNote;
+use App\Models\Patient;
 use App\Services\AiClinicalAssistantService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
@@ -13,8 +13,11 @@ use Livewire\Component;
 class AiAssistantDashboard extends Component
 {
     public $transcript = '';
+
     public $templateType = 'SOAP';
+
     public $patientId = null;
+
     public $draft = null;
 
     public function generateDraft()
@@ -57,7 +60,7 @@ class AiAssistantDashboard extends Component
         $patients = Patient::where('practice_id', Auth::user()->practice_id)->get();
 
         return view('livewire.clinical.ai-assistant-dashboard', [
-            'patients' => $patients
+            'patients' => $patients,
         ]);
     }
 }

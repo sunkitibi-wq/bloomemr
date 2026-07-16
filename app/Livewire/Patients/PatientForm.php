@@ -57,6 +57,16 @@ class PatientForm extends Component
 
     public string $allergies = '';
 
+    public string $problem_list = '';
+
+    public string $past_medical_history = '';
+
+    public string $surgical_history = '';
+
+    public string $family_history = '';
+
+    public string $social_history = '';
+
     public bool $editing = false;
 
     public function mount(?Patient $patient = null): void
@@ -82,6 +92,11 @@ class PatientForm extends Component
             $this->primary_insurance = $patient->primary_insurance ?? '';
             $this->secondary_insurance = $patient->secondary_insurance ?? '';
             $this->allergies = $patient->allergies ?? '';
+            $this->problem_list = $patient->problem_list ?? '';
+            $this->past_medical_history = $patient->past_medical_history ?? '';
+            $this->surgical_history = $patient->surgical_history ?? '';
+            $this->family_history = $patient->family_history ?? '';
+            $this->social_history = $patient->social_history ?? '';
         }
 
         if (! $this->mrn) {
@@ -151,6 +166,11 @@ class PatientForm extends Component
             'primary_insurance' => $this->primary_insurance ?: null,
             'secondary_insurance' => $this->secondary_insurance ?: null,
             'allergies' => $this->allergies ?: null,
+            'problem_list' => $this->problem_list ?: null,
+            'past_medical_history' => $this->past_medical_history ?: null,
+            'surgical_history' => $this->surgical_history ?: null,
+            'family_history' => $this->family_history ?: null,
+            'social_history' => $this->social_history ?: null,
             'primary_provider_id' => Auth::id(),
         ];
 
@@ -212,6 +232,11 @@ class PatientForm extends Component
             'primary_insurance' => ['nullable', 'string', 'max:255'],
             'secondary_insurance' => ['nullable', 'string', 'max:255'],
             'allergies' => ['nullable', 'string', 'max:1000'],
+            'problem_list' => ['nullable', 'string', 'max:2000'],
+            'past_medical_history' => ['nullable', 'string', 'max:2000'],
+            'surgical_history' => ['nullable', 'string', 'max:2000'],
+            'family_history' => ['nullable', 'string', 'max:2000'],
+            'social_history' => ['nullable', 'string', 'max:2000'],
             'photo' => ['nullable', 'image', 'max:1024'],
         ];
     }

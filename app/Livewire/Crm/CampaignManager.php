@@ -12,8 +12,11 @@ use Livewire\Component;
 class CampaignManager extends Component
 {
     public $campaignName = '';
+
     public $campaignType = 'email';
+
     public $message = '';
+
     public $targetCondition = '';
 
     public function generateCampaign()
@@ -27,11 +30,11 @@ class CampaignManager extends Component
         $query = Patient::where('practice_id', Auth::user()->practice_id);
 
         if ($this->targetCondition) {
-            $query->where(function($q) {
-                $q->whereHas('encounters', function($en) {
-                    $en->where('clinical_notes', 'like', '%' . $this->targetCondition . '%');
-                })->orWhereHas('medications', function($m) {
-                    $m->where('name', 'like', '%' . $this->targetCondition . '%');
+            $query->where(function ($q) {
+                $q->whereHas('encounters', function ($en) {
+                    $en->where('clinical_notes', 'like', '%'.$this->targetCondition.'%');
+                })->orWhereHas('medications', function ($m) {
+                    $m->where('name', 'like', '%'.$this->targetCondition.'%');
                 });
             });
         }
@@ -40,6 +43,7 @@ class CampaignManager extends Component
 
         if ($patients->isEmpty()) {
             session()->flash('error', 'No patients match this criteria.');
+
             return;
         }
 
@@ -59,7 +63,7 @@ class CampaignManager extends Component
         }
 
         session()->flash('message', "Campaign created! $count patients enrolled.");
-        
+
         $this->reset(['campaignName', 'campaignType', 'message', 'targetCondition']);
     }
 
@@ -71,7 +75,7 @@ class CampaignManager extends Component
             ->paginate(15);
 
         return view('livewire.crm.campaign-manager', [
-            'engagements' => $engagements
+            'engagements' => $engagements,
         ]);
     }
 }

@@ -14,7 +14,9 @@ class RadiologyManager extends Component
     use WithPagination;
 
     public $search = '';
+
     public $statusFilter = '';
+
     public $orderIdToComplete;
 
     public function mount()
@@ -38,8 +40,8 @@ class RadiologyManager extends Component
             ->with(['patient', 'orderedBy'])
             ->when($this->search, function (Builder $query) {
                 $query->whereHas('patient', function (Builder $q) {
-                    $q->where('first_name', 'like', '%' . $this->search . '%')
-                        ->orWhere('last_name', 'like', '%' . $this->search . '%');
+                    $q->where('first_name', 'like', '%'.$this->search.'%')
+                        ->orWhere('last_name', 'like', '%'.$this->search.'%');
                 });
             })
             ->when($this->statusFilter, function (Builder $query) {

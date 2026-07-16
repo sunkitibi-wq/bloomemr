@@ -13,8 +13,11 @@ class ReportUpload extends Component
     use WithFileUploads;
 
     public RadiologyOrder $order;
+
     public $findings;
+
     public $impression;
+
     public $attachment;
 
     public function mount(RadiologyOrder $order)
@@ -59,8 +62,8 @@ class ReportUpload extends Component
         ]);
 
         $this->dispatch('report-uploaded');
-        
-        Flux::modal('upload-report-modal-' . $this->order->id)->close();
+
+        Flux::modal('upload-report-modal-'.$this->order->id)->close();
         Flux::toast('Radiology report saved successfully.', variant: 'success');
     }
 

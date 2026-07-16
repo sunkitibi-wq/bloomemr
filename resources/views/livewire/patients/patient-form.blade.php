@@ -144,7 +144,16 @@
                 <flux:separator />
 
                 <flux:subheading>{{ __('Clinical Information') }}</flux:subheading>
+                <flux:textarea wire:model="problem_list" :label="__('Problem List')" rows="3" />
                 <flux:textarea wire:model="allergies" :label="__('Allergies')" rows="3" />
+                
+                <flux:separator />
+                
+                <flux:subheading>{{ __('Medical History') }}</flux:subheading>
+                <flux:textarea wire:model="past_medical_history" :label="__('Past Medical History')" rows="3" />
+                <flux:textarea wire:model="surgical_history" :label="__('Surgical History')" rows="3" />
+                <flux:textarea wire:model="family_history" :label="__('Family History')" rows="3" />
+                <flux:textarea wire:model="social_history" :label="__('Social History')" rows="3" />
             </div>
         @endif
 

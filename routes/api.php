@@ -8,8 +8,8 @@ use App\Http\Controllers\Api\Fhir\ObservationController;
 use App\Http\Controllers\Api\Fhir\PatientController;
 use App\Http\Controllers\Api\Fhir\SubscriptionController;
 use App\Http\Controllers\Api\SmartConfigurationController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
