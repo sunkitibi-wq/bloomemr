@@ -80,6 +80,10 @@
                         @endif
 
                         @if ($user && in_array($user->role, ['attending', 'super_admin'], true))
+                            <flux:sidebar.item icon="camera" :href="route('radiology')" :current="request()->routeIs('radiology')" wire:navigate>
+                                {{ __('Radiology') }}
+                            </flux:sidebar.item>
+
                             <flux:sidebar.item icon="beaker" :href="route('settings.pharmacies')" :current="request()->routeIs('settings.pharmacies')" wire:navigate>
                                 {{ __('Pharmacies') }}
                             </flux:sidebar.item>

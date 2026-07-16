@@ -69,6 +69,7 @@ Route::middleware(['auth:web', 'verified', 'kyc.subscribed'])->group(function ()
     Route::livewire('analytics', PracticeAnalytics::class)->name('analytics');
     Route::livewire('analytics/cqm', ClinicalQualityMeasures::class)->name('analytics.cqm');
     Route::livewire('messages', MessageCenter::class)->name('messages');
+    Route::livewire('radiology', \App\Livewire\Radiology\RadiologyManager::class)->name('radiology');
 
     // System Admin (is_system_admin = true users only)
     Route::livewire('system/practices', PracticeManager::class)
