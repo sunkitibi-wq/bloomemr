@@ -13,6 +13,60 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Input Panel -->
         <flux:card>
+            <flux:heading size="lg" class="mb-4">{{ __('Patient & Context') }}</flux:heading>
+            
+            <div class="space-y-4 mb-6">
+                <flux:field>
+                    <flux:label>{{ __('Select Patient') }}</flux:label>
+                    <flux:select wire:model.live="patientId">
+                        <option value="">No Patient Selected</option>
+                        @foreach($patients as $patient)
+                            <option value="{{ $patient->id }}">{{ $patient->full_name }} (MRN: {{ $patient->mrn }})</option>
+                        @endforeach
+                    </flux:select>
+                </flux:field>
+
+                @if($patientId)
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg space-y-4">
+                        <flux:heading size="sm">{{ __('Patient Clinical Context') }}</flux:heading>
+                        <flux:subheading size="sm" class="mb-2">{{ __('These details will be passed to the AI. Update them here to keep the patient record current.') }}</flux:subheading>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <flux:field>
+                                <flux:label>{{ __('Allergies') }}</flux:label>
+                                <flux:input wire:model="allergies" />
+                            </flux:field>
+                            <flux:field>
+                                <flux:label>{{ __('Problem List') }}</flux:label>
+                                <flux:input wire:model="problem_list" />
+                            </flux:field>
+                            <flux:field>
+                                <flux:label>{{ __('Past Medical History') }}</flux:label>
+                                <flux:input wire:model="past_medical_history" />
+                            </flux:field>
+                            <flux:field>
+                                <flux:label>{{ __('Surgical History') }}</flux:label>
+                                <flux:input wire:model="surgical_history" />
+                            </flux:field>
+                            <flux:field>
+                                <flux:label>{{ __('Family History') }}</flux:label>
+                                <flux:input wire:model="family_history" />
+                            </flux:field>
+                            <flux:field>
+                                <flux:label>{{ __('Social History') }}</flux:label>
+                                <flux:input wire:model="social_history" />
+                            </flux:field>
+                        </div>
+                        
+                        <div class="flex justify-end mt-4">
+                            <flux:button type="button" wire:click="savePatientDetails" size="sm" variant="outline">{{ __('Save to Patient Record') }}</flux:button>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
+            <flux:separator class="my-6" />
+
             <flux:heading size="lg" class="mb-4">{{ __('Raw Transcript / Dictation') }}</flux:heading>
             <form wire:submit="generateDraft" class="space-y-4">
                 <flux:field>
@@ -59,17 +113,11 @@
                     <flux:separator />
 
                     <form wire:submit="saveAsNote" class="space-y-4">
-                        <flux:field>
-                            <flux:label>{{ __('Assign to Patient') }}</flux:label>
-                            <flux:select wire:model="patientId" required>
-                                <option value="">Select a Patient...</option>
-                                @foreach($patients as $patient)
-                                    <option value="{{ $patient->id }}">{{ $patient->full_name }} (MRN: {{ $patient->mrn }})</option>
-                                @endforeach
-                            </flux:select>
-                        </flux:field>
+                        @if(!$patientId)
+                            <div class="text-sm text-red-500 mb-2">{{ __('Please select a patient on the left panel before saving.') }}</div>
+                        @endif
 
-                        <flux:button type="submit" variant="primary" class="w-full">
+                        <flux:button type="submit" variant="primary" class="w-full" :disabled="!$patientId">
                             {{ __('Save as Draft Clinical Note') }}
                         </flux:button>
                     </form>

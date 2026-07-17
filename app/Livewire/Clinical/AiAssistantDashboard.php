@@ -20,6 +20,45 @@ class AiAssistantDashboard extends Component
 
     public $draft = null;
 
+    public $allergies = '';
+    public $problem_list = '';
+    public $past_medical_history = '';
+    public $surgical_history = '';
+    public $family_history = '';
+    public $social_history = '';
+
+    public function updatedPatientId($value)
+    {
+        if ($value) {
+            $patient = Patient::find($value);
+            if ($patient) {
+                $this->allergies = $patient->allergies;
+                $this->problem_list = $patient->problem_list;
+                $this->past_medical_history = $patient->past_medical_history;
+                $this->surgical_history = $patient->surgical_history;
+                $this->family_history = $patient->family_history;
+                $this->social_history = $patient->social_history;
+            }
+        } else {
+            $this->reset(['allergies', 'problem_list', 'past_medical_history', 'surgical_history', 'family_history', 'social_history']);
+        }
+    }
+
+    public function savePatientDetails()
+    {
+        if ($this->patientId) {
+            Patient::where('id', $this->patientId)->update([
+                'allergies' => $this->allergies,
+                'problem_list' => $this->problem_list,
+                'past_medical_history' => $this->past_medical_history,
+                'surgical_history' => $this->surgical_history,
+                'family_history' => $this->family_history,
+                'social_history' => $this->social_history,
+            ]);
+            session()->flash('message', 'Patient details saved successfully.');
+        }
+    }
+
     public function generateDraft()
     {
         $this->validate([
@@ -28,7 +67,20 @@ class AiAssistantDashboard extends Component
         ]);
 
         $service = app(AiClinicalAssistantService::class);
-        $this->draft = $service->generateDraftFromTranscript($this->templateType, $this->transcript);
+        
+        $patientContext = [];
+        if ($this->patientId) {
+            $patientContext = [
+                'Allergies' => $this->allergies,
+                'Problem List' => $this->problem_list,
+                'Past Medical History' => $this->past_medical_history,
+                'Surgical History' => $this->surgical_history,
+                'Family History' => $this->family_history,
+                'Social History' => $this->social_history,
+            ];
+        }
+
+        $this->draft = $service->generateDraftFromTranscript($this->templateType, $this->transcript, $patientContext);
 
         session()->flash('message', 'Draft generated successfully.');
     }

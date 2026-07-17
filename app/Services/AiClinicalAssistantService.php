@@ -12,10 +12,10 @@ class AiClinicalAssistantService
     /**
      * Parse raw dialogue transcripts into structured note sections using Anthropic Claude or Mock.
      */
-    public function generateDraftFromTranscript(string $templateType, string $transcript): array
+    public function generateDraftFromTranscript(string $templateType, string $transcript, array $patientContext = []): array
     {
         if (config('services.anthropic.mock', true)) {
-            return $this->mockGenerateDraftFromTranscript($templateType, $transcript);
+            return $this->mockGenerateDraftFromTranscript($templateType, $transcript, $patientContext);
         }
 
         if (empty($transcript)) {
@@ -33,6 +33,16 @@ class AiClinicalAssistantService
             $systemPrompt .= ' The JSON MUST have exactly these keys: reason_for_visit, hpi, past_psychiatric_history, medical_history, family_history, social_history, mental_status_exam, diagnostic_impression, plan.';
         } else {
             $systemPrompt .= ' The JSON MUST have exactly one key: body.';
+        }
+
+        if (!empty($patientContext)) {
+            $contextString = "Here is known context about the patient:\n";
+            foreach ($patientContext as $key => $val) {
+                if (!empty($val)) {
+                    $contextString .= "- " . $key . ": " . $val . "\n";
+                }
+            }
+            $systemPrompt .= "\n" . $contextString;
         }
 
         $response = Http::withToken(config('services.anthropic.secret'))
@@ -143,7 +153,7 @@ class AiClinicalAssistantService
     /**
      * Parse raw dialogue transcripts into structured note sections using hardcoded regex (Mock).
      */
-    private function mockGenerateDraftFromTranscript(string $templateType, string $transcript): array
+    private function mockGenerateDraftFromTranscript(string $templateType, string $transcript, array $patientContext = []): array
     {
         if (empty($transcript)) {
             return [];
