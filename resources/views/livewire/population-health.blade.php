@@ -9,10 +9,16 @@
                 {{ __('Manage clinical cohorts, identify preventive care gaps, and track vaccine compliance.') }}
             </flux:text>
         </div>
-        <flux:button wire:click="refreshRegistries" variant="primary">
-            <flux:icon.arrow-path class="size-4 mr-1.5" />
-            {{ __('Refresh Registries') }}
-        </flux:button>
+        <div class="flex items-center gap-3">
+            <flux:button wire:click="openCreateModal" variant="outline">
+                <flux:icon.plus class="size-4 mr-1.5" />
+                {{ __('Create Cohort') }}
+            </flux:button>
+            <flux:button wire:click="refreshRegistries" variant="primary">
+                <flux:icon.arrow-path class="size-4 mr-1.5" />
+                {{ __('Refresh Registries') }}
+            </flux:button>
+        </div>
     </div>
 
     @if (session('success'))
@@ -175,4 +181,31 @@
             </div>
         </div>
     @endif
+
+    <!-- Create Custom Cohort Modal -->
+    <flux:modal wire:model="showCreateModal" class="md:w-96 space-y-6">
+        <div>
+            <flux:heading size="lg">{{ __('Create Custom Cohort') }}</flux:heading>
+            <flux:subheading>{{ __('Define criteria to auto-enroll patients into a new registry.') }}</flux:subheading>
+        </div>
+
+        <form wire:submit="saveCustomCohort" class="space-y-4">
+            <flux:input wire:model="newCohortName" label="Cohort Name" placeholder="e.g. Seniors with Asthma" required />
+            <flux:textarea wire:model="newCohortDescription" label="Description" placeholder="Optional description..." />
+
+            <div class="grid grid-cols-2 gap-4">
+                <flux:input type="number" wire:model="newCohortMinAge" label="Min Age" placeholder="e.g. 65" min="0" />
+                <flux:input type="number" wire:model="newCohortMaxAge" label="Max Age" placeholder="e.g. 90" min="0" />
+            </div>
+
+            <flux:input wire:model="newCohortDiagnosisKeyword" label="Diagnosis Keyword" placeholder="e.g. Asthma, Diabetes" />
+
+            <div class="flex justify-end gap-2 mt-4">
+                <flux:modal.close>
+                    <flux:button variant="ghost">{{ __('Cancel') }}</flux:button>
+                </flux:modal.close>
+                <flux:button type="submit" variant="primary">{{ __('Create & Populate') }}</flux:button>
+            </div>
+        </form>
+    </flux:modal>
 </flux:main>

@@ -7,10 +7,12 @@ use App\Livewire\Billing\BillingManager;
 use App\Livewire\Billing\ClaimManager;
 use App\Livewire\Billing\ClaimsCenter;
 use App\Livewire\Clinical\AiAssistantDashboard;
+use App\Livewire\Clinical\TelemedicineDashboard;
 use App\Livewire\Crm\CampaignManager;
 use App\Livewire\Dashboard;
 use App\Livewire\Documents\DocumentUpload;
 use App\Livewire\Encounters\EncounterForm;
+use App\Livewire\Encounters\EncounterList;
 use App\Livewire\Encounters\EncounterNote;
 use App\Livewire\InventoryManager;
 use App\Livewire\MessageCenter;
@@ -41,6 +43,8 @@ use App\Livewire\Scheduling\AppointmentList;
 use App\Livewire\Scheduling\FlowBoard;
 use App\Livewire\SystemAdmin\KycVerificationManager;
 use App\Livewire\SystemAdmin\PracticeManager;
+use App\Livewire\Tasks\TaskList;
+use App\Livewire\Vendors\VendorList;
 use App\Models\SmartPhrase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +67,7 @@ Route::middleware(['auth:web', 'verified', 'kyc.subscribed'])->group(function ()
     Route::livewire('subscribe', UserSubscription::class)->name('subscribe');
 
     Route::livewire('dashboard', Dashboard::class)->name('dashboard');
+    Route::livewire('tasks', TaskList::class)->name('tasks.index');
     Route::livewire('scheduling', AppointmentList::class)->name('scheduling');
     Route::livewire('scheduling/flow-board', FlowBoard::class)->name('scheduling.flow-board');
     Route::livewire('billing', BillingManager::class)->name('billing');
@@ -74,8 +79,10 @@ Route::middleware(['auth:web', 'verified', 'kyc.subscribed'])->group(function ()
     Route::livewire('analytics', PracticeAnalytics::class)->name('analytics');
     Route::livewire('analytics/cqm', ClinicalQualityMeasures::class)->name('analytics.cqm');
     Route::livewire('messages', MessageCenter::class)->name('messages');
+    Route::livewire('vendors', VendorList::class)->name('vendors.index');
     Route::livewire('radiology', RadiologyManager::class)->name('radiology');
     Route::livewire('clinical/ai-assistant', AiAssistantDashboard::class)->name('clinical.ai-assistant');
+    Route::livewire('telemedicine', TelemedicineDashboard::class)->name('telemedicine');
     Route::livewire('crm/campaigns', CampaignManager::class)->name('crm.campaigns');
 
     // System Admin (is_system_admin = true users only)
@@ -100,6 +107,7 @@ Route::middleware(['auth:web', 'verified', 'kyc.subscribed'])->group(function ()
     });
 
     Route::prefix('encounters')->name('encounters.')->group(function () {
+        Route::livewire('/', EncounterList::class)->name('index');
         Route::livewire('{encounter}/note', EncounterNote::class)->name('note');
     });
 

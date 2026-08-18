@@ -6,11 +6,13 @@ use App\Models\Patient;
 use App\Models\SecureMessage;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Title('Message Center')]
+#[Layout('components.layouts.app.workspace')]
 class MessageCenter extends Component
 {
     use WithPagination;

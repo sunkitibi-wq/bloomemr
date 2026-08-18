@@ -26,16 +26,29 @@ class SurescriptsService
             ];
         }
 
-        $response = Http::withBasicAuth(
-            config('services.surescripts.key', ''),
-            config('services.surescripts.secret', '')
-        )->get('https://api.surescripts.com/v1/formulary', [
-            'patient_mrn' => $patient->mrn,
-            'drug_name' => $drugName,
-        ]);
+        try {
+            $response = Http::withBasicAuth(
+                config('services.surescripts.key', ''),
+                config('services.surescripts.secret', '')
+            )
+                ->timeout(10)
+                ->retry(3, 100)
+                ->get('https://api.surescripts.com/v1/formulary', [
+                    'patient_mrn' => $patient->mrn,
+                    'drug_name' => $drugName,
+                ]);
 
-        if ($response->successful()) {
-            return $response->json();
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            \Log::error('Surescripts checkFormulary API Error', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'patient_mrn' => $patient->mrn,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Surescripts checkFormulary Exception: '.$e->getMessage());
         }
 
         return [
@@ -57,18 +70,35 @@ class SurescriptsService
 
         $prescription->load(['patient', 'medication']);
 
-        $response = Http::withBasicAuth(
-            config('services.surescripts.key', ''),
-            config('services.surescripts.secret', '')
-        )->post('https://api.surescripts.com/v1/prescriptions', [
-            'patient_mrn' => $prescription->patient->mrn,
-            'drug_name' => $prescription->medication->name,
-            'dose' => $prescription->medication->dose,
-            'frequency' => $prescription->medication->frequency,
-            'provider_id' => $prescription->medication->prescriber_id,
-        ]);
+        try {
+            $response = Http::withBasicAuth(
+                config('services.surescripts.key', ''),
+                config('services.surescripts.secret', '')
+            )
+                ->timeout(15)
+                ->retry(3, 100)
+                ->post('https://api.surescripts.com/v1/prescriptions', [
+                    'patient_mrn' => $prescription->patient->mrn,
+                    'drug_name' => $prescription->medication->name,
+                    'dose' => $prescription->medication->dose,
+                    'frequency' => $prescription->medication->frequency,
+                    'provider_id' => $prescription->medication->prescriber_id,
+                ]);
 
-        return $response->successful();
+            if ($response->successful()) {
+                return true;
+            }
+
+            \Log::error('Surescripts transmitPrescription API Error', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'prescription_id' => $prescription->id,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Surescripts transmitPrescription Exception: '.$e->getMessage());
+        }
+
+        return false;
     }
 
     /**
@@ -80,15 +110,28 @@ class SurescriptsService
             return $this->mockFetchExternalMedHistory($patient);
         }
 
-        $response = Http::withBasicAuth(
-            config('services.surescripts.key', ''),
-            config('services.surescripts.secret', '')
-        )->get('https://api.surescripts.com/v1/medication-history', [
-            'patient_mrn' => $patient->mrn,
-        ]);
+        try {
+            $response = Http::withBasicAuth(
+                config('services.surescripts.key', ''),
+                config('services.surescripts.secret', '')
+            )
+                ->timeout(10)
+                ->retry(3, 100)
+                ->get('https://api.surescripts.com/v1/medication-history', [
+                    'patient_mrn' => $patient->mrn,
+                ]);
 
-        if ($response->successful()) {
-            return $response->json('data') ?? [];
+            if ($response->successful()) {
+                return $response->json('data') ?? [];
+            }
+
+            \Log::error('Surescripts fetchExternalMedHistory API Error', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'patient_mrn' => $patient->mrn,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Surescripts fetchExternalMedHistory Exception: '.$e->getMessage());
         }
 
         return [];

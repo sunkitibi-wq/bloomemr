@@ -139,18 +139,18 @@
 <div class="space-y-6">
 <h4 class="font-headline-sm text-lg font-bold text-white border-b border-white/20 pb-2">Compliance</h4>
 <nav class="flex flex-col gap-3">
-<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">HIPAA Standards</a>
-<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">Privacy Policy</a>
-<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">Security Audit</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="/">HIPAA Standards</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="/">Privacy Policy</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="/">Security Audit</a>
 </nav>
 </div>
 <div class="space-y-6">
 <h4 class="font-headline-sm text-lg font-bold text-white border-b border-white/20 pb-2">Resources</h4>
 <nav class="flex flex-col gap-3">
-<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">Help Center</a>
-<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">Clinical Guides</a>
-<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">System Status</a>
-<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="#">Contact Support</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="/">Help Center</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="/">Clinical Guides</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="/">System Status</a>
+<a class="font-body-sm text-white/80 hover:text-growth-sage transition-colors" href="/">Contact Support</a>
 </nav>
 </div>
 </div>

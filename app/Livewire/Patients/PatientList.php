@@ -6,6 +6,7 @@ use App\Models\Patient;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,6 +15,7 @@ class PatientList extends Component
 {
     use WithPagination;
 
+    #[Url]
     public string $search = '';
 
     public function render(): View

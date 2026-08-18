@@ -15,6 +15,11 @@ class PatientCohort extends Model
         'practice_id',
         'name',
         'description',
+        'criteria',
+    ];
+
+    protected $casts = [
+        'criteria' => 'array',
     ];
 
     public function members(): HasMany

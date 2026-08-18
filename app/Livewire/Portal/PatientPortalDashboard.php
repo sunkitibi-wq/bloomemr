@@ -75,6 +75,6 @@ class PatientPortalDashboard extends Component
             'completedAssessments' => $completedAssessments,
             'recentEncounters' => $recentEncounters,
             'invoices' => $invoices,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

@@ -26,7 +26,7 @@ test('it can load the patient portal dashboard for clinician fallback', function
 
     Livewire::test(PatientPortalDashboard::class)
         ->assertOk()
-        ->assertSee("Leo's Care");
+        ->assertSee($this->user->name);
 });
 
 test('guest cannot access portal dashboard', function () {
@@ -51,7 +51,7 @@ test('guardian can access portal dashboard when logged in to portal guard', func
     Livewire::actingAs($guardian, 'portal')
         ->test(PatientPortalDashboard::class)
         ->assertOk()
-        ->assertSee("Leo's Care");
+        ->assertSee($guardian->name);
 });
 
 test('guardian is blocked from EMR dashboard and settings', function () {

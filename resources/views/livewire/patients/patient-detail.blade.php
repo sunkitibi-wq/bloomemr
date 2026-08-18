@@ -1,272 +1,245 @@
-<flux:main>
-    <div class="flex items-start justify-between gap-4">
-        <div class="flex items-center gap-4">
+<div class="flex flex-col gap-6 max-w-[1600px] w-full">
+    <!-- Header Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <div class="flex items-center gap-5">
             @if ($patient->photo_path)
-                <img src="{{ Storage::url($patient->photo_path) }}" alt="{{ $patient->full_name }}" class="h-16 w-16 rounded-full object-cover border border-zinc-200 dark:border-zinc-700 shadow-sm" />
+                <img src="{{ Storage::url($patient->photo_path) }}" alt="{{ $patient->full_name }}" class="h-16 w-16 rounded-full object-cover border border-slate-200 shadow-sm" />
             @else
-                <div class="h-16 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-500 dark:text-zinc-400 text-lg font-bold font-mono">
+                <div class="h-16 w-16 rounded-full bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 text-xl font-bold font-mono shadow-sm">
                     {{ strtoupper(substr($patient->first_name, 0, 1) . substr($patient->last_name, 0, 1)) }}
                 </div>
             @endif
             <div>
-                <flux:heading size="xl" level="1">{{ $patient->full_name }}</flux:heading>
-                <flux:text class="mt-1">{{ __('MRN: :mrn', ['mrn' => $patient->mrn]) }}</flux:text>
+                <h1 class="text-2xl font-bold text-slate-800">{{ $patient->full_name }}</h1>
+                <p class="text-[13px] text-slate-500 mt-1 font-mono">{{ __('MRN: :mrn', ['mrn' => $patient->mrn]) }}</p>
             </div>
         </div>
 
-        <div class="flex items-center gap-2">
-            <flux:button variant="primary" href="{{ route('encounters.create', $patient) }}" wire:navigate>
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ route('encounters.create', $patient) }}" wire:navigate class="px-4 py-2 bg-indigo-600 border border-transparent rounded-xl shadow-sm text-[13px] font-semibold text-white hover:bg-indigo-700 transition-colors">
                 {{ __('New Encounter') }}
-            </flux:button>
-            <flux:button variant="ghost" href="{{ route('patients.assessment.create', $patient) }}" wire:navigate>
+            </a>
+            <a href="{{ route('patients.assessment.create', $patient) }}" wire:navigate class="px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition-colors">
                 {{ __('New Assessment') }}
-            </flux:button>
-            <flux:button variant="ghost" href="{{ route('patients.edit', $patient) }}" wire:navigate>
+            </a>
+            <a href="{{ route('patients.edit', $patient) }}" wire:navigate class="px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition-colors">
                 {{ __('Edit') }}
-            </flux:button>
-            <flux:button variant="ghost" href="{{ route('documents.upload', $patient) }}" wire:navigate>
+            </a>
+            <a href="{{ route('documents.upload', $patient) }}" wire:navigate class="px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition-colors">
                 {{ __('Upload Document') }}
-            </flux:button>
+            </a>
             @can('delete', $patient)
-                <flux:button variant="danger" wire:click="deletePatient" wire:confirm="{{ __('Are you sure you want to delete this patient record?') }}">
+                <button wire:click="deletePatient" wire:confirm="{{ __('Are you sure you want to delete this patient record?') }}" class="px-4 py-2 bg-red-50 border border-red-100 rounded-xl shadow-sm text-[13px] font-medium text-red-600 hover:bg-red-100 transition-colors">
                     {{ __('Delete') }}
-                </flux:button>
+                </button>
             @endcan
         </div>
     </div>
 
     <!-- Tabs Menu -->
-    <div class="mt-6 border-b border-zinc-200 dark:border-zinc-700 flex gap-6 text-sm">
-        <button 
-            wire:click="$set('activeTab', 'encounters')" 
-            class="pb-3 font-medium cursor-pointer focus:outline-none {{ $activeTab === 'encounters' ? 'border-b-2 border-primary text-primary' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}"
-        >
-            {{ __('Encounters & History') }}
-        </button>
-        <button 
-            wire:click="$set('activeTab', 'medications')" 
-            class="pb-3 font-medium cursor-pointer focus:outline-none {{ $activeTab === 'medications' ? 'border-b-2 border-primary text-primary' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}"
-        >
-            {{ __('Medications & Prescribing') }}
-        </button>
-        <button 
-            wire:click="$set('activeTab', 'labs')" 
-            class="pb-3 font-medium cursor-pointer focus:outline-none {{ $activeTab === 'labs' ? 'border-b-2 border-primary text-primary' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}"
-        >
-            {{ __('Labs & Monitoring') }}
-        </button>
-        <button 
-            wire:click="$set('activeTab', 'messages')" 
-            class="pb-3 font-medium cursor-pointer focus:outline-none {{ $activeTab === 'messages' ? 'border-b-2 border-primary text-primary' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}"
-        >
-            {{ __('Secure Messages') }}
-        </button>
-        <button 
-            wire:click="$set('activeTab', 'refills')" 
-            class="pb-3 font-medium cursor-pointer focus:outline-none {{ $activeTab === 'refills' ? 'border-b-2 border-primary text-primary' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}"
-        >
-            {{ __('Refill Requests') }}
-        </button>
-        <button 
-            wire:click="$set('activeTab', 'telehealth')" 
-            class="pb-3 font-medium cursor-pointer focus:outline-none {{ $activeTab === 'telehealth' ? 'border-b-2 border-primary text-primary' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}"
-        >
-            {{ __('Telehealth Room') }}
-        </button>
-        <button 
-            wire:click="$set('activeTab', 'engagements')" 
-            class="pb-3 font-medium cursor-pointer focus:outline-none {{ $activeTab === 'engagements' ? 'border-b-2 border-primary text-primary' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}"
-        >
-            {{ __('Engagement') }}
-        </button>
-        <button 
-            wire:click="$set('activeTab', 'forms')" 
-            class="pb-3 font-medium cursor-pointer focus:outline-none {{ $activeTab === 'forms' ? 'border-b-2 border-primary text-primary' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}"
-        >
-            {{ __('Intake & Consents') }}
-        </button>
-        <button 
-            wire:click="$set('activeTab', 'care_coordination')" 
-            class="pb-3 font-medium cursor-pointer focus:outline-none {{ $activeTab === 'care_coordination' ? 'border-b-2 border-primary text-primary' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}"
-        >
-            {{ __('Care Coordination') }}
-        </button>
-        <button 
-            wire:click="$set('activeTab', 'radiology')" 
-            class="pb-3 font-medium cursor-pointer focus:outline-none {{ $activeTab === 'radiology' ? 'border-b-2 border-primary text-primary' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300' }}"
-        >
-            {{ __('Radiology & Imaging') }}
-        </button>
+    <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        @php
+            $tabs = [
+                'encounters' => 'Encounters & History',
+                'medications' => 'Medications & Prescribing',
+                'labs' => 'Labs & Monitoring',
+                'messages' => 'Secure Messages',
+                'refills' => 'Refill Requests',
+                'telehealth' => 'Telehealth Room',
+                'engagements' => 'Engagement',
+                'forms' => 'Intake & Consents',
+                'care_coordination' => 'Care Coordination',
+                'radiology' => 'Radiology & Imaging'
+            ];
+        @endphp
+        
+        @foreach($tabs as $key => $label)
+            <button 
+                wire:click="$set('activeTab', '{{ $key }}')" 
+                class="whitespace-nowrap px-4 py-2 rounded-xl text-[13px] font-medium transition-colors {{ $activeTab === $key ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50' }}"
+            >
+                {{ __($label) }}
+            </button>
+        @endforeach
     </div>
 
     @if ($activeTab === 'encounters')
-        <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div class="lg:col-span-1 space-y-6">
-                <div class="rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
-                    <flux:heading size="lg">{{ __('Demographics') }}</flux:heading>
-                    <dl class="mt-4 space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <dt class="text-neutral-500">{{ __('DOB') }}</dt>
-                            <dd>{{ $patient->date_of_birth?->format('M j, Y') }}</dd>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                    <h3 class="font-bold text-[14px] text-slate-800">{{ __('Demographics') }}</h3>
+                    <dl class="mt-4 space-y-3 text-[13px]">
+                        <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                            <dt class="text-slate-500">{{ __('DOB') }}</dt>
+                            <dd class="font-medium text-slate-800">{{ $patient->date_of_birth?->format('M j, Y') }}</dd>
                         </div>
-                        <div class="flex justify-between">
-                            <dt class="text-neutral-500">{{ __('Gender') }}</dt>
-                            <dd>{{ $patient->gender_identity ?? '—' }}</dd>
+                        <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                            <dt class="text-slate-500">{{ __('Gender') }}</dt>
+                            <dd class="font-medium text-slate-800">{{ $patient->gender_identity ?? '—' }}</dd>
                         </div>
-                        <div class="flex justify-between">
-                            <dt class="text-neutral-500">{{ __('Pronouns') }}</dt>
-                            <dd>{{ $patient->pronouns ?? '—' }}</dd>
+                        <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                            <dt class="text-slate-500">{{ __('Pronouns') }}</dt>
+                            <dd class="font-medium text-slate-800">{{ $patient->pronouns ?? '—' }}</dd>
                         </div>
-                        <div class="flex justify-between">
-                            <dt class="text-neutral-500">{{ __('Language') }}</dt>
-                            <dd>{{ $patient->preferred_language }}</dd>
+                        <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                            <dt class="text-slate-500">{{ __('Language') }}</dt>
+                            <dd class="font-medium text-slate-800">{{ $patient->preferred_language }}</dd>
                         </div>
-                        <div class="flex justify-between">
-                            <dt class="text-neutral-500">{{ __('Provider') }}</dt>
-                            <dd>{{ $patient->primaryProvider?->name ?? '—' }}</dd>
+                        <div class="flex justify-between items-center">
+                            <dt class="text-slate-500">{{ __('Provider') }}</dt>
+                            <dd class="font-medium text-slate-800">{{ $patient->primaryProvider?->name ?? '—' }}</dd>
                         </div>
+                    </dl>
                 </div>
 
-                <div class="rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
-                    <div class="flex justify-between items-center">
-                        <flux:heading size="lg">{{ __('Insurance & Eligibility') }}</flux:heading>
-                        <flux:button size="xs" variant="outline" wire:click="checkInsuranceEligibility" wire:loading.attr="disabled">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-[14px] text-slate-800">{{ __('Insurance & Eligibility') }}</h3>
+                        <button wire:click="checkInsuranceEligibility" wire:loading.attr="disabled" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-[11px] font-medium text-slate-700 hover:bg-slate-100 transition-colors">
                             <span wire:loading.remove wire:target="checkInsuranceEligibility">{{ __('Verify') }}</span>
                             <span wire:loading wire:target="checkInsuranceEligibility">{{ __('Verifying...') }}</span>
-                        </flux:button>
+                        </button>
                     </div>
-                    <dl class="mt-4 space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <dt class="text-neutral-500">{{ __('Primary Payer') }}</dt>
-                            <dd class="font-medium">{{ $patient->primary_insurance ?? 'None On File' }}</dd>
+                    <dl class="space-y-3 text-[13px]">
+                        <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                            <dt class="text-slate-500">{{ __('Primary Payer') }}</dt>
+                            <dd class="font-medium text-slate-800">{{ $patient->primary_insurance ?? 'None On File' }}</dd>
                         </div>
                         @if ($latestEligibilityCheck)
-                            <div class="flex justify-between">
-                                <dt class="text-neutral-500">{{ __('Status') }}</dt>
+                            <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                                <dt class="text-slate-500">{{ __('Status') }}</dt>
                                 <dd>
                                     @if ($latestEligibilityCheck->status === 'eligible')
-                                        <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                        <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             {{ __('Active / Eligible') }}
                                         </span>
                                     @elseif ($latestEligibilityCheck->status === 'ineligible')
-                                        <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                                        <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-amber-50 text-amber-700 border border-amber-200">
                                             {{ __('Inactive / Ineligible') }}
                                         </span>
                                     @else
-                                        <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+                                        <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-red-50 text-red-700 border border-red-200">
                                             {{ __('Error') }}
                                         </span>
                                     @endif
                                 </dd>
                             </div>
                             @if ($latestEligibilityCheck->status === 'eligible')
-                                <div class="flex justify-between">
-                                    <dt class="text-neutral-500">{{ __('Payer Name') }}</dt>
-                                    <dd>{{ $latestEligibilityCheck->payer_name }}</dd>
+                                <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                                    <dt class="text-slate-500">{{ __('Payer Name') }}</dt>
+                                    <dd class="font-medium text-slate-800">{{ $latestEligibilityCheck->payer_name }}</dd>
                                 </div>
-                                <div class="flex justify-between">
-                                    <dt class="text-neutral-500">{{ __('Co-Pay') }}</dt>
-                                    <dd class="font-bold">${{ number_format($latestEligibilityCheck->copay_amount, 2) }}</dd>
+                                <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                                    <dt class="text-slate-500">{{ __('Co-Pay') }}</dt>
+                                    <dd class="font-bold text-slate-800">${{ number_format($latestEligibilityCheck->copay_amount, 2) }}</dd>
                                 </div>
-                                <div class="flex justify-between">
-                                    <dt class="text-neutral-500">{{ __('Deductible') }}</dt>
-                                    <dd class="font-bold">${{ number_format($latestEligibilityCheck->deductible_amount, 2) }}</dd>
+                                <div class="flex justify-between items-center">
+                                    <dt class="text-slate-500">{{ __('Deductible') }}</dt>
+                                    <dd class="font-bold text-slate-800">${{ number_format($latestEligibilityCheck->deductible_amount, 2) }}</dd>
                                 </div>
                             @endif
-                            <div class="text-[10px] text-zinc-400 mt-2 text-right">
+                            <div class="text-[11px] text-slate-400 mt-3 text-right">
                                 {{ __('Checked: :time', ['time' => $latestEligibilityCheck->checked_at->diffForHumans()]) }}
                             </div>
                         @else
-                            <p class="text-xs italic text-neutral-400 mt-2">{{ __('No eligibility checks have been performed yet.') }}</p>
+                            <p class="text-[12px] italic text-slate-400 mt-2">{{ __('No eligibility checks have been performed yet.') }}</p>
                         @endif
                     </dl>
                 </div>
 
-                <div class="rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
-                    <flux:heading size="lg">{{ __('Contacts') }}</flux:heading>
-                    <dl class="mt-4 space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <dt class="text-neutral-500">{{ __('Phone') }}</dt>
-                            <dd>{{ $patient->phone ?? '—' }}</dd>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                    <h3 class="font-bold text-[14px] text-slate-800">{{ __('Contacts') }}</h3>
+                    <dl class="mt-4 space-y-3 text-[13px]">
+                        <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                            <dt class="text-slate-500">{{ __('Phone') }}</dt>
+                            <dd class="font-medium text-slate-800">{{ $patient->phone ?? '—' }}</dd>
                         </div>
-                        <div class="flex justify-between">
-                            <dt class="text-neutral-500">{{ __('Email') }}</dt>
-                            <dd class="truncate max-w-[150px]">{{ $patient->email ?? '—' }}</dd>
+                        <div class="flex justify-between items-center border-b border-slate-50 pb-2">
+                            <dt class="text-slate-500">{{ __('Email') }}</dt>
+                            <dd class="font-medium text-slate-800 truncate max-w-[150px]">{{ $patient->email ?? '—' }}</dd>
                         </div>
-                        <div class="flex justify-between">
-                            <dt class="text-neutral-500">{{ __('Emergency') }}</dt>
-                            <dd>{{ $patient->emergency_contact_name ?? '—' }} ({{ $patient->emergency_contact_phone ?? '—' }})</dd>
+                        <div class="flex flex-col gap-1 pt-1">
+                            <dt class="text-slate-500">{{ __('Emergency Contact') }}</dt>
+                            <dd class="font-medium text-slate-800">{{ $patient->emergency_contact_name ?? '—' }} <br><span class="text-slate-500 text-[12px]">{{ $patient->emergency_contact_phone ?? '' }}</span></dd>
                         </div>
                     </dl>
                 </div>
 
-                <div class="rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
-                    <flux:heading size="lg">{{ __('Clinical Summary') }}</flux:heading>
-                    <dl class="mt-4 space-y-4 text-sm">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                    <h3 class="font-bold text-[14px] text-slate-800">{{ __('Clinical Summary') }}</h3>
+                    <dl class="mt-4 space-y-4 text-[13px]">
                         <div>
-                            <dt class="font-medium text-neutral-500">{{ __('Problem List') }}</dt>
-                            <dd class="mt-1 whitespace-pre-line">{{ $patient->problem_list ?: '—' }}</dd>
+                            <dt class="font-medium text-slate-500">{{ __('Problem List') }}</dt>
+                            <dd class="mt-1 font-medium text-slate-800 whitespace-pre-line">{{ $patient->problem_list ?: '—' }}</dd>
                         </div>
-                        <div>
-                            <dt class="font-medium text-neutral-500">{{ __('Allergies') }}</dt>
-                            <dd class="mt-1 whitespace-pre-line">{{ $patient->allergies ?: 'NKDA' }}</dd>
+                        <div class="pt-3 border-t border-slate-50">
+                            <dt class="font-medium text-slate-500">{{ __('Allergies') }}</dt>
+                            <dd class="mt-1 font-medium text-slate-800 whitespace-pre-line">{{ $patient->allergies ?: 'NKDA' }}</dd>
                         </div>
-                        <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800">
-                            <dt class="font-medium text-neutral-500">{{ __('Past Medical History') }}</dt>
-                            <dd class="mt-1 whitespace-pre-line">{{ $patient->past_medical_history ?: '—' }}</dd>
+                        <div class="pt-3 border-t border-slate-50">
+                            <dt class="font-medium text-slate-500">{{ __('Past Medical History') }}</dt>
+                            <dd class="mt-1 font-medium text-slate-800 whitespace-pre-line">{{ $patient->past_medical_history ?: '—' }}</dd>
                         </div>
-                        <div>
-                            <dt class="font-medium text-neutral-500">{{ __('Surgical History') }}</dt>
-                            <dd class="mt-1 whitespace-pre-line">{{ $patient->surgical_history ?: '—' }}</dd>
+                        <div class="pt-3 border-t border-slate-50">
+                            <dt class="font-medium text-slate-500">{{ __('Surgical History') }}</dt>
+                            <dd class="mt-1 font-medium text-slate-800 whitespace-pre-line">{{ $patient->surgical_history ?: '—' }}</dd>
                         </div>
-                        <div>
-                            <dt class="font-medium text-neutral-500">{{ __('Family History') }}</dt>
-                            <dd class="mt-1 whitespace-pre-line">{{ $patient->family_history ?: '—' }}</dd>
+                        <div class="pt-3 border-t border-slate-50">
+                            <dt class="font-medium text-slate-500">{{ __('Family History') }}</dt>
+                            <dd class="mt-1 font-medium text-slate-800 whitespace-pre-line">{{ $patient->family_history ?: '—' }}</dd>
                         </div>
-                        <div>
-                            <dt class="font-medium text-neutral-500">{{ __('Social History') }}</dt>
-                            <dd class="mt-1 whitespace-pre-line">{{ $patient->social_history ?: '—' }}</dd>
+                        <div class="pt-3 border-t border-slate-50">
+                            <dt class="font-medium text-slate-500">{{ __('Social History') }}</dt>
+                            <dd class="mt-1 font-medium text-slate-800 whitespace-pre-line">{{ $patient->social_history ?: '—' }}</dd>
                         </div>
                     </dl>
                 </div>
             </div>
 
             <div class="lg:col-span-2 space-y-6">
-                <div class="rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
-                    <flux:heading size="lg" class="mb-4">{{ __('Recent Encounters') }}</flux:heading>
-
-                    @forelse ($patient->encounters as $encounter)
-                        <div class="flex items-center justify-between border-b border-neutral-100 py-3 last:border-0 dark:border-neutral-700">
-                            <div>
-                                <div class="text-sm font-medium">{{ $encounter->encounter_date->format('M j, Y') }}</div>
-                                <div class="text-xs text-neutral-500">
-                                    {{ ucfirst($encounter->type) }} &middot; {{ $encounter->provider->name }}
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                    <div class="p-5 border-b border-slate-100">
+                        <h3 class="font-bold text-[14px] text-slate-800">{{ __('Recent Encounters') }}</h3>
+                    </div>
+                    <div class="flex flex-col">
+                        @forelse ($patient->encounters as $encounter)
+                            <div class="flex items-center justify-between border-b border-slate-100 p-5 last:border-0 hover:bg-slate-50 transition-colors">
+                                <div>
+                                    <div class="text-[14px] font-bold text-slate-800">{{ $encounter->encounter_date->format('M j, Y') }}</div>
+                                    <div class="text-[12px] text-slate-500 mt-0.5">
+                                        {{ ucfirst($encounter->type) }} &middot; {{ $encounter->provider->name }}
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg border {{ $encounter->status === 'signed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200' }}">
+                                        {{ ucfirst($encounter->status) }}
+                                    </span>
+                                    <a href="{{ route('encounters.note', $encounter) }}" wire:navigate class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                                        {{ __('View Note') }}
+                                    </a>
+                                    @can('delete', $encounter)
+                                        <button wire:click="deleteEncounter({{ $encounter->id }})" wire:confirm="{{ __('Are you sure you want to delete this encounter?') }}" class="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                            <flux:icon.trash class="w-4 h-4" />
+                                        </button>
+                                    @endcan
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <flux:badge variant="{{ $encounter->status === 'signed' ? 'success' : 'warning' }}" size="sm">
-                                    {{ ucfirst($encounter->status) }}
-                                </flux:badge>
-                                <flux:button variant="ghost" size="sm" href="{{ route('encounters.note', $encounter) }}" wire:navigate>
-                                    {{ __('View Note') }}
-                                </flux:button>
-                                @can('delete', $encounter)
-                                    <flux:button variant="ghost" size="sm" wire:click="deleteEncounter({{ $encounter->id }})" wire:confirm="{{ __('Are you sure you want to delete this encounter?') }}" class="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50">
-                                        {{ __('Delete') }}
-                                    </flux:button>
-                                @endcan
+                        @empty
+                            <div class="p-8 text-center">
+                                <flux:icon.document-text class="w-10 h-10 mx-auto text-slate-300 mb-2" variant="outline" />
+                                <p class="text-[13px] text-slate-500">{{ __('No encounters yet.') }}</p>
                             </div>
-                        </div>
-                    @empty
-                        <p class="text-sm text-neutral-500">{{ __('No encounters yet.') }}</p>
-                    @endforelse
+                        @endforelse
+                    </div>
                 </div>
 
-                <div class="rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
-                    <flux:heading size="lg" class="mb-4">{{ __('Completed Assessments') }}</flux:heading>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                    <div class="p-5 border-b border-slate-100">
+                        <h3 class="font-bold text-[14px] text-slate-800">{{ __('Completed Assessments') }}</h3>
+                    </div>
 
                     @if ($patient->assessments->isNotEmpty())
-                        <div class="mb-6 border border-neutral-100 p-4 rounded-lg dark:border-neutral-800 bg-white dark:bg-zinc-950">
+                        <div class="p-5 border-b border-slate-100 bg-slate-50/50">
                             <div x-data="{
                                 init() {
                                     const ctx = document.getElementById('assessments-trend-chart')?.getContext('2d');
@@ -279,9 +252,9 @@
                                                 {
                                                     label: 'PHQ-9',
                                                     data: @json($patient->assessments->where('instrument', 'phq-9')->sortBy('created_at')->values()->map(fn($a) => ['x' => $a->created_at->format('M j'), 'y' => $a->score])),
-                                                    borderColor: '#ef4444',
-                                                    backgroundColor: '#ef4444',
-                                                    tension: 0.1,
+                                                    borderColor: '#4f46e5',
+                                                    backgroundColor: '#4f46e5',
+                                                    tension: 0.3,
                                                     fill: false
                                                 },
                                                 {
@@ -289,7 +262,7 @@
                                                     data: @json($patient->assessments->where('instrument', 'gad-7')->sortBy('created_at')->values()->map(fn($a) => ['x' => $a->created_at->format('M j'), 'y' => $a->score])),
                                                     borderColor: '#0ea5e9',
                                                     backgroundColor: '#0ea5e9',
-                                                    tension: 0.1,
+                                                    tension: 0.3,
                                                     fill: false
                                                 }
                                             ]
@@ -312,229 +285,243 @@
                         </div>
                     @endif
 
-                    @forelse ($patient->assessments as $assessment)
-                        <div class="flex items-center justify-between border-b border-neutral-100 py-3 last:border-0 dark:border-neutral-700">
-                            <div>
-                                <div class="text-sm font-medium">{{ strtoupper($assessment->instrument) }} (Score: {{ $assessment->score }})</div>
-                                <div class="text-xs text-neutral-500">
-                                    {{ __('Rater: :rater', ['rater' => ucfirst($assessment->rater_type)]) }} &middot; {{ $assessment->severity_band }}
+                    <div class="flex flex-col">
+                        @forelse ($patient->assessments as $assessment)
+                            <div class="flex items-center justify-between border-b border-slate-100 p-5 last:border-0 hover:bg-slate-50 transition-colors">
+                                <div>
+                                    <div class="text-[14px] font-bold text-slate-800">{{ strtoupper($assessment->instrument) }} <span class="text-indigo-600">(Score: {{ $assessment->score }})</span></div>
+                                    <div class="text-[12px] text-slate-500 mt-0.5">
+                                        {{ __('Rater: :rater', ['rater' => ucfirst($assessment->rater_type)]) }} &middot; {{ $assessment->severity_band }}
+                                    </div>
+                                </div>
+                                <div class="text-[12px] font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-lg">
+                                    {{ $assessment->created_at->format('M j, Y') }}
                                 </div>
                             </div>
-                            <div class="text-xs text-neutral-500">
-                                {{ $assessment->created_at->format('M j, Y') }}
+                        @empty
+                            <div class="p-8 text-center">
+                                <flux:icon.clipboard-document-list class="w-10 h-10 mx-auto text-slate-300 mb-2" variant="outline" />
+                                <p class="text-[13px] text-slate-500">{{ __('No assessments completed yet.') }}</p>
                             </div>
-                        </div>
-                    @empty
-                        <p class="text-sm text-neutral-500">{{ __('No assessments completed yet.') }}</p>
-                    @endforelse
+                        @endforelse
+                    </div>
                 </div>
 
-                <div class="rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
-                    <flux:heading size="lg" class="mb-4">{{ __('Documents') }}</flux:heading>
-
-                    @forelse ($patient->documents as $document)
-                        <div class="flex items-center justify-between border-b border-neutral-100 py-3 last:border-0 dark:border-neutral-700">
-                            <div>
-                                <div class="text-sm font-medium">{{ $document->original_name }}</div>
-                                <div class="text-xs text-neutral-500">
-                                    {{ ucfirst(str_replace('_', ' ', $document->category)) }} &middot; {{ number_format($document->size / 1024, 1) }} KB
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                    <div class="p-5 border-b border-slate-100">
+                        <h3 class="font-bold text-[14px] text-slate-800">{{ __('Documents') }}</h3>
+                    </div>
+                    
+                    <div class="flex flex-col">
+                        @forelse ($patient->documents as $document)
+                            <div class="flex items-center justify-between border-b border-slate-100 p-5 last:border-0 hover:bg-slate-50 transition-colors">
+                                <div class="flex items-start gap-3">
+                                    <div class="mt-0.5">
+                                        <flux:icon.document class="w-8 h-8 text-indigo-500" variant="outline" />
+                                    </div>
+                                    <div>
+                                        <div class="text-[14px] font-bold text-slate-800">{{ $document->original_name }}</div>
+                                        <div class="text-[12px] text-slate-500 mt-0.5">
+                                            {{ ucfirst(str_replace('_', ' ', $document->category)) }} &middot; {{ number_format($document->size / 1024, 1) }} KB
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="text-[12px] font-medium text-slate-500">
+                                        {{ $document->created_at->format('M j, Y') }}
+                                    </div>
+                                    @can('delete', $document)
+                                        <button wire:click="deleteDocument({{ $document->id }})" wire:confirm="{{ __('Are you sure you want to delete this document?') }}" class="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                                            <flux:icon.trash class="w-4 h-4" />
+                                        </button>
+                                    @endcan
                                 </div>
                             </div>
-                            <div class="flex items-center gap-2">
-                                <div class="text-xs text-neutral-500 mr-2">
-                                    {{ $document->created_at->format('M j, Y') }}
-                                </div>
-                                @can('delete', $document)
-                                    <flux:button variant="ghost" size="sm" wire:click="deleteDocument({{ $document->id }})" wire:confirm="{{ __('Are you sure you want to delete this document?') }}" class="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50">
-                                        {{ __('Delete') }}
-                                    </flux:button>
-                                @endcan
+                        @empty
+                            <div class="p-8 text-center">
+                                <flux:icon.folder class="w-10 h-10 mx-auto text-slate-300 mb-2" variant="outline" />
+                                <p class="text-[13px] text-slate-500">{{ __('No documents yet.') }}</p>
                             </div>
-                        </div>
-                    @empty
-                        <p class="text-sm text-neutral-500">{{ __('No documents yet.') }}</p>
-                    @endforelse
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>
     @elseif ($activeTab === 'medications')
-        <div class="mt-6">
+        <div class="mt-2">
             <livewire:patients.patient-medications :patient="$patient" />
         </div>
     @elseif ($activeTab === 'labs')
-        <div class="mt-6">
+        <div class="mt-2">
             <livewire:patients.patient-labs :patient="$patient" />
         </div>
     @elseif ($activeTab === 'messages')
-        <div class="mt-6">
+        <div class="mt-2">
             <livewire:patients.patient-messages :patient="$patient" />
         </div>
     @elseif ($activeTab === 'refills')
-        <div class="mt-6">
+        <div class="mt-2">
             <livewire:patients.patient-refills :patient="$patient" />
         </div>
     @elseif ($activeTab === 'telehealth')
-        <div class="mt-6">
+        <div class="mt-2">
             <livewire:patients.patient-telehealth :patient="$patient" />
         </div>
     @elseif ($activeTab === 'engagements')
-        <div class="mt-8">
+        <div class="mt-2">
             <livewire:patients.patient-engagements :patient="$patient" />
         </div>
     @elseif ($activeTab === 'forms')
-        <div class="mt-8 space-y-8">
+        <div class="mt-2 space-y-6">
             <!-- Create or assign forms -->
-            <div class="rounded-xl border border-neutral-200 p-6 dark:border-neutral-700 bg-white dark:bg-zinc-900 space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 space-y-6">
                 <div>
-                    <flux:heading size="lg" class="mb-2">{{ __('Create or Assign Intake / Consent Forms') }}</flux:heading>
-                    <flux:subheading class="mb-4">{{ __('Create a new template for your team or select an existing one to assign to the patient portal.') }}</flux:subheading>
+                    <h3 class="font-bold text-[16px] text-slate-800 mb-1">{{ __('Create or Assign Intake / Consent Forms') }}</h3>
+                    <p class="text-[13px] text-slate-500">{{ __('Create a new template for your team or select an existing one to assign to the patient portal.') }}</p>
                 </div>
 
-                <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 space-y-4">
-                    <div class="grid gap-4 md:grid-cols-2">
-                        <flux:field>
-                            <flux:label>{{ __('Template Title') }}</flux:label>
-                            <flux:input wire:model="templateTitle" placeholder="e.g. New Patient Intake" />
-                            @error('templateTitle') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
-                        </flux:field>
-                        <flux:field>
-                            <flux:label>{{ __('Template Type') }}</flux:label>
-                            <select wire:model="templateType" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900">
+                <div class="rounded-xl border border-slate-200 p-5 space-y-5 bg-slate-50/50">
+                    <div class="grid gap-5 md:grid-cols-2">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[13px] font-semibold text-slate-700">{{ __('Template Title') }}</label>
+                            <input wire:model="templateTitle" type="text" class="block w-full px-3 py-2 border border-slate-200 rounded-lg leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-[13px] transition-colors shadow-sm" placeholder="e.g. New Patient Intake" />
+                            @error('templateTitle') <span class="text-[11px] text-red-500">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-[13px] font-semibold text-slate-700">{{ __('Template Type') }}</label>
+                            <select wire:model="templateType" class="block w-full px-3 py-2 border border-slate-200 rounded-lg leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-[13px] transition-colors shadow-sm">
                                 <option value="consent">{{ __('Consent') }}</option>
                                 <option value="intake">{{ __('Intake') }}</option>
                             </select>
-                            @error('templateType') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
-                        </flux:field>
+                            @error('templateType') <span class="text-[11px] text-red-500">{{ $message }}</span> @enderror
+                        </div>
                     </div>
 
-                    <flux:field>
-                        <flux:label>{{ __('Description') }}</flux:label>
-                        <flux:textarea wire:model="templateDescription" rows="2" placeholder="Optional summary for the form" />
-                        @error('templateDescription') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
-                    </flux:field>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[13px] font-semibold text-slate-700">{{ __('Description') }}</label>
+                        <textarea wire:model="templateDescription" rows="2" class="block w-full px-3 py-2 border border-slate-200 rounded-lg leading-5 bg-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-[13px] transition-colors shadow-sm" placeholder="Optional summary for the form"></textarea>
+                        @error('templateDescription') <span class="text-[11px] text-red-500">{{ $message }}</span> @enderror
+                    </div>
 
-                    <div class="space-y-3">
+                    <div class="space-y-4 pt-2 border-t border-slate-200">
                         <div class="flex items-center justify-between">
-                            <flux:subheading>{{ __('Questions') }}</flux:subheading>
-                            <flux:button variant="ghost" size="sm" wire:click="addTemplateField">
+                            <h4 class="text-[14px] font-bold text-slate-800">{{ __('Questions') }}</h4>
+                            <button wire:click="addTemplateField" class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[12px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
                                 {{ __('Add Question') }}
-                            </flux:button>
+                            </button>
                         </div>
 
                         @foreach ($templateFields as $index => $field)
-                            <div class="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700 space-y-3" wire:key="template-field-{{ $index }}">
-                                <div class="grid gap-4 md:grid-cols-[1.2fr,1fr,auto]">
-                                    <flux:field>
-                                        <flux:label>{{ __('Field Name') }}</flux:label>
-                                        <flux:input wire:model="templateFields.{{ $index }}.name" placeholder="e.g. reason_for_visit" />
-                                    </flux:field>
-                                    <flux:field>
-                                        <flux:label>{{ __('Question Label') }}</flux:label>
-                                        <flux:input wire:model="templateFields.{{ $index }}.label" placeholder="e.g. What brings you in today?" />
-                                    </flux:field>
-                                    <flux:field>
-                                        <flux:label>{{ __('Type') }}</flux:label>
-                                        <select wire:model="templateFields.{{ $index }}.type" class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900">
+                            <div class="rounded-xl border border-slate-200 p-4 bg-white space-y-4 shadow-sm" wire:key="template-field-{{ $index }}">
+                                <div class="grid gap-4 md:grid-cols-3">
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-[12px] font-semibold text-slate-700">{{ __('Field Name') }}</label>
+                                        <input wire:model="templateFields.{{ $index }}.name" type="text" class="block w-full px-3 py-2 border border-slate-200 rounded-lg text-[12px] focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g. reason_for_visit" />
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-[12px] font-semibold text-slate-700">{{ __('Question Label') }}</label>
+                                        <input wire:model="templateFields.{{ $index }}.label" type="text" class="block w-full px-3 py-2 border border-slate-200 rounded-lg text-[12px] focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g. What brings you in today?" />
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-[12px] font-semibold text-slate-700">{{ __('Type') }}</label>
+                                        <select wire:model="templateFields.{{ $index }}.type" class="block w-full px-3 py-2 border border-slate-200 rounded-lg text-[12px] focus:ring-indigo-500 focus:border-indigo-500 bg-white">
                                             <option value="text">{{ __('Text') }}</option>
                                             <option value="checkbox">{{ __('Checkbox') }}</option>
                                             <option value="yes_no">{{ __('Yes / No') }}</option>
                                         </select>
-                                    </flux:field>
+                                    </div>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <label class="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-300">
-                                        <input type="checkbox" wire:model="templateFields.{{ $index }}.required" class="rounded border-zinc-300 text-primary focus:ring-primary" />
+                                <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                                    <label class="flex items-center gap-2 text-[13px] text-slate-600 font-medium cursor-pointer">
+                                        <input type="checkbox" wire:model="templateFields.{{ $index }}.required" class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
                                         {{ __('Required') }}
                                     </label>
                                     @if ($index > 0)
-                                        <flux:button variant="ghost" size="sm" wire:click="removeTemplateField({{ $index }})" class="text-red-500 hover:text-red-600">
+                                        <button wire:click="removeTemplateField({{ $index }})" class="text-[12px] font-semibold text-red-500 hover:text-red-600">
                                             {{ __('Remove') }}
-                                        </flux:button>
+                                        </button>
                                     @endif
                                 </div>
                             </div>
                         @endforeach
                     </div>
 
-                    <div class="flex items-center justify-end gap-3">
-                        <flux:button variant="primary" wire:click="createTemplate">
+                    <div class="flex items-center justify-end pt-2">
+                        <button wire:click="createTemplate" class="px-4 py-2 bg-indigo-600 border border-transparent rounded-xl shadow-sm text-[13px] font-semibold text-white hover:bg-indigo-700 transition-colors">
                             {{ __('Save Template') }}
-                        </flux:button>
+                        </button>
                     </div>
                 </div>
 
-                <div class="space-y-3">
-                    <flux:subheading>{{ __('Existing templates') }}</flux:subheading>
-                    <div class="flex flex-wrap gap-3">
+                <div class="space-y-3 pt-4 border-t border-slate-100">
+                    <h4 class="text-[14px] font-bold text-slate-800">{{ __('Existing templates') }}</h4>
+                    <div class="flex flex-wrap gap-2">
                         @foreach ($templatesList as $tpl)
-                            <flux:button 
-                                variant="filled" 
-                                wire:click="assignForm({{ $tpl['id'] }})"
-                                class="flex items-center gap-1.5"
-                            >
-                                <flux:icon.plus class="size-4" />
+                            <button wire:click="assignForm({{ $tpl['id'] }})" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[12px] font-semibold rounded-lg transition-colors border border-slate-200">
+                                <flux:icon.plus class="w-3 h-3" />
                                 {{ $tpl['title'] }}
-                            </flux:button>
+                            </button>
                         @endforeach
                     </div>
                 </div>
             </div>
 
             <!-- Assigned & Completed Forms List -->
-            <div class="rounded-xl border border-neutral-200 p-6 dark:border-neutral-700 bg-white dark:bg-zinc-900">
-                <flux:heading size="lg" class="mb-4">{{ __('Assigned & Completed Forms') }}</flux:heading>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col overflow-hidden">
+                <div class="p-5 border-b border-slate-100">
+                    <h3 class="font-bold text-[14px] text-slate-800">{{ __('Assigned & Completed Forms') }}</h3>
+                </div>
 
-                <div class="border rounded-xl border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 overflow-hidden">
-                    <table class="w-full text-left text-sm text-zinc-500 dark:text-zinc-400">
-                        <thead class="bg-zinc-50 dark:bg-zinc-800 text-xs text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-[13px] whitespace-nowrap">
+                        <thead class="text-[11px] text-slate-400 font-medium border-b border-slate-100 bg-slate-50/50 uppercase tracking-wider">
                             <tr>
-                                <th class="px-6 py-3.5">{{ __('Form Name') }}</th>
-                                <th class="px-6 py-3.5">{{ __('Status') }}</th>
-                                <th class="px-6 py-3.5">{{ __('Dates') }}</th>
-                                <th class="px-6 py-3.5 text-right">{{ __('Actions') }}</th>
+                                <th class="px-5 py-4 font-medium">{{ __('Form Name') }}</th>
+                                <th class="px-5 py-4 font-medium">{{ __('Status') }}</th>
+                                <th class="px-5 py-4 font-medium">{{ __('Dates') }}</th>
+                                <th class="px-5 py-4 font-medium text-right">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                        <tbody class="divide-y divide-slate-100">
                             @forelse ($patient->patientForms as $form)
-                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors" wire:key="pf-{{ $form->id }}">
-                                    <td class="px-6 py-4">
-                                        <div class="font-semibold text-zinc-900 dark:text-zinc-100">{{ $form->template->title }}</div>
-                                        <div class="text-xs text-zinc-400 mt-0.5">{{ $form->template->description }}</div>
+                                <tr class="hover:bg-slate-50 transition-colors" wire:key="pf-{{ $form->id }}">
+                                    <td class="px-5 py-4">
+                                        <div class="font-bold text-slate-800">{{ $form->template->title }}</div>
+                                        <div class="text-[12px] text-slate-500 mt-0.5">{{ $form->template->description }}</div>
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <flux:badge size="sm" color="{{ $form->status === 'completed' ? 'green' : 'amber' }}">
+                                    <td class="px-5 py-4">
+                                        <span class="px-2.5 py-1 text-[11px] font-bold rounded-lg border {{ $form->status === 'completed' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200' }}">
                                             {{ ucfirst($form->status) }}
-                                        </flux:badge>
+                                        </span>
                                     </td>
-                                    <td class="px-6 py-4 text-xs text-zinc-400">
+                                    <td class="px-5 py-4 text-[12px] text-slate-500 flex flex-col gap-0.5">
                                         <div>{{ __('Assigned: :date', ['date' => $form->created_at->format('M j, Y')]) }}</div>
                                         @if ($form->signed_at)
-                                            <div class="text-green-600 dark:text-green-400 font-medium mt-0.5">
+                                            <div class="text-emerald-600 font-semibold">
                                                 {{ __('Signed: :date', ['date' => $form->signed_at->format('M j, Y')]) }}
                                             </div>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 text-right space-x-2">
-                                        @if ($form->status === 'completed')
-                                            <flux:button size="sm" variant="ghost" wire:click="viewCompletedForm({{ $form->id }})">
-                                                {{ __('View Responses') }}
-                                            </flux:button>
-                                        @endif
-                                        <flux:button 
-                                            size="sm" 
-                                            variant="ghost" 
-                                            class="text-red-500 hover:text-red-600"
-                                            wire:click="deleteForm({{ $form->id }})"
-                                            wire:confirm="{{ __('Remove this form assignment?') }}"
-                                        >
-                                            {{ __('Remove') }}
-                                        </flux:button>
+                                    <td class="px-5 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-2">
+                                            @if ($form->status === 'completed')
+                                                <button wire:click="viewCompletedForm({{ $form->id }})" class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-[11px] font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                                                    {{ __('View Responses') }}
+                                                </button>
+                                            @endif
+                                            <button wire:click="deleteForm({{ $form->id }})" wire:confirm="{{ __('Remove this form assignment?') }}" class="px-3 py-1.5 bg-red-50 border border-red-100 rounded-lg text-[11px] font-medium text-red-600 hover:bg-red-100 transition-colors">
+                                                {{ __('Remove') }}
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-10 text-center text-zinc-400 italic text-sm">
-                                        {{ __('No forms assigned to this patient.') }}
+                                    <td colspan="4" class="px-5 py-12 text-center">
+                                        <div class="flex flex-col items-center justify-center opacity-60">
+                                            <flux:icon.document-check class="w-10 h-10 text-slate-300 mb-3" variant="outline" />
+                                            <p class="text-[13px] text-slate-500">{{ __('No forms assigned to this patient.') }}</p>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforelse
@@ -547,62 +534,68 @@
 
     <!-- View Completed Form Modal Overlay -->
     <div x-data="{ open: @entangle('showFormModal') }">
-        <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <div class="w-full max-w-lg bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-700 p-6 space-y-6 max-h-[90vh] overflow-y-auto animate-fade-in">
-                <div>
-                    <flux:heading size="lg">{{ $selectedFormTitle }}</flux:heading>
-                    <flux:text class="text-xs mt-1">{{ __('Submitted Questionnaire Responses & E-Signature Audit Trail') }}</flux:text>
+        <div x-show="open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+            <div @click.away="open = false" class="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex flex-col max-h-[90vh]">
+                <div class="pb-4 border-b border-slate-100">
+                    <h2 class="text-xl font-bold text-slate-800">{{ $selectedFormTitle }}</h2>
+                    <p class="text-[12px] text-slate-500 mt-1">{{ __('Submitted Questionnaire Responses & E-Signature Audit Trail') }}</p>
                 </div>
 
-                <div class="space-y-4 divide-y divide-zinc-100 dark:divide-zinc-800">
-                    <div class="space-y-3 pb-4">
-                        <span class="text-xs font-semibold text-zinc-500 block uppercase tracking-wider">{{ __('Responses') }}</span>
-                        @if ($selectedFormData)
-                            @foreach ($selectedFormData as $key => $val)
-                                <div class="text-sm">
-                                    <span class="font-medium text-zinc-600 dark:text-zinc-400 block">{{ ucfirst(str_replace('_', ' ', $key)) }}</span>
-                                    <span class="text-zinc-900 dark:text-zinc-100">
-                                        @if (is_bool($val))
-                                            {{ $val ? __('Yes') : __('No') }}
-                                        @else
-                                            {{ $val }}
-                                        @endif
-                                    </span>
-                                </div>
-                            @endforeach
-                        @else
-                            <p class="text-xs italic text-zinc-400">{{ __('No responses captured.') }}</p>
-                        @endif
+                <div class="py-4 overflow-y-auto flex-1 flex flex-col gap-6">
+                    <div class="space-y-3">
+                        <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('Responses') }}</h4>
+                        <div class="space-y-4">
+                            @if ($selectedFormData)
+                                @foreach ($selectedFormData as $key => $val)
+                                    <div>
+                                        <label class="block text-[13px] font-semibold text-slate-500 mb-1">{{ ucfirst(str_replace('_', ' ', $key)) }}</label>
+                                        <div class="text-[14px] text-slate-800 font-medium">
+                                            @if (is_bool($val))
+                                                {{ $val ? __('Yes') : __('No') }}
+                                            @else
+                                                {{ $val }}
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <p class="text-[13px] italic text-slate-400">{{ __('No responses captured.') }}</p>
+                            @endif
+                        </div>
                     </div>
 
-                    <div class="pt-4 space-y-2.5">
-                        <span class="text-xs font-semibold text-zinc-500 block uppercase tracking-wider">{{ __('E-Signature Audit Trail') }}</span>
-                        <div class="bg-zinc-50 dark:bg-zinc-800/40 p-3 rounded-lg border border-zinc-100 dark:border-zinc-800 text-xs space-y-1.5 font-mono">
-                            <div><span class="text-zinc-400">{{ __('E-Signed By:') }}</span> {{ $selectedFormSignature }}</div>
-                            <div><span class="text-zinc-400">{{ __('Signed At:') }}</span> {{ $selectedFormSignedAt }}</div>
-                            <div><span class="text-zinc-400">{{ __('IP Address:') }}</span> {{ $selectedFormIp }}</div>
-                            <div class="text-[10px] text-green-600 dark:text-green-400 font-semibold flex items-center gap-1 mt-2">
-                                <flux:icon.check-circle class="size-3.5 inline" />
+                    <div class="space-y-3">
+                        <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ __('E-Signature Audit Trail') }}</h4>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-[12px] space-y-2 font-mono">
+                            <div class="flex justify-between items-center"><span class="text-slate-500">{{ __('E-Signed By:') }}</span> <span class="font-bold text-slate-800">{{ $selectedFormSignature }}</span></div>
+                            <div class="flex justify-between items-center"><span class="text-slate-500">{{ __('Signed At:') }}</span> <span class="text-slate-800">{{ $selectedFormSignedAt }}</span></div>
+                            <div class="flex justify-between items-center"><span class="text-slate-500">{{ __('IP Address:') }}</span> <span class="text-slate-800">{{ $selectedFormIp }}</span></div>
+                            <div class="pt-3 mt-3 border-t border-slate-200 text-[11px] text-emerald-600 font-bold flex items-center gap-1.5">
+                                <flux:icon.check-circle class="w-4 h-4" />
                                 {{ __('Secured electronic record locked.') }}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="flex justify-end pt-4 border-t border-zinc-100 dark:border-zinc-800">
-                    <flux:button type="button" wire:click="$set('showFormModal', false)">
+                <div class="pt-4 border-t border-slate-100 flex justify-end">
+                    <button wire:click="$set('showFormModal', false)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-[13px] transition-colors">
                         {{ __('Close') }}
-                    </flux:button>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     @if ($activeTab === 'care_coordination')
-        <livewire:patients.patient-care-coordination :patient="$patient" />
+        <div class="mt-2">
+            <livewire:patients.patient-care-coordination :patient="$patient" />
+        </div>
     @endif
 
     @if ($activeTab === 'radiology')
-        <livewire:patients.patient-radiology :patient="$patient" />
+        <div class="mt-2">
+            <livewire:patients.patient-radiology :patient="$patient" />
+        </div>
     @endif
-</flux:main>
+</div>

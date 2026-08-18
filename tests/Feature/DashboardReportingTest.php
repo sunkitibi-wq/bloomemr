@@ -62,7 +62,7 @@ test('dashboard reports monthly revenue and encounter volume for the practice', 
     Livewire::test(Dashboard::class)
         ->assertSee('Monthly Revenue')
         ->assertSee('Open Invoices')
-        ->assertSee('This Month Encounters');
+        ->assertSee('Encounters this Month');
 
     $component = Livewire::test(Dashboard::class);
 

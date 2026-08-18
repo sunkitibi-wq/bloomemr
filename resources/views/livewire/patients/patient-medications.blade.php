@@ -3,7 +3,12 @@
         <!-- Prescribing & Alerts Form Column -->
         <div class="lg:col-span-2 space-y-6">
             <div class="rounded-xl border border-zinc-200 p-6 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                <flux:heading size="lg" class="mb-4">{{ __('E-Prescribe Medication') }}</flux:heading>
+                <div class="flex items-center justify-between mb-4">
+                    <flux:heading size="lg">{{ __('E-Prescribe Medication') }}</flux:heading>
+                    <flux:button size="sm" variant="outline" wire:click="openDoseSpot">
+                        {{ __('Launch DoseSpot') }}
+                    </flux:button>
+                </div>
 
                 <form wire:submit="prescribe" class="space-y-4">
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -261,6 +266,22 @@
                         {{ __('Authorize & Transmit') }}
                     </flux:button>
                 </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- DoseSpot iframe modal -->
+    @if ($showDoseSpotIframe && $doseSpotSsoUrl)
+        <div class="fixed inset-0 z-50 flex flex-col bg-white dark:bg-zinc-900">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-700">
+                <flux:heading size="lg">{{ __('DoseSpot e-Prescribing') }}</flux:heading>
+                <flux:button variant="ghost" size="sm" wire:click="closeDoseSpot">
+                    <flux:icon.x-mark class="size-5" />
+                    {{ __('Close') }}
+                </flux:button>
+            </div>
+            <div class="flex-1">
+                <iframe src="{{ $doseSpotSsoUrl }}" class="w-full h-full border-0"></iframe>
             </div>
         </div>
     @endif

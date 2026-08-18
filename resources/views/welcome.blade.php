@@ -302,7 +302,7 @@
         {{ __('Get Started Today') }}
     </a>
 @endauth
-<a href="#" class="text-white underline hover:text-growth-sage font-headline-md">Contact Sales</a>
+<a href="/" class="text-white underline hover:text-growth-sage font-headline-md">Contact Sales</a>
 </div>
 </div>
 </section>

@@ -74,6 +74,52 @@ class PopulationHealth extends Component
         session()->flash('success', 'Care gap marked as resolved.');
     }
 
+    public bool $showCreateModal = false;
+
+    public string $newCohortName = '';
+
+    public string $newCohortDescription = '';
+
+    public ?int $newCohortMinAge = null;
+
+    public ?int $newCohortMaxAge = null;
+
+    public string $newCohortDiagnosisKeyword = '';
+
+    public function openCreateModal(): void
+    {
+        $this->reset(['newCohortName', 'newCohortDescription', 'newCohortMinAge', 'newCohortMaxAge', 'newCohortDiagnosisKeyword']);
+        $this->showCreateModal = true;
+    }
+
+    public function saveCustomCohort(PopulationHealthService $service): void
+    {
+        $this->validate([
+            'newCohortName' => 'required|string|max:100',
+            'newCohortDescription' => 'nullable|string|max:255',
+            'newCohortMinAge' => 'nullable|integer|min:0',
+            'newCohortMaxAge' => 'nullable|integer|min:0',
+            'newCohortDiagnosisKeyword' => 'nullable|string|max:100',
+        ]);
+
+        $cohort = PatientCohort::create([
+            'practice_id' => Auth::user()->practice_id,
+            'name' => $this->newCohortName,
+            'description' => $this->newCohortDescription,
+            'criteria' => [
+                'min_age' => $this->newCohortMinAge,
+                'max_age' => $this->newCohortMaxAge,
+                'diagnosis_keyword' => $this->newCohortDiagnosisKeyword,
+            ],
+        ]);
+
+        // Evaluate the criteria immediately
+        $service->refreshCohorts(Auth::user()->practice_id);
+
+        $this->showCreateModal = false;
+        session()->flash('success', 'Custom cohort created and populated.');
+    }
+
     public function render(): View
     {
         return view('livewire.population-health');

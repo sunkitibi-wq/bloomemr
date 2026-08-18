@@ -7,15 +7,20 @@ use App\Models\Assessment;
 use App\Models\Encounter;
 use App\Models\Invoice;
 use App\Models\Patient;
+use App\Models\Task;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Title('Dashboard')]
+#[Layout('components.layouts.app.workspace')]
 class Dashboard extends Component
 {
+    public $revenuePeriod = 'this_month';
+
     #[Computed]
     public function coSignQueue()
     {
@@ -127,11 +132,107 @@ class Dashboard extends Component
     #[Computed]
     public function monthlyRevenue()
     {
-        return Invoice::where('practice_id', Auth::user()->practice_id)
-            ->where('status', 'paid')
-            ->whereMonth('updated_at', now()->month)
-            ->whereYear('updated_at', now()->year)
-            ->sum('total_amount');
+        $query = Invoice::where('practice_id', Auth::user()->practice_id)
+            ->where('status', 'paid');
+
+        if ($this->revenuePeriod === 'this_month') {
+            $query->whereMonth('updated_at', now()->month)
+                ->whereYear('updated_at', now()->year);
+        } elseif ($this->revenuePeriod === 'last_month') {
+            $query->whereMonth('updated_at', now()->subMonth()->month)
+                ->whereYear('updated_at', now()->subMonth()->year);
+        } elseif ($this->revenuePeriod === 'this_year') {
+            $query->whereYear('updated_at', now()->year);
+        }
+
+        return $query->sum('total_amount');
+    }
+
+    #[Computed]
+    public function revenueChartData()
+    {
+        $query = Invoice::where('practice_id', Auth::user()->practice_id)
+            ->where('status', 'paid');
+
+        if ($this->revenuePeriod === 'this_month') {
+            $query->whereMonth('updated_at', now()->month)
+                ->whereYear('updated_at', now()->year);
+        } elseif ($this->revenuePeriod === 'last_month') {
+            $query->whereMonth('updated_at', now()->subMonth()->month)
+                ->whereYear('updated_at', now()->subMonth()->year);
+        } elseif ($this->revenuePeriod === 'this_year') {
+            $query->whereYear('updated_at', now()->year);
+        }
+
+        $invoices = $query->get(['total_amount', 'updated_at']);
+
+        // Group by day for month views, by month for year view
+        if ($this->revenuePeriod === 'this_year') {
+            $grouped = $invoices->groupBy(function ($item) {
+                return $item->updated_at->format('M');
+            });
+            $labels = collect(range(1, 12))->map(fn ($m) => now()->month($m)->format('M'))->toArray();
+
+            $data = [];
+            foreach ($labels as $label) {
+                $data[] = isset($grouped[$label]) ? $grouped[$label]->sum('total_amount') : 0;
+            }
+        } else {
+            $grouped = $invoices->groupBy(function ($item) {
+                return $item->updated_at->format('M j');
+            });
+
+            // Generate daily labels for the month
+            $daysInMonth = $this->revenuePeriod === 'last_month' ? now()->subMonth()->daysInMonth : now()->daysInMonth;
+            $month = $this->revenuePeriod === 'last_month' ? now()->subMonth() : now();
+
+            $labels = [];
+            $data = [];
+
+            for ($i = 1; $i <= $daysInMonth; $i++) {
+                $date = $month->copy()->day($i);
+                $label = $date->format('M j');
+                $labels[] = $label;
+                $data[] = isset($grouped[$label]) ? $grouped[$label]->sum('total_amount') : 0;
+            }
+        }
+
+        return [
+            'labels' => $labels,
+            'data' => $data,
+        ];
+    }
+
+    #[Computed]
+    public function demographicStats()
+    {
+        $stats = Patient::select('gender_identity')
+            ->selectRaw('count(*) as count')
+            ->groupBy('gender_identity')
+            ->pluck('count', 'gender_identity')
+            ->toArray();
+
+        $total = array_sum($stats);
+        if ($total === 0) {
+            return [];
+        }
+
+        $formatted = [];
+        $colors = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#94a3b8'];
+        $i = 0;
+
+        foreach ($stats as $gender => $count) {
+            $label = $gender ? ucfirst(str_replace('_', ' ', $gender)) : 'Unspecified';
+            $formatted[] = [
+                'label' => $label,
+                'count' => $count,
+                'percentage' => round(($count / $total) * 100),
+                'color' => $colors[$i % count($colors)],
+            ];
+            $i++;
+        }
+
+        return $formatted;
     }
 
     #[Computed]
@@ -156,6 +257,22 @@ class Dashboard extends Component
     {
         return Encounter::whereIn('status', ['draft', 'co_sign_pending'])
             ->where('provider_id', Auth::id())
+            ->count();
+    }
+
+    #[Computed]
+    public function pendingTasksCount()
+    {
+        return Task::where('assigned_to', Auth::id())
+            ->whereIn('status', ['pending', 'in_progress'])
+            ->count();
+    }
+
+    #[Computed]
+    public function completedTasksCount()
+    {
+        return Task::where('assigned_to', Auth::id())
+            ->where('status', 'completed')
             ->count();
     }
 

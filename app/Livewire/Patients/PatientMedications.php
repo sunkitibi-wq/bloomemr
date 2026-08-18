@@ -9,6 +9,7 @@ use App\Models\Patient;
 use App\Models\Pharmacy;
 use App\Models\Prescription;
 use App\Services\ClinicalDecisionSupportService;
+use App\Services\DoseSpotService;
 use App\Services\SurescriptsService;
 use Flux\Flux;
 use Illuminate\Contracts\View\View;
@@ -55,6 +56,11 @@ class PatientMedications extends Component
 
     public ?int $pharmacyId = null;
 
+    // DoseSpot iframe modal
+    public bool $showDoseSpotIframe = false;
+
+    public ?string $doseSpotSsoUrl = null;
+
     // Pharmacy reconciliation list
     public array $externalMeds = [
         ['name' => 'Abilify', 'dose' => '5mg', 'frequency' => 'Daily at bedtime', 'ndc_code' => '59148-008-13', 'source' => 'Patient-Reported'],
@@ -65,6 +71,20 @@ class PatientMedications extends Component
     {
         $this->patient = $patient;
         $this->patient->load(['medicationTeachingLogs.giver']);
+    }
+
+    public function openDoseSpot(): void
+    {
+        $this->doseSpotSsoUrl = app(DoseSpotService::class)->getPatientSsoUrl($this->patient);
+        $this->showDoseSpotIframe = true;
+    }
+
+    public function closeDoseSpot(): void
+    {
+        $this->showDoseSpotIframe = false;
+        $this->doseSpotSsoUrl = null;
+        // Reload meds in case any were prescribed in DoseSpot
+        $this->patient->load('medications', 'prescriptions');
     }
 
     /** @return Collection<int, Pharmacy> */

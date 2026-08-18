@@ -1,78 +1,92 @@
-    @php
-        $patient = auth('portal')->check() && auth('portal')->user()->role === 'guardian'
-            ? \App\Models\Patient::where('portal_user_id', auth('portal')->id())->first()
-            : \App\Models\Patient::where('practice_id', auth()->user()?->practice_id)->first();
-    @endphp
-    <nav class="w-full md:w-64 shrink-0 flex flex-col p-5 bg-white dark:bg-zinc-900 border-r border-slate-200 dark:border-zinc-800">
-        <!-- Logo -->
-        <div class="flex items-center gap-2.5 mb-8 px-1">
-            <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-bold">
-                {{ $patient ? substr($patient->first_name, 0, 1) : 'B' }}
-            </div>
-            <div>
-                <span class="font-headline-md font-bold text-trust-navy dark:text-zinc-100 tracking-tight text-base">{{ $patient ? $patient->first_name . "'s Care" : 'Bloom' }}</span>
-                <span class="text-[9px] text-zinc-400 block -mt-1 uppercase tracking-wider">{{ __('Patient Portal') }}</span>
-            </div>
+@php
+    $patient = auth('portal')->check() && auth('portal')->user()->role === 'guardian'
+        ? \App\Models\Patient::where('portal_user_id', auth('portal')->id())->first()
+        : \App\Models\Patient::where('practice_id', auth()->user()?->practice_id)->first();
+@endphp
+<aside class="flex-none w-[260px] bg-slate-50 border-r border-slate-200 flex flex-col">
+    <!-- Branding -->
+    <div class="h-20 flex items-center px-6 shrink-0 mt-2">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+            {{ $patient ? substr($patient->first_name, 0, 1) : 'B' }}
+        </div>
+        <span class="ml-3 font-bold text-xl text-slate-800 tracking-tight leading-tight">
+            {{ $patient ? $patient->first_name . "'s Care" : 'Bloom' }}<br>
+            <span class="text-[10px] text-slate-400 font-medium uppercase tracking-widest leading-none">Patient Portal</span>
+        </span>
+    </div>
+
+    <!-- Scrollable Nav -->
+    <div class="flex-1 overflow-y-auto py-4 px-4 flex flex-col gap-8 custom-scrollbar">
+        
+        <!-- Quick Access -->
+        <div>
+            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-2">Quick Access</div>
+            <nav class="space-y-1">
+                <a href="{{ route('portal.appointments') }}" class="flex items-center justify-between px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.appointments') ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    <div class="flex items-center gap-3">
+                        <flux:icon.calendar variant="outline" class="w-[18px] h-[18px] {{ request()->routeIs('portal.appointments') ? 'text-indigo-600' : 'text-slate-400' }}" /> Appointments
+                    </div>
+                </a>
+                <a href="{{ route('portal.messages') }}" class="flex items-center justify-between px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.messages') ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    <div class="flex items-center gap-3">
+                        <flux:icon.chat-bubble-left-ellipsis variant="outline" class="w-[18px] h-[18px] {{ request()->routeIs('portal.messages') ? 'text-indigo-600' : 'text-slate-400' }}" /> Secure Messages
+                    </div>
+                </a>
+                <a href="{{ route('portal.labs') }}" class="flex items-center gap-3 px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.labs') ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    <flux:icon.beaker variant="outline" class="w-[18px] h-[18px] {{ request()->routeIs('portal.labs') ? 'text-indigo-600' : 'text-slate-400' }}" /> Lab Results
+                </a>
+                <a href="{{ route('portal.radiology') }}" class="flex items-center gap-3 px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.radiology') ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    <flux:icon.document-magnifying-glass variant="outline" class="w-[18px] h-[18px] {{ request()->routeIs('portal.radiology') ? 'text-indigo-600' : 'text-slate-400' }}" /> Imaging Reports
+                </a>
+            </nav>
         </div>
 
-        <!-- Navigation Links -->
-        <div class="flex-1 space-y-1">
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.dashboard') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.dashboard') }}">
-                <span class="material-symbols-outlined text-xl">home</span>
-                <span class="text-sm">{{ __('Home') }}</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.appointments') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.appointments') }}">
-                <span class="material-symbols-outlined text-xl">calendar_today</span>
-                <span class="text-sm">{{ __('Appointments') }}</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.billing') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.billing') }}">
-                <span class="material-symbols-outlined text-xl">receipt_long</span>
-                <span class="text-sm">{{ __('Billing & Invoices') }}</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.messages') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.messages') }}">
-                <span class="material-symbols-outlined text-xl">mail</span>
-                <span class="text-sm">{{ __('Secure Messages') }}</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.labs') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.labs') }}">
-                <span class="material-symbols-outlined text-xl">science</span>
-                <span class="text-sm">{{ __('Lab Results') }}</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.triage') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.triage') }}">
-                <span class="material-symbols-outlined text-xl">health_and_safety</span>
-                <span class="text-sm">{{ __('Symptom Triage') }}</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.refills') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.refills') }}">
-                <span class="material-symbols-outlined text-xl">vaccines</span>
-                <span class="text-sm">{{ __('Refill Requests') }}</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.telehealth') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.telehealth') }}">
-                <span class="material-symbols-outlined text-xl">videocam</span>
-                <span class="text-sm">{{ __('Telehealth Room') }}</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.forms') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.forms') }}">
-                <span class="material-symbols-outlined text-xl">description</span>
-                <span class="text-sm">{{ __('Intake & Consents') }}</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.care-coordination') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.care-coordination') }}">
-                <span class="material-symbols-outlined text-xl">share</span>
-                <span class="text-sm">{{ __('Care Sharing Log') }}</span>
-            </a>
-            <a class="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors {{ request()->routeIs('portal.radiology') ? 'text-trust-navy dark:text-zinc-100 font-semibold bg-slate-100 dark:bg-zinc-800' : 'text-zinc-500 dark:text-zinc-400 hover:bg-slate-50 dark:hover:bg-zinc-800/50' }}" href="{{ route('portal.radiology') }}">
-                <span class="material-symbols-outlined text-xl">biotech</span>
-                <span class="text-sm">{{ __('Imaging Reports') }}</span>
-            </a>
+        <!-- Main Nav -->
+        <div>
+            <div class="text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-3 px-2">Main Menu</div>
+            <nav class="space-y-1 mb-8">
+                <a href="{{ route('portal.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.dashboard') ? 'text-indigo-700 bg-indigo-50/50 relative overflow-hidden font-bold' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    @if(request()->routeIs('portal.dashboard'))
+                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-600 rounded-r-md"></div>
+                        <flux:icon.home variant="solid" class="w-[18px] h-[18px] text-indigo-600" />
+                    @else
+                        <flux:icon.home variant="outline" class="w-[18px] h-[18px] text-slate-400" />
+                    @endif
+                    Home
+                </a>
+                <a href="{{ route('portal.billing') }}" class="flex items-center gap-3 px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.billing') ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    <flux:icon.banknotes variant="outline" class="w-[18px] h-[18px] {{ request()->routeIs('portal.billing') ? 'text-indigo-600' : 'text-slate-400' }}" /> Billing & Invoices
+                </a>
+                <a href="{{ route('portal.triage') }}" class="flex items-center gap-3 px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.triage') ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    <flux:icon.heart variant="outline" class="w-[18px] h-[18px] {{ request()->routeIs('portal.triage') ? 'text-indigo-600' : 'text-slate-400' }}" /> Symptom Triage
+                </a>
+                <a href="{{ route('portal.refills') }}" class="flex items-center gap-3 px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.refills') ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    <flux:icon.beaker variant="outline" class="w-[18px] h-[18px] {{ request()->routeIs('portal.refills') ? 'text-indigo-600' : 'text-slate-400' }}" /> Refill Requests
+                </a>
+                <a href="{{ route('portal.telehealth') }}" class="flex items-center gap-3 px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.telehealth') ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    <flux:icon.video-camera variant="outline" class="w-[18px] h-[18px] {{ request()->routeIs('portal.telehealth') ? 'text-indigo-600' : 'text-slate-400' }}" /> Telehealth Room
+                </a>
+                <a href="{{ route('portal.forms') }}" class="flex items-center gap-3 px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.forms') ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    <flux:icon.document-text variant="outline" class="w-[18px] h-[18px] {{ request()->routeIs('portal.forms') ? 'text-indigo-600' : 'text-slate-400' }}" /> Intake & Consents
+                </a>
+                <a href="{{ route('portal.care-coordination') }}" class="flex items-center gap-3 px-3 py-2.5 text-[13px] font-medium {{ request()->routeIs('portal.care-coordination') ? 'text-indigo-700 bg-indigo-50/50' : 'text-slate-600 hover:bg-white hover:shadow-sm' }} rounded-lg transition-all duration-200">
+                    <flux:icon.share variant="outline" class="w-[18px] h-[18px] {{ request()->routeIs('portal.care-coordination') ? 'text-indigo-600' : 'text-slate-400' }}" /> Care Sharing Log
+                </a>
+            </nav>
         </div>
 
-        <!-- CTA & Exit -->
-        <div class="mt-auto pt-4 border-t border-slate-100 dark:border-zinc-800 space-y-3">
-            <button class="w-full py-2.5 px-4 bg-status-critical text-white text-xs font-bold rounded-lg flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-                <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">emergency</span>
-                <span>{{ __('Emergency Contact') }}</span>
-            </button>
-            
-            <a class="flex items-center gap-3 px-4 py-2 text-zinc-500 dark:text-zinc-400 hover:text-trust-navy dark:hover:text-zinc-100 transition-colors" href="{{ route('dashboard') }}" wire:navigate>
-                <span class="material-symbols-outlined text-xl">arrow_back</span>
-                <span class="text-xs">{{ __('Back to EMR') }}</span>
-            </a>
-        </div>
-    </nav>
+    </div>
+
+    <!-- Footer -->
+    <div class="p-4 shrink-0 mb-4">
+        <button class="w-full py-2.5 px-4 bg-red-50 text-red-600 text-xs font-bold rounded-lg flex items-center justify-center gap-2 hover:bg-red-100 transition-colors mb-4 border border-red-100">
+            <flux:icon.phone variant="solid" class="w-4 h-4" />
+            <span>Emergency Contact</span>
+        </button>
+
+        <a class="flex items-center gap-3 px-4 py-2 text-slate-500 hover:text-slate-800 transition-colors bg-white rounded-xl shadow-sm border border-slate-100" href="{{ route('dashboard') }}" wire:navigate>
+            <flux:icon.arrow-right-start-on-rectangle variant="outline" class="w-4 h-4" />
+            <span class="text-xs font-bold">Back to EMR</span>
+        </a>
+    </div>
+</aside>

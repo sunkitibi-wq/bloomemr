@@ -80,6 +80,13 @@ return [
         'mock' => env('SURESCRIPTS_MOCK', true),
     ],
 
+    'dosespot' => [
+        'clinic_id' => env('DOSESPOT_CLINIC_ID'),
+        'clinic_key' => env('DOSESPOT_CLINIC_KEY'),
+        'base_url' => env('DOSESPOT_BASE_URL', 'https://my.dosespot.com'),
+        'mock' => env('DOSESPOT_MOCK', true),
+    ],
+
     'avality' => [
         'client_id' => env('AVALITY_CLIENT_ID'),
         'client_secret' => env('AVALITY_CLIENT_SECRET'),

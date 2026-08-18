@@ -83,6 +83,94 @@ class PopulationHealthService
                 'due_date' => now()->addMonths(3),
             ]);
         }
+
+        // 3. Diabetes Care Gap
+        $diabeticPatients = Patient::where('practice_id', $practiceId)
+            ->where('problem_list', 'like', '%diabetes%')
+            ->get();
+        foreach ($diabeticPatients as $patient) {
+            CareGap::firstOrCreate([
+                'practice_id' => $practiceId,
+                'patient_id' => $patient->id,
+                'gap_type' => 'hba1c_check',
+            ], [
+                'description' => 'Bi-annual HbA1c check for diabetic patients.',
+                'status' => 'open',
+                'due_date' => now()->addMonths(6),
+            ]);
+        }
+
+        // 4. Hypertension Care Gap
+        $hypertensionPatients = Patient::where('practice_id', $practiceId)
+            ->where('problem_list', 'like', '%hypertension%')
+            ->get();
+        foreach ($hypertensionPatients as $patient) {
+            CareGap::firstOrCreate([
+                'practice_id' => $practiceId,
+                'patient_id' => $patient->id,
+                'gap_type' => 'blood_pressure_check',
+            ], [
+                'description' => 'Regular blood pressure monitoring for hypertension.',
+                'status' => 'open',
+                'due_date' => now()->addMonths(3),
+            ]);
+        }
+
+        // 5. Cancer Screening Care Gap (Age > 45)
+        $cancerScreeningPatients = Patient::where('practice_id', $practiceId)
+            ->whereDate('date_of_birth', '<=', now()->subYears(45))
+            ->get();
+        foreach ($cancerScreeningPatients as $patient) {
+            CareGap::firstOrCreate([
+                'practice_id' => $practiceId,
+                'patient_id' => $patient->id,
+                'gap_type' => 'colorectal_screening',
+            ], [
+                'description' => 'Routine colorectal cancer screening for adults 45 and older.',
+                'status' => 'open',
+                'due_date' => now()->addMonths(12),
+            ]);
+        }
+
+        // 6. Process Custom Cohorts
+        $customCohorts = PatientCohort::where('practice_id', $practiceId)
+            ->whereNotNull('criteria')
+            ->get();
+
+        foreach ($customCohorts as $cohort) {
+            $query = Patient::where('practice_id', $practiceId);
+
+            $criteria = $cohort->criteria;
+
+            if (isset($criteria['min_age']) && $criteria['min_age']) {
+                $query->whereDate('date_of_birth', '<=', now()->subYears($criteria['min_age']));
+            }
+            if (isset($criteria['max_age']) && $criteria['max_age']) {
+                $query->whereDate('date_of_birth', '>=', now()->subYears($criteria['max_age']));
+            }
+            if (isset($criteria['diagnosis_keyword']) && $criteria['diagnosis_keyword']) {
+                $query->where('problem_list', 'like', '%'.$criteria['diagnosis_keyword'].'%');
+            }
+
+            $matchedPatients = $query->get();
+
+            // Re-sync cohort members
+            $matchedIds = $matchedPatients->pluck('id')->toArray();
+
+            // Delete old members not matching anymore
+            PatientCohortMember::where('cohort_id', $cohort->id)
+                ->whereNotIn('patient_id', $matchedIds)
+                ->delete();
+
+            foreach ($matchedPatients as $patient) {
+                PatientCohortMember::firstOrCreate([
+                    'cohort_id' => $cohort->id,
+                    'patient_id' => $patient->id,
+                ], [
+                    'joined_at' => now(),
+                ]);
+            }
+        }
     }
 
     /**
