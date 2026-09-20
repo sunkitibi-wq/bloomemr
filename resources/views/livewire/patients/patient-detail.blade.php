@@ -40,16 +40,20 @@
     <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
         @php
             $tabs = [
-                'encounters' => 'Encounters & History',
+                'face_sheet' => 'Face Sheet',
+                'notes' => 'Notes',
+                'results' => 'Results',
+                'interdisciplinary' => 'Interdisciplinary',
+                'orders' => 'Orders',
+                'media' => 'Media',
+                'admission' => 'Admission',
+                'summary' => 'Summary',
+                'forms' => 'Intake & Consents',
                 'medications' => 'Medications & Prescribing',
-                'labs' => 'Labs & Monitoring',
                 'messages' => 'Secure Messages',
                 'refills' => 'Refill Requests',
                 'telehealth' => 'Telehealth Room',
-                'engagements' => 'Engagement',
-                'forms' => 'Intake & Consents',
-                'care_coordination' => 'Care Coordination',
-                'radiology' => 'Radiology & Imaging'
+                'engagements' => 'Engagement'
             ];
         @endphp
         
@@ -63,7 +67,7 @@
         @endforeach
     </div>
 
-    @if ($activeTab === 'encounters')
+    @if ($activeTab === 'face_sheet')
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div class="lg:col-span-1 space-y-6">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
@@ -197,9 +201,21 @@
             </div>
 
             <div class="lg:col-span-2 space-y-6">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-                    <div class="p-5 border-b border-slate-100">
-                        <h3 class="font-bold text-[14px] text-slate-800">{{ __('Recent Encounters') }}</h3>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                    <h3 class="font-bold text-[14px] text-slate-800">{{ __('Wrap Around Services') }}</h3>
+                    <p class="text-[13px] text-slate-500 mt-2">{{ __('No wrap around services recorded.') }}</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                    <h3 class="font-bold text-[14px] text-slate-800">{{ __('Immunization History') }}</h3>
+                    <p class="text-[13px] text-slate-500 mt-2">{{ __('No immunizations on file.') }}</p>
+                </div>
+            </div>
+        </div>
+    @elseif ($activeTab === 'notes')
+        <div class="mt-2 space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                <div class="p-5 border-b border-slate-100">
+                    <h3 class="font-bold text-[14px] text-slate-800">{{ __('Recent Encounters & Notes') }}</h3>
                     </div>
                     <div class="flex flex-col">
                         @forelse ($patient->encounters as $encounter)
@@ -232,10 +248,16 @@
                         @endforelse
                     </div>
                 </div>
-
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-                    <div class="p-5 border-b border-slate-100">
-                        <h3 class="font-bold text-[14px] text-slate-800">{{ __('Completed Assessments') }}</h3>
+        </div>
+    @elseif ($activeTab === 'admission')
+        <div class="mt-2 space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                <h3 class="font-bold text-[14px] text-slate-800">{{ __('Vitals & Intake') }}</h3>
+                <p class="text-[13px] text-slate-500 mt-2">{{ __('No recent vitals.') }}</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                <div class="p-5 border-b border-slate-100">
+                    <h3 class="font-bold text-[14px] text-slate-800">{{ __('Screening Tools & Risk Assessments') }}</h3>
                     </div>
 
                     @if ($patient->assessments->isNotEmpty())
@@ -306,10 +328,12 @@
                         @endforelse
                     </div>
                 </div>
-
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-                    <div class="p-5 border-b border-slate-100">
-                        <h3 class="font-bold text-[14px] text-slate-800">{{ __('Documents') }}</h3>
+        </div>
+    @elseif ($activeTab === 'media')
+        <div class="mt-2 space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                <div class="p-5 border-b border-slate-100">
+                    <h3 class="font-bold text-[14px] text-slate-800">{{ __('Media & Documents') }}</h3>
                     </div>
                     
                     <div class="flex flex-col">
@@ -345,16 +369,33 @@
                         @endforelse
                     </div>
                 </div>
+        </div>
+    @elseif ($activeTab === 'results')
+        <div class="mt-2 space-y-6">
+            <livewire:patients.patient-labs :patient="$patient" />
+            <livewire:patients.patient-radiology :patient="$patient" />
+        </div>
+    @elseif ($activeTab === 'interdisciplinary')
+        <div class="mt-2 space-y-6">
+            <livewire:patients.patient-care-coordination :patient="$patient" />
+        </div>
+    @elseif ($activeTab === 'orders')
+        <div class="mt-2">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 text-center">
+                <p class="text-[13px] text-slate-500">{{ __('All orders placed will appear here.') }}</p>
+            </div>
+        </div>
+    @elseif ($activeTab === 'summary')
+        <div class="mt-2">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 text-center">
+                <p class="text-[13px] text-slate-500">{{ __('Patient chart summary.') }}</p>
             </div>
         </div>
     @elseif ($activeTab === 'medications')
         <div class="mt-2">
             <livewire:patients.patient-medications :patient="$patient" />
         </div>
-    @elseif ($activeTab === 'labs')
-        <div class="mt-2">
-            <livewire:patients.patient-labs :patient="$patient" />
-        </div>
+
     @elseif ($activeTab === 'messages')
         <div class="mt-2">
             <livewire:patients.patient-messages :patient="$patient" />
@@ -587,15 +628,7 @@
         </div>
     </div>
 
-    @if ($activeTab === 'care_coordination')
-        <div class="mt-2">
-            <livewire:patients.patient-care-coordination :patient="$patient" />
-        </div>
-    @endif
 
-    @if ($activeTab === 'radiology')
-        <div class="mt-2">
-            <livewire:patients.patient-radiology :patient="$patient" />
-        </div>
-    @endif
 </div>
+
+

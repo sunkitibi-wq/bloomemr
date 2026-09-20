@@ -22,6 +22,8 @@ class Assessment extends Model
         'responses',
         'score',
         'severity_band',
+        'completed_on',
+        'completed_by',
     ];
 
     protected function casts(): array

@@ -24,6 +24,7 @@ class Document extends Model
         'size',
         'ocr_text',
         'version',
+        'due_date',
     ];
 
     public function patient(): BelongsTo

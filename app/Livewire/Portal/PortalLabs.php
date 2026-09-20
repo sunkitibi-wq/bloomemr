@@ -62,6 +62,6 @@ class PortalLabs extends Component
 
         return view('livewire.portal.portal-labs', [
             'labs' => $labs,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

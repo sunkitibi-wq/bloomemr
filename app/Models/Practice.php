@@ -9,6 +9,7 @@ class Practice extends Model
 {
     protected $fillable = [
         'name',
+        'type',
         'slug',
         'is_active',
         'settings',
@@ -41,6 +42,11 @@ class Practice extends Model
         return $this->hasMany(Encounter::class);
     }
 
+    public function facilities(): HasMany
+    {
+        return $this->hasMany(Facility::class);
+    }
+
     public function pharmacists(): HasMany
     {
         return $this->users()->where('role', 'pharmacist');
@@ -59,5 +65,15 @@ class Practice extends Model
     public function deactivate(): void
     {
         $this->update(['is_active' => false]);
+    }
+
+    public function isHospital(): bool
+    {
+        return empty($this->type) || in_array($this->type, ['hospital', 'clinic']);
+    }
+
+    public function isPharmacy(): bool
+    {
+        return $this->type === 'pharmacy';
     }
 }

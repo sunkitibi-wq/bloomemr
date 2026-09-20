@@ -9,7 +9,8 @@ use App\Livewire\Billing\ClaimsCenter;
 use App\Livewire\Clinical\AiAssistantDashboard;
 use App\Livewire\Clinical\TelemedicineDashboard;
 use App\Livewire\Crm\CampaignManager;
-use App\Livewire\Dashboard;
+use App\Livewire\HospitalDashboard;
+use App\Livewire\Education\EducationManager;
 use App\Livewire\Documents\DocumentUpload;
 use App\Livewire\Encounters\EncounterForm;
 use App\Livewire\Encounters\EncounterList;
@@ -43,6 +44,8 @@ use App\Livewire\Scheduling\AppointmentList;
 use App\Livewire\Scheduling\FlowBoard;
 use App\Livewire\SystemAdmin\KycVerificationManager;
 use App\Livewire\SystemAdmin\PracticeManager;
+use App\Livewire\Workspace\SharedContent;
+use App\Livewire\Workspace\HelpCenter;
 use App\Livewire\Tasks\TaskList;
 use App\Livewire\Vendors\VendorList;
 use App\Models\SmartPhrase;
@@ -66,32 +69,68 @@ Route::middleware(['auth:web', 'verified', 'kyc.subscribed'])->group(function ()
     Route::livewire('kyc', KycOnboarding::class)->name('kyc');
     Route::livewire('subscribe', UserSubscription::class)->name('subscribe');
 
-    Route::livewire('dashboard', Dashboard::class)->name('dashboard');
-    Route::livewire('tasks', TaskList::class)->name('tasks.index');
-    Route::livewire('scheduling', AppointmentList::class)->name('scheduling');
-    Route::livewire('scheduling/flow-board', FlowBoard::class)->name('scheduling.flow-board');
-    Route::livewire('billing', BillingManager::class)->name('billing');
-    Route::livewire('billing/claims', ClaimsCenter::class)->name('billing.claims');
-    Route::livewire('billing/claims/{invoice}', ClaimManager::class)->name('billing.claims.show');
-    Route::livewire('pharmacy-portal', PharmacyPortal::class)->name('pharmacy.portal');
-    Route::livewire('inventory', InventoryManager::class)->name('inventory');
-    Route::livewire('population-health', PopulationHealth::class)->name('population-health');
-    Route::livewire('analytics', PracticeAnalytics::class)->name('analytics');
-    Route::livewire('analytics/cqm', ClinicalQualityMeasures::class)->name('analytics.cqm');
-    Route::livewire('messages', MessageCenter::class)->name('messages');
-    Route::livewire('vendors', VendorList::class)->name('vendors.index');
-    Route::livewire('radiology', RadiologyManager::class)->name('radiology');
-    Route::livewire('clinical/ai-assistant', AiAssistantDashboard::class)->name('clinical.ai-assistant');
-    Route::livewire('telemedicine', TelemedicineDashboard::class)->name('telemedicine');
-    Route::livewire('crm/campaigns', CampaignManager::class)->name('crm.campaigns');
+    // Smart Dashboard Router
+    Route::get('dashboard', function () {
+        if (auth()->hasUser() && auth()->user()->isSystemAdmin()) {
+            return redirect()->route('system.dashboard');
+        }
 
-    // System Admin (is_system_admin = true users only)
-    Route::livewire('system/practices', PracticeManager::class)
-        ->middleware('can:system_admin')
-        ->name('system.practices');
-    Route::livewire('system/kyc', KycVerificationManager::class)
-        ->middleware('can:system_admin')
-        ->name('system.kyc');
+        $practice = app()->bound('current_practice') 
+            ? app('current_practice') 
+            : (auth()->hasUser() ? auth()->user()->practice : null);
+
+        if ($practice && $practice->isPharmacy()) {
+            return redirect()->route('pharmacy.portal');
+        }
+        
+        return redirect()->route('hospital.dashboard');
+    })->name('dashboard');
+
+    // ==========================================
+    // SHARED ROUTES (Both Hospitals and Pharmacies)
+    // ==========================================
+    Route::livewire('tasks', TaskList::class)->name('tasks.index');
+    Route::livewire('messages', MessageCenter::class)->name('messages');
+    Route::livewire('shared-content', SharedContent::class)->name('shared.content');
+    Route::livewire('help-center', HelpCenter::class)->name('help.center');
+
+    // ==========================================
+    // HOSPITAL ROUTES
+    // ==========================================
+    Route::middleware(['practice.type:hospital'])->prefix('hospital')->group(function () {
+        Route::livewire('dashboard', HospitalDashboard::class)->name('hospital.dashboard');
+        Route::livewire('scheduling', AppointmentList::class)->name('scheduling');
+        Route::livewire('scheduling/flow-board', FlowBoard::class)->name('scheduling.flow-board');
+        Route::livewire('billing', BillingManager::class)->name('billing');
+        Route::livewire('billing/claims', ClaimsCenter::class)->name('billing.claims');
+        Route::livewire('billing/claims/{invoice}', ClaimManager::class)->name('billing.claims.show');
+        Route::livewire('population-health', PopulationHealth::class)->name('population-health');
+        Route::livewire('analytics', PracticeAnalytics::class)->name('analytics');
+        Route::livewire('analytics/cqm', ClinicalQualityMeasures::class)->name('analytics.cqm');
+        Route::livewire('vendors', VendorList::class)->name('vendors.index');
+        Route::livewire('radiology', RadiologyManager::class)->name('radiology');
+        Route::livewire('clinical/ai-assistant', AiAssistantDashboard::class)->name('clinical.ai-assistant');
+        Route::livewire('telemedicine', TelemedicineDashboard::class)->name('telemedicine');
+        Route::livewire('education', EducationManager::class)->name('education.manager');
+        Route::livewire('crm/campaigns', CampaignManager::class)->name('crm.campaigns');
+    });
+
+    // ==========================================
+    // PHARMACY ROUTES
+    // ==========================================
+    Route::middleware(['practice.type:pharmacy'])->prefix('pharmacy')->group(function () {
+        Route::livewire('portal', PharmacyPortal::class)->name('pharmacy.portal');
+        Route::livewire('inventory', InventoryManager::class)->name('inventory');
+    });
+
+    // ==========================================
+    // SYSTEM ADMIN PORTAL
+    // ==========================================
+    Route::middleware(['can:system_admin'])->prefix('system')->name('system.')->group(function () {
+        Route::livewire('dashboard', App\Livewire\SystemAdmin\SystemDashboard::class)->name('dashboard');
+        Route::livewire('practices', PracticeManager::class)->name('practices');
+        Route::livewire('kyc', KycVerificationManager::class)->name('kyc');
+    });
 
     Route::prefix('patients')->name('patients.')->group(function () {
         Route::livewire('/', PatientList::class)->name('index');

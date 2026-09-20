@@ -50,6 +50,6 @@ class PortalTriage extends Component
 
     public function render(): View
     {
-        return view('livewire.portal.portal-triage')->layout('layouts.blank');
+        return view('livewire.portal.portal-triage')->layout('components.layouts.portal.workspace');
     }
 }

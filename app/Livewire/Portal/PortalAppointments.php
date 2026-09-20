@@ -95,6 +95,6 @@ class PortalAppointments extends Component
         return view('livewire.portal.portal-appointments', [
             'appointments' => $appointments,
             'providers' => $providers,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

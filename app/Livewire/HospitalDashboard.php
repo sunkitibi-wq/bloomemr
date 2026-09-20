@@ -17,7 +17,7 @@ use Livewire\Component;
 
 #[Title('Dashboard')]
 #[Layout('components.layouts.app.workspace')]
-class Dashboard extends Component
+class HospitalDashboard extends Component
 {
     public $revenuePeriod = 'this_month';
 
@@ -290,6 +290,6 @@ class Dashboard extends Component
 
     public function render(): View
     {
-        return view('livewire.dashboard');
+        return view('livewire.hospital-dashboard');
     }
 }

@@ -54,6 +54,6 @@ class PortalRadiology extends Component
 
         return view('livewire.portal.portal-radiology', [
             'orders' => $orders,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

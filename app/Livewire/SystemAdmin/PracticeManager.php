@@ -7,10 +7,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Title('System Admin — Practice Manager')]
+#[Layout('components.layouts.system')]
 class PracticeManager extends Component
 {
     public function mount(): void

@@ -219,6 +219,6 @@ class PortalAssessment extends Component
             'pendingAssessments' => $pendingAssessments,
             'completedAssessments' => $completedAssessments,
             'activeInstrument' => $activeInstrument,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

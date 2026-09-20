@@ -95,11 +95,14 @@
             </div>
             
             <div class="space-y-4">
-                <flux:select wire:model.live="selectedPatientId" label="Patient" placeholder="Choose a patient...">
+                <label class="block text-sm font-medium text-slate-700 mb-1">Patient</label>
+                <select wire:model="selectedPatientId" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="">Choose a patient...</option>
                     @foreach($patients as $patient)
-                        <flux:select.option :value="$patient->id">{{ $patient->full_name }} (DOB: {{ $patient->date_of_birth ? $patient->date_of_birth->format('m/d/Y') : 'N/A' }})</flux:select.option>
+                        <option value="{{ $patient->id }}">{{ $patient->full_name }} (DOB: {{ $patient->date_of_birth ? $patient->date_of_birth->format('m/d/Y') : 'N/A' }})</option>
                     @endforeach
-                </flux:select>
+                </select>
+                @error('selectedPatientId') <p class="text-sm text-red-500 mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div class="mt-6 flex justify-end gap-3">

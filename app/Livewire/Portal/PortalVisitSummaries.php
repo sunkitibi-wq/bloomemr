@@ -51,6 +51,6 @@ class PortalVisitSummaries extends Component
 
         return view('livewire.portal.portal-visit-summaries', [
             'encounters' => $encounters,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

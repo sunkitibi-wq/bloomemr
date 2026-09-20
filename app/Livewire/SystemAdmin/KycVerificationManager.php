@@ -8,10 +8,12 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('System Admin — KYC Verification Manager')]
+#[Title('System Admin — KYC Verifications')]
+#[Layout('components.layouts.system')]
 class KycVerificationManager extends Component
 {
     public string $activeTab = 'pending';

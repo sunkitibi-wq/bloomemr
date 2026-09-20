@@ -23,7 +23,7 @@ class PatientDetail extends Component
 {
     public Patient $patient;
 
-    public string $activeTab = 'encounters';
+    public string $activeTab = 'face_sheet';
 
     public ?EligibilityCheck $latestEligibilityCheck = null;
 

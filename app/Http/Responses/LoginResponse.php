@@ -17,14 +17,20 @@ class LoginResponse implements LoginResponseContract, TwoFactorLoginResponseCont
      */
     public function toResponse($request)
     {
-        $role = auth()->user()?->role ?? auth('portal')->user()?->role;
+        $user = auth()->user() ?? auth('portal')->user();
+        
+        if ($user?->isSystemAdmin()) {
+            return redirect()->route('system.dashboard');
+        }
+
+        $role = $user?->role;
 
         return match ($role) {
-            'guardian' => redirect()->intended(route('portal.dashboard')),
-            'pharmacist' => redirect()->intended(route('pharmacy.portal')),
-            'hospital_administrator', 'super_admin' => redirect()->intended(route('analytics')),
-            'attending', 'resident' => redirect()->intended(route('dashboard')),
-            default => redirect()->intended(route('dashboard')),
+            'guardian' => redirect()->route('portal.dashboard'),
+            'pharmacist' => redirect()->route('pharmacy.portal'),
+            'hospital_administrator', 'super_admin' => redirect()->route('analytics'),
+            'attending', 'resident' => redirect()->route('dashboard'),
+            default => redirect()->route('dashboard'),
         };
     }
 }

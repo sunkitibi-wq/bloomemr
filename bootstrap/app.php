@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'scopes' => CheckToken::class,
             'scope' => CheckTokenForAnyScope::class,
             'kyc.subscribed' => EnsureKycAndSubscription::class,
+            'practice.type' => \App\Http\Middleware\EnsurePracticeType::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

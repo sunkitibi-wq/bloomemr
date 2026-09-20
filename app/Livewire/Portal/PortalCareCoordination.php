@@ -35,6 +35,6 @@ class PortalCareCoordination extends Component
 
         return view('livewire.portal.portal-care-coordination', [
             'messages' => $messages,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

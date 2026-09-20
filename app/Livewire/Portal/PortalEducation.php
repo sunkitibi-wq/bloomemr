@@ -70,6 +70,6 @@ class PortalEducation extends Component
         return view('livewire.portal.portal-education', [
             'articles' => $articles,
             'assignments' => $assignments,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

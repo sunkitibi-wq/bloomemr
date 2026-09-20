@@ -119,6 +119,6 @@ class PortalBilling extends Component
 
         return view('livewire.portal.portal-billing', [
             'invoices' => $invoices,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

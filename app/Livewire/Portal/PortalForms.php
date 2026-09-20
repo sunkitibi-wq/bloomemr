@@ -132,6 +132,6 @@ class PortalForms extends Component
         return view('livewire.portal.portal-forms', [
             'pendingForms' => $pendingForms,
             'completedForms' => $completedForms,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

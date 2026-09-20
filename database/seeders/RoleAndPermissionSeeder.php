@@ -135,7 +135,7 @@ class RoleAndPermissionSeeder extends Seeder
             'view_prescriptions',
             'update_prescriptions',
 
-            // Patient look-up (read-only) to verify allergies, DOB, insurance
+            // Patient look-up (read-only) toi verify allergies, DOB, insurance
             'view_patients',
 
             // Medication inventory & stock management

@@ -85,6 +85,6 @@ class PortalDocumentUpload extends Component
 
         return view('livewire.portal.portal-document-upload', [
             'recentUploads' => $recentUploads,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

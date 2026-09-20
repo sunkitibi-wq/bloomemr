@@ -78,6 +78,6 @@ class PortalRefills extends Component
         return view('livewire.portal.portal-refills', [
             'medications' => $medications,
             'refillRequests' => $refillRequests,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }

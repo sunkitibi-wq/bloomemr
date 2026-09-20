@@ -84,6 +84,6 @@ class PortalTelehealth extends Component
 
     public function render(): View
     {
-        return view('livewire.portal.portal-telehealth')->layout('layouts.blank');
+        return view('livewire.portal.portal-telehealth')->layout('components.layouts.portal.workspace');
     }
 }

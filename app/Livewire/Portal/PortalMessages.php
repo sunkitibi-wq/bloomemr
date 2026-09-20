@@ -171,6 +171,6 @@ class PortalMessages extends Component
         return view('livewire.portal.portal-messages', [
             'messages' => $messages,
             'providers' => $providers,
-        ])->layout('layouts.blank');
+        ])->layout('components.layouts.portal.workspace');
     }
 }
